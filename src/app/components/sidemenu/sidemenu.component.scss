@@ -1,0 +1,239 @@
+// $toolbar-padding-vertical: 8px;
+// $toolbar-padding-horizontal: 16px;
+// $avatar-size: 44px;
+// $gap: 12px;
+// $avatar-bg: #cfcfcf;
+// $text-color: #111;
+// $muted-color: #6b6b6b;
+// $shadow: 0 1px 3px rgba(0,0,0,0.08);
+
+// // Sidebar / SideMenuBar styles
+// $sidebar-width: 260px;
+// $sidebar-collapsed-width: 72px;
+// $sidebar-bg: #ffffff;
+// $sidebar-accent: #2b7be5;
+// $sidebar-border: rgba(15, 23, 42, 0.06);
+// $menu-item-hover: rgba(43, 123, 229, 0.08);
+// $muted-2: lighten($muted-color, 8%);
+
+// // Explicit variables for light and dark text on sidebar
+// $sidebar-text-light: #ffffff;
+// $sidebar-text-dark: #222;
+// $sidebar-active-bg-light: rgba(30,164,255,0.08);
+// $sidebar-active-bg-dark: rgba(255,255,255,0.06);
+
+// .sidebar {
+//   --background: #f7f9fa; // Light, neutral background
+//   border-left: none;
+//   box-shadow: 0 4px 32px rgba(0,0,0,0.06);
+
+// // Optional: subtle background blur for modern effect
+// /* make sidebar visible and fixed on the left */
+// position: fixed;
+// top: 0;
+// left: 0;
+// bottom: 0;
+// width: var(--width);
+// max-width: var(--max-width);
+// z-index: 20;
+// /* use a slightly transparent background so backdrop-filter has a visible effect */
+// background: rgba(247, 249, 250, 0.95);
+// /* ensure cross‑browser support */
+// -webkit-backdrop-filter: blur(8px);
+// backdrop-filter: blur(8px);
+
+// /* layout so header/footer are fixed and only ion-content scrolls */
+// display: flex;
+// flex-direction: column;
+// overflow: hidden;
+// /* keep the CSS variable in sync for other rules */
+// --background: rgba(247, 249, 250, 0.95);
+
+// /* keep headers/footers fixed-sized */
+// ion-header,
+// ion-toolbar,
+// .profile-item,
+// ion-footer {
+//     flex: 0 0 auto;
+// }
+
+// /* make only the ion-content scrollable */
+// ion-content {
+//     flex: 1 1 auto;
+//     overflow-y: auto;
+//     -webkit-overflow-scrolling: touch;
+//     background: transparent;
+// }
+// }
+
+// .profile-item {
+//     display: flex;
+
+//     --background: transparent;
+//     --color: #222;
+//     flex-direction: row;
+//     align-items: center;
+//     justify-content: flex-start;
+//     text-align: left;
+//     padding: 12px 0px;
+//     gap: 12px; // space between avatar and right-side content
+
+//     ion-avatar {
+//       width: 56px;   // medium size
+//       height: 56px;
+//       flex: 0 0 56px;
+//       margin: 0 16px 0px 0;
+
+//       img {
+//         width: 100%;
+//         height: 100%;
+//         object-fit: cover;
+//         border-radius: 50%;
+//       }
+//     }
+
+//     ion-label {
+//       width: auto;
+
+//       h3 {
+//         color: #222;
+//         margin: 0;
+//         font-size: 1.05rem;
+//         font-weight: 600;
+//       }
+
+//       p {
+//         margin: 4px 0 0;
+//         color: var(--ion-color-medium);
+//         font-size: 0.9rem;
+//       }
+//     }
+
+//     // fallback: stack vertically on narrow screens
+//     // @media (max-width: 420px) {
+//     //   flex-direction: column;
+//     //   align-items: center;
+//     //   text-align: center;
+
+//     //   ion-avatar {
+//     //     margin-bottom: 8px;
+//     //   }
+
+//     //   ion-label {
+//     //     width: 100%;
+//     //   }
+//     // }
+// }
+
+// :host {
+//   ion-item {
+//     --background: unset;
+//   }
+//   ion-list {
+//     background: unset !important;
+//   }
+// }
+
+// .ion-list {
+//   padding: 8px 0;
+
+//   ion-item {
+//     --background: unset;
+//     --color: #222; // Dark text for contrast
+//     font-size: 1.15rem;
+//     font-weight: 600;
+//     display: flex;
+//     align-items: center;
+//     min-height: 52px;
+
+//     /* Ensure Ionic item uses the CSS variable for visible text */
+//     color: var(--color);
+
+//     ion-icon {
+//       font-size: 2rem;
+//       margin-right: 20px;
+//       &.home {
+//         color: #1EA4FF;
+//       }
+//       &.profile {
+//         color: #FF7700;
+//       }
+//       &.settings {
+//         color: #377DFF;
+//       }
+//       &.messages {
+//         color: #23E1B3;
+//       }
+//       &.logout {
+//         color: #377DFF;
+//       }
+//     }
+//     &:hover,
+//     &.active {
+//       background: rgba(30,164,255,0.08);
+//       --color: #222;
+//     }
+//   }
+// }
+
+// /* Dark mode overrides: make text and active backgrounds contrast correctly */
+// .dark .sidebar {
+//   --background: #0f1620;
+// }
+
+// .dark .sidebar ion-list {
+//   padding: 8px 0;
+
+//   ion-item {
+//     --background: unset;
+//     --color: #ffffff; /* light text in dark mode */
+//     color: var(--color);
+
+//     ion-icon {
+//       /* keep icons visible in dark mode */
+//       opacity: 0.95;
+//     }
+
+//     &:hover,
+//     &.active {
+//       background: rgba(255,255,255,0.06);
+//       --color: #ffffff;
+//     }
+//   }
+
+//   /* ensure labels are visible in dark mode */
+//   ion-label h3,
+//   ion-label p {
+//     color: #ffffff;
+//   }
+// }
+
+// .sidebar ion-toolbar,
+// .sidebar ion-header {
+//   background: transparent;
+//   box-shadow: none;
+// }
+
+// ion-footer {
+//     position: fixed; 
+//     bottom: 0; 
+//     left: 0; 
+//     right: 0; 
+//     width: 100%; 
+//     z-index: 20;
+//     display: contents;
+// }
+
+// .sidebar ion-avatar img {
+//   border: 2px solid #e6e9ef; // Subtle border
+// }
+
+// /* Slightly different border in dark mode for avatar */
+// .dark .sidebar ion-avatar img {
+//   border: 2px solid rgba(255,255,255,0.06);
+// }
+
+// .sidebar ion-label h3,
+// .sidebar ion-label p {
+//   color: #222; // Strong contrast for light theme
+// }

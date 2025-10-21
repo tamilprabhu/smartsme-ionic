@@ -1,0 +1,166 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+:root {
+    --ion-background-color: #f5f7fa;
+    --ion-text-color: #102a43;
+    --ion-color-primary: #0b6fb8;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-card-background: #ffffff;
+}
+
+/* Apply background across the Ionic app */
+html,
+body,
+ion-app,
+ion-content {
+    background: var(--ion-background-color) !important;
+    color: var(--ion-text-color);
+}
+
+/* Ensure ion-content uses the background variable */
+ion-content {
+    --background: var(--ion-background-color);
+}
+
+/* Cards and panels to stand out against the background */
+ion-card,
+.card {
+    background: var(--ion-card-background);
+    color: var(--ion-text-color);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(16,36,67,0.06);
+    padding: 1rem;
+}
+
+/* Links and primary interactive elements */
+a,
+a:hover,
+button,
+ion-button {
+    color: var(--ion-color-primary);
+}
+
+ion-button,
+.button {
+    --background: var(--ion-color-primary);
+    --background-focused: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+}
+
+/* Make sure form controls and common text-bearing elements honor the text color */
+input,
+textarea,
+select,
+ion-input,
+ion-textarea,
+ion-label,
+ion-item,
+p,
+h1,h2,h3,h4,h5,h6,
+span,
+div {
+    color: var(--ion-text-color) !important;
+    background-color: transparent;
+}
+
+/* Dark mode overrides: support both system preference and Ionic's .dark class */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ion-background-color: #071526;
+        --ion-text-color: #e6f0fb;
+        --ion-color-primary: #3aa0ff;
+        --ion-color-primary-contrast: #071526;
+        --ion-card-background: #0b2130;
+    }
+}
+
+.dark,
+:root.dark {
+    --ion-background-color: #071526;
+    --ion-text-color: #e6f0fb;
+    --ion-color-primary: #3aa0ff;
+    --ion-color-primary-contrast: #071526;
+    --ion-card-background: #0b2130;
+}
+
+/* Ensure Ionic components pick up dark variables when .dark is present */
+.dark html,
+.dark body,
+.dark ion-app,
+.dark ion-content,
+.dark ion-page {
+    background: var(--ion-background-color) !important;
+    color: var(--ion-text-color) !important;
+}
+
+.dark ion-content {
+    --background: var(--ion-background-color);
+}
+
+/* Dark mode: adjust shadows / link/button contrast */
+.dark ion-card,
+.dark .card {
+    background: var(--ion-card-background);
+    color: var(--ion-text-color);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+
+.dark a,
+.dark a:hover,
+.dark button,
+.dark ion-button {
+    color: var(--ion-color-primary);
+}
+
+.dark ion-button,
+.dark .button {
+    --background: var(--ion-color-primary);
+    --background-focused: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+}
+
+/* Inputs in dark mode */
+.dark input,
+.dark textarea,
+.dark select,
+.dark ion-input,
+.dark ion-textarea {
+    color: var(--ion-text-color) !important;
+    background: rgba(255,255,255,0.02);
+}

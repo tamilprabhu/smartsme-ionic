@@ -1,0 +1,21 @@
+ion-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  form {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+.login-button {
+  --box-shadow: none;
+  text-transform: uppercase;
+}
+
+ion-input {
+  scroll-margin-top: 0 !important;
+  scroll-snap-align: none !important;
+}

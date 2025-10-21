@@ -1,0 +1,25 @@
+<ion-app>
+  <ion-page>
+    <ion-header>
+      <ion-toolbar color="primary">
+        <!-- Back button with icon on the left -->
+        <ion-buttons slot="start">
+          <ion-button (click)="goBack()">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+            <!-- <ion-icon slot="icon-only" name="arrow-back"></ion-icon> -->
+            <!-- <i slot="start" class="fa fa-black-tie" aria-hidden="true"></i> -->
+          </ion-button>
+        </ion-buttons>
+        <!-- Header title -->
+        <ion-title>Company</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <h2>Welcome to Company Page</h2>
+      <p>Content stretches the full height between header and footer. More content here will scroll, and the footer will always be visible at the bottom.</p>
+    </ion-content>
+    
+  </ion-page>
+  <app-footer></app-footer>
+</ion-app>

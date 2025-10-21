@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" fullscreen
+  [scrollAssist]="false"
+  [keyboardHeight]="0"
+  [keyboardResize]="'none'"
+  scrollEvents="false">
+  <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px;">
+    <form (submit)="login()" style="width:100%; max-width:400px;">
+      <ion-item>
+        <ion-label position="floating">Username</ion-label>
+        <ion-input [(ngModel)]="username" name="username" type="text" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Password</ion-label>
+        <ion-input [(ngModel)]="password" name="password" type="password" required></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" type="submit" class="login-button" shape="round" color="primary" style="margin-top:20px;">
+        Login
+      </ion-button>
+    </form>
+  </div>
+</ion-content>
+<app-footer></app-footer>

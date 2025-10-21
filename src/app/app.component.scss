@@ -1,0 +1,128 @@
+$toolbar-padding-vertical: 8px;
+$toolbar-padding-horizontal: 16px;
+$avatar-size: 44px;
+$gap: 12px;
+$avatar-bg: #cfcfcf;
+$text-color: #111;
+$muted-color: #6b6b6b;
+$shadow: 0 1px 3px rgba(0,0,0,0.08);
+
+.profile-item {
+    display: flex;
+
+    --background: transparent;
+    --color: #222;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 12px 0px;
+    gap: 12px; // space between avatar and right-side content
+
+    ion-avatar {
+      width: 56px;   // medium size
+      height: 56px;
+      flex: 0 0 56px;
+      margin: 0 16px 0px 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+    }
+
+    ion-label {
+      width: auto;
+
+      h3 {
+        color: #222;
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 4px 0 0;
+        color: var(--ion-color-medium);
+        font-size: 0.9rem;
+      }
+    }
+
+    // fallback: stack vertically on narrow screens
+    // @media (max-width: 420px) {
+    //   flex-direction: column;
+    //   align-items: center;
+    //   text-align: center;
+
+    //   ion-avatar {
+    //     margin-bottom: 8px;
+    //   }
+
+    //   ion-label {
+    //     width: 100%;
+    //   }
+    // }
+}
+
+:host {
+  ion-item {
+    --background: unset;
+  }
+  ion-list {
+    background: unset !important;
+  }
+}
+
+.ion-list {
+  padding: 8px 0;
+
+  ion-item {
+    --background: unset;
+    --color: #222; // Dark text for contrast
+    font-size: 1.15rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+
+    /* Ensure Ionic item uses the CSS variable for visible text */
+    color: var(--color);
+
+    ion-icon {
+      font-size: 2rem;
+      margin-right: 20px;
+      &.home {
+        color: #1EA4FF;
+      }
+      &.profile {
+        color: #FF7700;
+      }
+      &.settings {
+        color: #377DFF;
+      }
+      &.messages {
+        color: #23E1B3;
+      }
+      &.logout {
+        color: #377DFF;
+      }
+    }
+    &:hover,
+    &.active {
+      background: rgba(30,164,255,0.08);
+      --color: #222;
+    }
+  }
+}
+
+ion-footer {
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    width: 100%; 
+    z-index: 20;
+    display: contents;
+}
