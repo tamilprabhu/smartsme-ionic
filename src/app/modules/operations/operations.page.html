@@ -1,17 +1,63 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Operations
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Operations</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Operations</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Operations page"></app-explore-container>
+<ion-content>
+  <ion-card class="sme-form-card ion-no-margin">
+    <ion-card-header>
+        <ion-card-title></ion-card-title>
+        <ion-card-subtitle></ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="operations-stack">
+        <ion-card button>
+          <div class="operation-row">
+            <ion-icon name="cube-outline"></ion-icon>
+            <div class="operation-text">
+              <div class="operation-title">Stock Inward</div>
+              <div class="operation-subtitle">Manage incoming inventory</div>
+            </div>
+          </div>
+        </ion-card>
+        <ion-card button>
+          <div class="operation-row">
+            <ion-icon name="clipboard-outline"></ion-icon>
+            <div class="operation-text">
+              <div class="operation-title">Order</div>
+              <div class="operation-subtitle">Create and track orders</div>
+            </div>
+          </div>
+        </ion-card>
+        <ion-card button>
+          <div class="operation-row">
+            <ion-icon name="construct-outline"></ion-icon>
+            <div class="operation-text">
+              <div class="operation-title">Production Entry</div>
+              <div class="operation-subtitle">Log and monitor production</div>
+            </div>
+          </div>
+        </ion-card>
+        <ion-card button>
+          <div class="operation-row">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <div class="operation-text">
+              <div class="operation-title">Invoice</div>
+              <div class="operation-subtitle">Generate and view invoices</div>
+            </div>
+          </div>
+        </ion-card>
+        <ion-card button>
+          <div class="operation-row">
+            <ion-icon name="car-outline"></ion-icon>
+            <div class="operation-text">
+              <div class="operation-title">Dispatch</div>
+              <div class="operation-subtitle">Schedule and track dispatch</div>
+            </div>
+          </div>
+        </ion-card>
+      </div>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

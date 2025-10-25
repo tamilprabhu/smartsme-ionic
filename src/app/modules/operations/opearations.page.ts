@@ -10,4 +10,9 @@ export class OperationsPage {
 
   constructor() {}
 
+  navigateTo(operation: string) {
+    console.log(`Navigating to operation: ${operation}`);
+    // Implement navigation logic here
+  }
+
 }
