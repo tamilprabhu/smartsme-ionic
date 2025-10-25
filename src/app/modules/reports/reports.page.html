@@ -6,12 +6,59 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Reports</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-accordion-group (ionChange)="handleAccordionChange($event)">
+    <ion-accordion *ngFor="let report of reports" [value]="report.id">
+      <ion-item slot="header">
+        <ion-label>{{ report.name }}</ion-label>
+      </ion-item>
 
-  <app-explore-container name="Reports page"></app-explore-container>
+      <div slot="content" *ngIf="report.preview">
+        <h2>{{ report.name }} - Filters</h2>
+
+        
+        <ion-item>
+          <ion-label>Start Date</ion-label>
+          <ion-datetime-button [datetime]="'startDate-'+report.id"></ion-datetime-button>
+            <ion-modal [keepContentsMounted]="true">
+              <ion-datetime
+                [id]="'startDate-'+report.id"
+                presentation="date"
+                [(ngModel)]="report.filters.startDate">
+              </ion-datetime>
+            </ion-modal>
+        </ion-item>
+
+
+        <ion-item>
+          <ion-label>End Date</ion-label>
+          <ion-datetime-button [datetime]="'endDate-'+report.id"></ion-datetime-button>
+            <ion-modal [keepContentsMounted]="true">
+              <ion-datetime
+                [id]="'endDate-'+report.id"
+                presentation="date"
+                [(ngModel)]="report.filters.endDate">
+              </ion-datetime>
+            </ion-modal>
+        </ion-item>
+
+
+        <ion-item>
+          <ion-label>Type</ion-label>
+          <ion-select [(ngModel)]="report.filters.type" interface="popover" placeholder="Select type">
+            <ion-select-option value="summary">Summary</ion-select-option>
+            <ion-select-option value="detailed">Detailed</ion-select-option>
+            <ion-select-option value="graph">Graph</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div style="margin-top: 1em;">
+          <p>{{ report.preview }}</p>
+        </div>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
 </ion-content>
+
+<app-footer-bar></app-footer-bar>

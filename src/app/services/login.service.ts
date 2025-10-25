@@ -23,7 +23,7 @@ interface LoginResponse {
   providedIn: 'root'
 })
 export class LoginService {
-  private readonly API_URL = 'http://192.168.0.103:8080';
+  private readonly API_URL = 'http://127.0.0.1:8080';
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
   private currentUser = new BehaviorSubject<any>(this.getStoredUser());
 

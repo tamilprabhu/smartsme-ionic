@@ -1,0 +1,12 @@
+ion-item {
+  font-weight: 600;
+  background: #f8f8f8;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+[slot='content'] {
+  padding: 10px 16px;
+  background: #fafafa;
+  border-left: 3px solid var(--ion-color-primary);
+}

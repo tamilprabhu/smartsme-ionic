@@ -1,11 +1,12 @@
 import { IonicModule } from '@ionic/angular';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportsPage } from './reports.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { ReportsPageRoutingModule } from './reports-routing.module';
+import { FooterComponent } from 'src/app/components/footer/footer.component';
 
 @NgModule({
   imports: [
@@ -13,8 +14,10 @@ import { ReportsPageRoutingModule } from './reports-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    ReportsPageRoutingModule
+    ReportsPageRoutingModule,
+    FooterComponent
   ],
-  declarations: [ReportsPage]
+  declarations: [ReportsPage],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ReportsPageModule {}

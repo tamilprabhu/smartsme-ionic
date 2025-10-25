@@ -35,7 +35,7 @@ export interface CompanyListResponse {
   providedIn: 'root'
 })
 export class CompanyService {
-  private readonly API_URL = 'http://192.168.0.103:8080/companies';
+  private readonly API_URL = 'http://127.0.0.1:8080/companies';
 
   constructor(
     private http: HttpClient,
