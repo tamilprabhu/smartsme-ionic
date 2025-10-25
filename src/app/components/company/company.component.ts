@@ -2,7 +2,8 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { FooterComponent } from '../footer/footer.component';
 import { Location } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { CompanyService, Company } from '../../services/company.service';
 
 @Component({
   selector: 'app-company',
@@ -13,22 +14,31 @@ import { IonicModule } from '@ionic/angular';
 })
 export class CompanyComponent implements OnInit {
 
-  formData = {
-    businessCons: 'Smart SME DieCasting Pvt Ltd',
-    companyType: 'Manufacturing',
-    address: '45 Ambattur Industrial Estate, Ambattur, Chennai, Tamil Nadu',
-    pincode: '600058',
-    propName: 'Tamil Selvan',
-    directPhone: '+91 9876543210',
-    officePhone: '044-26581234',
-    managementPhone: '+91 9123456789',
-    mailId: 'info@smartsme.co.in',
-    natureOfBusiness: 'Die Casting & Automotive Components',
-    authPerson: 'Nandha Kumar Viswanathan',
-    mobileNo: '+91 9988776655'
+  formData: Omit<Company, 'companyIdSeq' | 'createDate' | 'updateDate'> = {
+    companyId: '',
+    companyName: '',
+    businessCons: 'corporation',
+    companyType: 'medium scale',
+    address: '',
+    pincode: 0,
+    propName: '',
+    directPhone: '',
+    officePhone: '',
+    mgmtPhone: '',
+    mailId: '',
+    natureOfBusiness: 'manufacturing',
+    authPerson: '',
+    mobileNo: ''
   };
 
-  constructor(private location: Location) { }
+  isLoading = false;
+
+  constructor(
+    private location: Location,
+    private companyService: CompanyService,
+    private toastCtrl: ToastController,
+    private loadingCtrl: LoadingController
+  ) { }
 
   ngOnInit() {}
 
@@ -36,11 +46,63 @@ export class CompanyComponent implements OnInit {
     this.location.back();
   }
 
-  onSubmit(form: NgForm) {
-    if (form.valid) {
-      console.log('Company Form Data:', this.formData);
-    } else {
-      console.log('Form is invalid');
+  async onSubmit(form: NgForm) {
+    if (!form.valid) {
+      await this.showToast('Please fill all required fields', 'warning');
+      return;
     }
+
+    const loading = await this.loadingCtrl.create({
+      message: 'Creating company...',
+      spinner: 'crescent'
+    });
+    await loading.present();
+
+    this.isLoading = true;
+
+    this.companyService.createCompany(this.formData).subscribe({
+      next: async (response) => {
+        await loading.dismiss();
+        this.isLoading = false;
+        await this.showToast('Company created successfully!', 'success');
+        form.resetForm();
+        this.resetFormData();
+      },
+      error: async (error) => {
+        await loading.dismiss();
+        this.isLoading = false;
+        const message = error.error?.error || 'Failed to create company. Please try again.';
+        await this.showToast(message, 'danger');
+      }
+    });
+  }
+
+  private resetFormData() {
+    this.formData = {
+      companyId: '',
+      companyName: '',
+      businessCons: 'corporation',
+      companyType: 'medium scale',
+      address: '',
+      pincode: 0,
+      propName: '',
+      directPhone: '',
+      officePhone: '',
+      mgmtPhone: '',
+      mailId: '',
+      natureOfBusiness: 'manufacturing',
+      authPerson: '',
+      mobileNo: ''
+    };
+  }
+
+  private async showToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'top'
+    });
+    await toast.present();
   }
 }
