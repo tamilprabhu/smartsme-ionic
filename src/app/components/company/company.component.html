@@ -1,25 +1,261 @@
-<ion-app>
-  <ion-page>
-    <ion-header>
-      <ion-toolbar color="primary">
-        <!-- Back button with icon on the left -->
+<ion-header>
+    <ion-toolbar color="primary">
         <ion-buttons slot="start">
-          <ion-button (click)="goBack()">
-            <ion-icon name="chevron-back-outline"></ion-icon>
-            <!-- <ion-icon slot="icon-only" name="arrow-back"></ion-icon> -->
-            <!-- <i slot="start" class="fa fa-black-tie" aria-hidden="true"></i> -->
-          </ion-button>
+            <ion-button (click)="goBack()">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </ion-button>
         </ion-buttons>
-        <!-- Header title -->
-        <ion-title>Company</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content class="ion-padding">
-      <h2>Welcome to Company Page</h2>
-      <p>Content stretches the full height between header and footer. More content here will scroll, and the footer will always be visible at the bottom.</p>
-    </ion-content>
-    
-  </ion-page>
-  <app-footer></app-footer>
-</ion-app>
+        <ion-title>Company Registration</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+    <ion-card>
+        <ion-card-header>
+            <ion-card-title>Company Details</ion-card-title>
+            <ion-card-subtitle>Please fill all required information</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+            <form #companyForm="ngForm" (ngSubmit)="onSubmit(companyForm)">
+            <ion-grid>
+                <!-- Business Constitution -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Business Constitution *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter business constitution"
+                            name="businessCons"
+                            [(ngModel)]="formData.businessCons"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Company Type -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Company Type *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter company type"
+                            name="companyType"
+                            [(ngModel)]="formData.companyType"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Nature of Business -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Nature of Business *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter business nature"
+                            name="natureOfBusiness"
+                            [(ngModel)]="formData.natureOfBusiness"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Address -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Address *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-textarea 
+                            placeholder="Enter complete address"
+                            name="address"
+                            [(ngModel)]="formData.address"
+                            rows="3"
+                            required>
+                            </ion-textarea>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Pincode -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Pincode *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter pincode"
+                            name="pincode"
+                            type="number"
+                            [(ngModel)]="formData.pincode"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Owner Name -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Owner Name *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter owner name"
+                            name="propName"
+                            [(ngModel)]="formData.propName"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Authorized Person -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Authorized Person *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter authorized person name"
+                            name="authPerson"
+                            [(ngModel)]="formData.authPerson"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Direct Phone Number -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Direct Phone Number *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter mobile number"
+                            name="directPhone"
+                            type="tel"
+                            [(ngModel)]="formData.directPhone"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Mobile Number -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Mobile Number *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter mobile number"
+                            name="mobileNo"
+                            type="tel"
+                            [(ngModel)]="formData.mobileNo"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Office Phone Number -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Office Phone Number</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter landline number"
+                            name="officePhone"
+                            type="tel"
+                            [(ngModel)]="formData.officePhone">
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Management Phone Number -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Management Phone Number</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter management mobile"
+                            name="managementPhone"
+                            type="tel"
+                            [(ngModel)]="formData.managementPhone">
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Email ID -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Email ID *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter email address"
+                            name="mailId"
+                            type="email"
+                            [(ngModel)]="formData.mailId"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Submit Button -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-button 
+                            expand="block" 
+                            type="submit" 
+                            color="primary" 
+                            size="large"
+                            class="ion-margin-top"
+                            [disabled]="!companyForm.valid">
+                            <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                            Submit Company Details
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+            </form>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
+<app-footer></app-footer>

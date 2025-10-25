@@ -1,0 +1,209 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-button (click)="goBack()">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>User Registration</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+    <ion-card>
+        <ion-card-header>
+            <ion-card-title>User Details</ion-card-title>
+            <ion-card-subtitle>Please fill all required information</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+            <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)">
+            <ion-grid>
+                <!-- Username -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Username *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter username"
+                            name="username"
+                            [(ngModel)]="formData.username"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Password -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Password *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter password"
+                            name="password"
+                            type="password"
+                            [(ngModel)]="formData.password"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- User Type -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>User Type *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-select 
+                            placeholder="Select user type"
+                            name="userType"
+                            [(ngModel)]="formData.userType"
+                            (ionChange)="onUserTypeChange($event)"
+                            required>
+                                <ion-select-option value="admin">Admin</ion-select-option>
+                                <ion-select-option value="seller">Seller</ion-select-option>
+                                <ion-select-option value="buyer">Buyer</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- First Name -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>First Name *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter first name"
+                            name="firstname"
+                            [(ngModel)]="formData.firstname"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Last Name -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Last Name *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter last name"
+                            name="lastname"
+                            [(ngModel)]="formData.lastname"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Email -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Email *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter email address"
+                            name="email"
+                            type="email"
+                            [(ngModel)]="formData.email"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Mobile -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Mobile *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter mobile number"
+                            name="mobile"
+                            type="tel"
+                            [(ngModel)]="formData.mobile"
+                            required>
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Address -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-label>Address *</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-textarea 
+                            placeholder="Enter complete address"
+                            name="address"
+                            [(ngModel)]="formData.address"
+                            rows="3"
+                            required>
+                            </ion-textarea>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- GSTIN -->
+                <ion-row *ngIf="showGSTIN">
+                    <ion-col size="12">
+                        <ion-label>GSTIN</ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row *ngIf="showGSTIN">
+                    <ion-col size="12">
+                        <ion-item fill="outline" class="ion-margin-bottom">
+                            <ion-input 
+                            placeholder="Enter GSTIN"
+                            name="gstin"
+                            [(ngModel)]="formData.gstin">
+                            </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <!-- Submit Button -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-button 
+                            expand="block" 
+                            type="submit" 
+                            color="primary" 
+                            size="large"
+                            class="ion-margin-top"
+                            [disabled]="!userForm.valid">
+                            <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                            Submit User Details
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+            </form>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
+<app-footer></app-footer>

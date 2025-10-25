@@ -11,8 +11,9 @@ import { MenuController } from '@ionic/angular';
   providers: [LoginService]
 })
 export class AppComponent {
-  isLoggedIn:boolean=localStorage.getItem('isLoggedIn') === 'true';
-  user: any = [];
+  isLoggedIn: boolean = false;
+  user: any = null;
+
   constructor(
     private loginService: LoginService,
     private router: Router,
@@ -23,25 +24,19 @@ export class AppComponent {
     this.loginService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
     });
-    this.getUserDetails();
+
+    this.loginService.currentUser$.subscribe(user => {
+      this.user = user;
+    });
   }
 
   onUserLoggedIn() {
-    console.log("LOGIN EMITTED");
+    console.log("User logged in successfully");
   }
 
   logout() {
     this.loginService.logout();
-  }
-
-  getUserDetails() {
-    this.user.name = 'John Doe';
-    this.user.email = 'johncalabe@yahoo.in';
-    this.user.phone = '+1 234 567 8901';
-    this.user.address = '123 Main St, Anytown, USA';
-    this.user.employeeCode = 'EMP001';
-    this.user.photoURL = 'assets/images/default-avatar.jpg'
-    // return this.loginService.getUserDetails();
+    this.menuController.close('rightMenu');
   }
 
   navigateTo(page: string) {

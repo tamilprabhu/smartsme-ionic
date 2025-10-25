@@ -12,8 +12,8 @@
               <img [src]="user?.photoUrl || 'assets/images/default-avatar.jpg'" alt="Profile" />
             </ion-avatar>
             <ion-label>
-              <h3>{{user?.name}}</h3>
-              <p class="ion-text-wrap">{{user?.employeeCode}}</p>
+              <h3>{{user?.name || 'User'}}</h3>
+              <p class="ion-text-wrap">{{user?.username || 'N/A'}}</p>
             </ion-label>
           </ion-item>
         </ion-toolbar>

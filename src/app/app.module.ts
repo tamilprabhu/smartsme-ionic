@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -15,6 +16,7 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
     BrowserModule, 
     IonicModule.forRoot(), 
     AppRoutingModule,
+    HttpClientModule,
     LoginComponent,
     SidemenuComponent
   ],
