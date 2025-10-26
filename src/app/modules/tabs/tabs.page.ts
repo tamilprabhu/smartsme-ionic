@@ -21,9 +21,7 @@ export class TabsPage {
     const selectedTab = event.tab;
     this.currentTab = selectedTab; //ßevent.detail?.tab;
     console.log('Current Tab: ', this.currentTab);
-    if (selectedTab === 'tab3') {
-      event.preventDefault();
-      event.stopPropagation();
+    if (selectedTab === 'menu') {
       // this.menuController.open('rightMenu'); // open right side menu when third tab is clicked
     } else {
       // this.menuController.close('rightMenu'); // close the menu when other tabs selected
@@ -37,7 +35,7 @@ export class TabsPage {
     //  ev.stopPropagation();
       this.menuController.close('rightMenu');
       this.isMenuOpen = false;
-      console.log('Closing side menu for tab3');
+      console.log('Closing side menu for menu tab');
     }
     this.menuController.open('rightMenu').then(() => {
       console.log('Menu opened');

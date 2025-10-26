@@ -5,55 +5,19 @@
 </ion-header>
 
 <ion-content>
-  <ion-card class="sme-form-card ion-no-margin">
+  <ion-card class="sme-form-card ">
     <ion-card-header>
         <ion-card-title></ion-card-title>
         <ion-card-subtitle></ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <div class="operations-stack">
-        <ion-card button>
+        <ion-card button *ngFor="let op of operations" class="op-card">
           <div class="operation-row">
-            <ion-icon name="cube-outline"></ion-icon>
+            <ion-icon [name]="op.icon"></ion-icon>
             <div class="operation-text">
-              <div class="operation-title">Stock Inward</div>
-              <div class="operation-subtitle">Manage incoming inventory</div>
-            </div>
-          </div>
-        </ion-card>
-        <ion-card button>
-          <div class="operation-row">
-            <ion-icon name="clipboard-outline"></ion-icon>
-            <div class="operation-text">
-              <div class="operation-title">Order</div>
-              <div class="operation-subtitle">Create and track orders</div>
-            </div>
-          </div>
-        </ion-card>
-        <ion-card button>
-          <div class="operation-row">
-            <ion-icon name="construct-outline"></ion-icon>
-            <div class="operation-text">
-              <div class="operation-title">Production Entry</div>
-              <div class="operation-subtitle">Log and monitor production</div>
-            </div>
-          </div>
-        </ion-card>
-        <ion-card button>
-          <div class="operation-row">
-            <ion-icon name="document-text-outline"></ion-icon>
-            <div class="operation-text">
-              <div class="operation-title">Invoice</div>
-              <div class="operation-subtitle">Generate and view invoices</div>
-            </div>
-          </div>
-        </ion-card>
-        <ion-card button>
-          <div class="operation-row">
-            <ion-icon name="car-outline"></ion-icon>
-            <div class="operation-text">
-              <div class="operation-title">Dispatch</div>
-              <div class="operation-subtitle">Schedule and track dispatch</div>
+              <div class="operation-title">{{ op.title }}</div>
+              <div class="operation-subtitle">{{ op.subtitle }}</div>
             </div>
           </div>
         </ion-card>

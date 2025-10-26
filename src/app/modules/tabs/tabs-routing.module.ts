@@ -20,8 +20,9 @@ const routes: Routes = [
         loadChildren: () => import('../reports/reports.module').then(m => m.ReportsPageModule)
       },
       {
-        path: 'tab4',
-        loadChildren: () => import('../home/home.module').then(m => m.HomePageModule)
+        path: 'menu',
+        redirectTo: '',  // Redirects to root or specify the current path segment
+        pathMatch: 'full'
       },
       {
         path: '',
