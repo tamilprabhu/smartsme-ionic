@@ -20,6 +20,10 @@ const routes: Routes = [
         loadChildren: () => import('../reports/reports.module').then(m => m.ReportsPageModule)
       },
       {
+        path: 'production-shift',
+        loadChildren: () => import('../production-shift/production-shift.module').then(m => m.ProductionShiftPageModule)
+      },
+      {
         path: 'menu',
         redirectTo: '',  // Redirects to root or specify the current path segment
         pathMatch: 'full'

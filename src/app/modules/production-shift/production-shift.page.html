@@ -1,0 +1,173 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Production Shift</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="sme-form-card ion-no-margin">
+    <ion-card-header>
+      <ion-card-title>Create Production Shift</ion-card-title>
+      <ion-card-subtitle>Please fill all required information</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <form #shiftForm="ngForm" (ngSubmit)="onSubmit(shiftForm)">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select [(ngModel)]="formData.orderId" name="orderId" label="Order *" label-placement="floating" interface="popover" required>
+                  <ion-select-option *ngFor="let order of orders" [value]="order.orderId">
+                    {{order.orderName}} ({{order.orderId}})
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select [(ngModel)]="formData.machineId" name="machineId" label="Machine *" label-placement="floating" interface="popover" required>
+                  <ion-select-option *ngFor="let machine of machines" [value]="machine.machineId">
+                    {{machine.machineName}} ({{machine.machineId}})
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select [(ngModel)]="formData.shiftType" name="shiftType" label="Shift Type *" label-placement="floating" interface="popover" required>
+                  <ion-select-option value="1">Morning Shift</ion-select-option>
+                  <ion-select-option value="2">Day Shift</ion-select-option>
+                  <ion-select-option value="3">Night Shift</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-datetime [(ngModel)]="formData.shiftStartDate" name="shiftStartDate" label="Shift Start Date *" label-placement="floating" required></ion-datetime>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-datetime [(ngModel)]="formData.shiftEndDate" name="shiftEndDate" label="Shift End Date *" label-placement="floating" required></ion-datetime>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select [(ngModel)]="formData.operator1" name="operator1" label="Operator 1 *" label-placement="floating" interface="popover" required>
+                  <ion-select-option *ngFor="let user of users" [value]="user.id">
+                    {{user.name}}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select [(ngModel)]="formData.operator2" name="operator2" label="Operator 2" label-placement="floating" interface="popover">
+                  <ion-select-option value="">None</ion-select-option>
+                  <ion-select-option *ngFor="let user of users" [value]="user.id">
+                    {{user.name}}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select [(ngModel)]="formData.operator3" name="operator3" label="Operator 3" label-placement="floating" interface="popover">
+                  <ion-select-option value="">None</ion-select-option>
+                  <ion-select-option *ngFor="let user of users" [value]="user.id">
+                    {{user.name}}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select [(ngModel)]="formData.supervisor" name="supervisor" label="Supervisor *" label-placement="floating" interface="popover" required>
+                  <ion-select-option *ngFor="let user of users" [value]="user.id">
+                    {{user.name}}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input [(ngModel)]="formData.openingCount" name="openingCount" type="number" label="Opening Count *" label-placement="floating" required></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input [(ngModel)]="formData.closingCount" name="closingCount" type="number" label="Closing Count *" label-placement="floating" required></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input [(ngModel)]="formData.production" name="production" type="number" label="Production *" label-placement="floating" required></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input [(ngModel)]="formData.rejection" name="rejection" type="number" label="Rejection" label-placement="floating"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-button 
+                expand="block" 
+                type="submit" 
+                color="primary" 
+                size="large"
+                class="ion-margin-top"
+                [disabled]="!shiftForm.valid">
+                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                Submit Production Shift
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

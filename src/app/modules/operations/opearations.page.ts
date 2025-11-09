@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-operations',
@@ -9,7 +10,7 @@ import { Component } from '@angular/core';
 export class OperationsPage {
   operations: Array<{ icon: string; title: string; subtitle: string }> = [];
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     console.log('OperationsPage initialized');
@@ -46,7 +47,9 @@ export class OperationsPage {
 
   navigateTo(operation: string) {
     console.log(`Navigating to operation: ${operation}`);
-    // Implement navigation logic here
+    if (operation === 'Production Entry') {
+      this.router.navigate(['/tabs/production-shift']);
+    }
   }
 
 }

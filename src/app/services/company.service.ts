@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
+import { API_BASE_URL } from '../config/api.config';
 
 export interface Company {
   companyIdSeq?: number;
@@ -35,7 +36,7 @@ export interface CompanyListResponse {
   providedIn: 'root'
 })
 export class CompanyService {
-  private readonly API_URL = 'http://127.0.0.1:8080/companies';
+  private readonly API_URL = `${API_BASE_URL}/companies`;
 
   constructor(
     private http: HttpClient,

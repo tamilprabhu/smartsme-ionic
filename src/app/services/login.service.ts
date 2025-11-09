@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { API_BASE_URL } from '../config/api.config';
 
 interface LoginResponse {
   user: {
@@ -19,18 +20,44 @@ interface LoginResponse {
   refreshToken: string;
 }
 
+interface DecodedToken {
+  iss: string;
+  aud: string;
+  sub: string;
+  jti: string;
+  username: string;
+  roles: string[];
+  type: 'access' | 'refresh';
+  iat: number;
+  exp: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private readonly API_URL = 'http://127.0.0.1:8080';
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
   private currentUser = new BehaviorSubject<any>(this.getStoredUser());
 
   constructor(private http: HttpClient) {}
 
   private hasToken(): boolean {
-    return !!localStorage.getItem('accessToken');
+    const token = localStorage.getItem('accessToken');
+    if (!token) return false;
+    
+    // Check if token is expired
+    try {
+      const decoded = this.decodeToken(token);
+      return decoded.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
+  }
+
+  private decodeToken(token: string): DecodedToken {
+    const payload = token.split('.')[1];
+    const decoded = atob(payload);
+    return JSON.parse(decoded);
   }
 
   private getStoredUser(): any {
@@ -47,7 +74,7 @@ export class LoginService {
   }
 
   login(identifier: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, {
+    return this.http.post<LoginResponse>(`${API_BASE_URL}/auth/login`, {
       identifier,
       password
     }).pipe(
@@ -57,6 +84,26 @@ export class LoginService {
         localStorage.setItem('currentUser', JSON.stringify(response.user));
         this.loggedIn.next(true);
         this.currentUser.next(response.user);
+        return response;
+      }),
+      catchError(error => {
+        this.logout();
+        return throwError(() => error);
+      })
+    );
+  }
+
+  refreshToken(): Observable<{ accessToken: string }> {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token available'));
+    }
+
+    return this.http.post<{ accessToken: string }>(`${API_BASE_URL}/auth/refresh`, {
+      refreshToken
+    }).pipe(
+      map(response => {
+        localStorage.setItem('accessToken', response.accessToken);
         return response;
       }),
       catchError(error => {
@@ -76,5 +123,30 @@ export class LoginService {
 
   getToken(): string | null {
     return localStorage.getItem('accessToken');
+  }
+
+  getDecodedToken(): DecodedToken | null {
+    const token = this.getToken();
+    if (!token) return null;
+    
+    try {
+      return this.decodeToken(token);
+    } catch {
+      return null;
+    }
+  }
+
+  getUserRoles(): string[] {
+    const decoded = this.getDecodedToken();
+    return decoded?.roles || [];
+  }
+
+  hasRole(role: string): boolean {
+    return this.getUserRoles().includes(role);
+  }
+
+  hasAnyRole(roles: string[]): boolean {
+    const userRoles = this.getUserRoles();
+    return roles.some(role => userRoles.includes(role));
   }
 }
