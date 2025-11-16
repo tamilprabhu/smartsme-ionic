@@ -3,6 +3,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { Location, CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-users',
@@ -13,7 +14,7 @@ import { IonicModule } from '@ionic/angular';
 })
 export class UsersComponent implements OnInit {
 
-  formData = {
+  formData: User = {
     username: 'admin',
     password: 'password123',
     userType: 'admin',

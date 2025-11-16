@@ -1,9 +1,10 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { FooterComponent } from '../footer/footer.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 import { Location } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
-import { CompanyService, Company } from '../../services/company.service';
+import { CompanyService } from '../../services/company.service';
+import { Company } from 'src/app/models/company.model';
 
 @Component({
   selector: 'app-company',

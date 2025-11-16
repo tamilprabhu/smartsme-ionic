@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: 'company',
-    loadComponent: () => import('./components/company/company.component').then(m => m.CompanyComponent)
+    loadComponent: () => import('./modules/company/company.component').then(m => m.CompanyComponent)
   },
   {
     path: 'machine-process',

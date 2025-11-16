@@ -1,5 +1,4 @@
 <ion-app>
-  <ion-page>
     <ion-header>
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
@@ -11,11 +10,92 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding">
-      <h2>Machine Process Management</h2>
-      <p>Manage manufacturing processes, machine operations, and production workflows.</p>
+    <ion-content>
+      <ion-card class="sme-form-card ion-no-margin">
+        <ion-card-header>
+          <ion-card-title>Create Machine Process</ion-card-title>
+          <ion-card-subtitle>Please fill all required information</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <form #processForm="ngForm" (ngSubmit)="submit(processForm)">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item fill="outline" class="ion-margin-bottom">
+                    <ion-input
+                      [(ngModel)]="formData.machineId"
+                      name="machineId"
+                      label="Machine id *"
+                      label-placement="floating"
+                      required>
+                    </ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item fill="outline" class="ion-margin-bottom">
+                    <ion-input
+                      [(ngModel)]="formData.machineName"
+                      name="machineName"
+                      label="Machine name *"
+                      label-placement="floating"
+                      required>
+                    </ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item fill="outline" class="ion-margin-bottom">
+                    <ion-input
+                      [(ngModel)]="formData.workType"
+                      name="workType"
+                      label="Work type *"
+                      label-placement="floating"
+                      required>
+                    </ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item fill="outline" class="ion-margin-bottom">
+                    <ion-input
+                      [(ngModel)]="formData.shortName"
+                      name="shortName"
+                      label="Short name"
+                      label-placement="floating">
+                    </ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item fill="outline" class="ion-margin-bottom">
+                    <ion-input
+                      [(ngModel)]="formData.process"
+                      name="process"
+                      label="Process"
+                      label-placement="floating">
+                    </ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12" class="ion-text-center">
+                  <ion-button type="submit" color="primary" [disabled]="!processForm.form.valid">Add</ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </form>
+        </ion-card-content>
+      </ion-card>
     </ion-content>
-    
-  </ion-page>
   <app-footer></app-footer>
 </ion-app>
