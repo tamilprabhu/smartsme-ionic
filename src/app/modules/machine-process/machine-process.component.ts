@@ -1,33 +1,33 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { FooterComponent } from '../../components/footer/footer.component';
+import { Component, OnInit } from '@angular/core';
 import { Location, CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FooterComponent } from '../../components/footer/footer.component';
 import { Machine } from 'src/app/models/machine.model';
-import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-machine-process',
   templateUrl: './machine-process.component.html',
   styleUrls: ['./machine-process.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, FooterComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
 export class MachineProcessComponent implements OnInit {
-
-  // simple model bound to the template (can be used with [(ngModel)])
-  formData: Machine = {
-    machineId: '',
-    machineName: '',
-    workType: '',
-    shortName: '',
-    process: ''
-  };
+  processForm: FormGroup;
 
   isSubmitting = false;
   submitSuccess = false;
   submitError: string | null = null;
 
-  constructor(private location: Location) { }
+  constructor(private location: Location, private fb: FormBuilder) {
+    this.processForm = this.fb.group({
+      machineId: ['', Validators.required],
+      machineName: ['', Validators.required],
+      workType: ['', Validators.required],
+      shortName: [''],
+      process: ['']
+    });
+  }
 
   ngOnInit() {}
 
@@ -35,20 +35,24 @@ export class MachineProcessComponent implements OnInit {
     this.location.back();
   }
 
-  // call this from your template e.g. (ngSubmit)="submit(processForm)" or (click)="submit()"
-  async submit(data?: any) {
-    const payload = data ?? this.formData;
+  async submit() {
+    if (this.processForm.invalid) {
+      this.processForm.markAllAsTouched();
+      return;
+    }
+
     this.isSubmitting = true;
     this.submitSuccess = false;
     this.submitError = null;
 
     try {
-      // safe stringify that drops circular references
+      const payload = this.processForm.value;
+
       const safeStringify = (obj: any) => {
         const seen = new WeakSet();
         return JSON.stringify(obj, (_key, value) => {
           if (typeof value === 'object' && value !== null) {
-            if (seen.has(value)) return; // drop circular reference
+            if (seen.has(value)) return;
             seen.add(value);
           }
           return value;
@@ -69,9 +73,8 @@ export class MachineProcessComponent implements OnInit {
       const result = await res.json().catch(() => null);
       this.isSubmitting = false;
       this.submitSuccess = true;
-      // optionally reset the form model:
-      // this.formData = { machineId: '', machineName: '', workType: '', shortName: '', process: '' };
       console.log('Submit result:', result);
+      // Optionally reset form here: this.processForm.reset();
     } catch (err: any) {
       this.isSubmitting = false;
       this.submitError = err?.message || 'Submission failed';

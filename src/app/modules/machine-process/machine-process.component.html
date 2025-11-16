@@ -1,101 +1,111 @@
 <ion-app>
-    <ion-header>
-      <ion-toolbar color="primary">
-        <ion-buttons slot="start">
-          <ion-button (click)="goBack()">
-            <ion-icon name="chevron-back-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-        <ion-title>Machine Process</ion-title>
-      </ion-toolbar>
-    </ion-header>
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-button (click)="goBack()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Machine Process</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-    <ion-content>
-      <ion-card class="sme-form-card ion-no-margin">
-        <ion-card-header>
-          <ion-card-title>Create Machine Process</ion-card-title>
-          <ion-card-subtitle>Please fill all required information</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          <form #processForm="ngForm" (ngSubmit)="submit(processForm)">
-            <ion-grid>
-              <ion-row>
-                <ion-col size="12">
-                  <ion-item fill="outline" class="ion-margin-bottom">
-                    <ion-input
-                      [(ngModel)]="formData.machineId"
-                      name="machineId"
-                      label="Machine id *"
-                      label-placement="floating"
-                      required>
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
+  <ion-content>
+    <ion-card class="sme-form-card ion-no-margin">
+      <ion-card-header>
+        <ion-card-title>Create Machine Process</ion-card-title>
+        <ion-card-subtitle>Please fill all required information</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="processForm" (ngSubmit)="submit()">
+          <ion-grid>
 
-              <ion-row>
-                <ion-col size="12">
-                  <ion-item fill="outline" class="ion-margin-bottom">
-                    <ion-input
-                      [(ngModel)]="formData.machineName"
-                      name="machineName"
-                      label="Machine name *"
-                      label-placement="floating"
-                      required>
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item fill="outline" class="ion-margin-bottom">
+                  <ion-input
+                    type="text"
+                    formControlName="machineId"
+                    label="Machine id *"
+                    label-placement="floating">
+                  </ion-input>
+                </ion-item>
+                <ion-text color="danger" *ngIf="processForm.get('machineId')?.invalid && (processForm.get('machineId')?.touched || processForm.get('machineId')?.dirty)">
+                  <small>Machine ID is required.</small>
+                </ion-text>
+              </ion-col>
+            </ion-row>
 
-              <ion-row>
-                <ion-col size="12">
-                  <ion-item fill="outline" class="ion-margin-bottom">
-                    <ion-input
-                      [(ngModel)]="formData.workType"
-                      name="workType"
-                      label="Work type *"
-                      label-placement="floating"
-                      required>
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item fill="outline" class="ion-margin-bottom">
+                  <ion-input
+                    type="text"
+                    formControlName="machineName"
+                    label="Machine name *"
+                    label-placement="floating">
+                  </ion-input>
+                </ion-item>
+                <ion-text color="danger" *ngIf="processForm.get('machineName')?.invalid && (processForm.get('machineName')?.touched || processForm.get('machineName')?.dirty)">
+                  <small>Machine Name is required.</small>
+                </ion-text>
+              </ion-col>
+            </ion-row>
 
-              <ion-row>
-                <ion-col size="12">
-                  <ion-item fill="outline" class="ion-margin-bottom">
-                    <ion-input
-                      [(ngModel)]="formData.shortName"
-                      name="shortName"
-                      label="Short name"
-                      label-placement="floating">
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item fill="outline" class="ion-margin-bottom">
+                  <ion-input
+                    type="text"
+                    formControlName="workType"
+                    label="Work type *"
+                    label-placement="floating">
+                  </ion-input>
+                </ion-item>
+                <ion-text color="danger" *ngIf="processForm.get('workType')?.invalid && (processForm.get('workType')?.touched || processForm.get('workType')?.dirty)">
+                  <small>Work Type is required.</small>
+                </ion-text>
+              </ion-col>
+            </ion-row>
 
-              <ion-row>
-                <ion-col size="12">
-                  <ion-item fill="outline" class="ion-margin-bottom">
-                    <ion-input
-                      [(ngModel)]="formData.process"
-                      name="process"
-                      label="Process"
-                      label-placement="floating">
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item fill="outline" class="ion-margin-bottom">
+                  <ion-input
+                    type="text"
+                    formControlName="shortName"
+                    label="Short name"
+                    label-placement="floating">
+                  </ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
 
-              <ion-row>
-                <ion-col size="12" class="ion-text-center">
-                  <ion-button type="submit" color="primary" [disabled]="!processForm.form.valid">Add</ion-button>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </form>
-        </ion-card-content>
-      </ion-card>
-    </ion-content>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item fill="outline" class="ion-margin-bottom">
+                  <ion-input
+                    type="text"
+                    formControlName="process"
+                    label="Process"
+                    label-placement="floating">
+                  </ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12" class="ion-text-center">
+                <ion-button type="submit" color="primary" [disabled]="processForm.invalid || isSubmitting">
+                  Add
+                </ion-button>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </ion-content>
   <app-footer></app-footer>
 </ion-app>
