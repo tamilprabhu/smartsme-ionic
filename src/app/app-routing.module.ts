@@ -8,31 +8,31 @@ const routes: Routes = [
   },
   {
     path: 'company',
-    loadComponent: () => import('./modules/company/company.component').then(m => m.CompanyComponent)
+    loadComponent: () => import('./forms/company/company.component').then(m => m.CompanyComponent)
   },
   {
     path: 'machine-process',
-    loadComponent: () => import('./modules/machine-process/machine-process.component').then(m => m.MachineProcessComponent)
+    loadChildren: () => import('./modules/machine-management/machine-management.module').then(m => m.MachineManagementModule)
   },
   {
     path: 'users',
-    loadComponent: () => import('./modules/users/users.component').then(m => m.UsersComponent)
+    loadComponent: () => import('./forms/users/users.component').then(m => m.UsersComponent)
   },
   {
     path: 'employees',
-    loadComponent: () => import('./modules/employees/employees.component').then(m => m.EmployeesComponent)
+    loadComponent: () => import('./forms/employees/employees.component').then(m => m.EmployeesComponent)
   },
   {
     path: 'sellers',
-    loadComponent: () => import('./modules/sellers/sellers.component').then(m => m.SellersComponent)
+    loadComponent: () => import('./forms/sellers/sellers.component').then(m => m.SellersComponent)
   },
   {
     path: 'buyers',
-    loadComponent: () => import('./modules/buyers/buyers.component').then(m => m.BuyersComponent)
+    loadComponent: () => import('./forms/buyers/buyers.component').then(m => m.BuyersComponent)
   },
   {
     path: 'products',
-    loadComponent: () => import('./modules/products/products.component').then(m => m.ProductsComponent)
+    loadComponent: () => import('./forms/products/products.component').then(m => m.ProductsComponent)
   }
 ];
 @NgModule({

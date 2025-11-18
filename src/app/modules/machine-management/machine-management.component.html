@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Machines</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="openCreateForm()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let machine of machines">
+      <ion-label (click)="openReadForm(machine)">
+        <h2>{{ machine.machineName }} ({{ machine.machineId }})</h2>
+        <p>{{ machine.workType }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <!-- <ion-button color="tertiary" (click)="openReadForm(machine)">
+          <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+        </ion-button> -->
+        <ion-button color="secondary" (click)="openUpdateForm(machine)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(machine)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>
+            {{ formMode === 'create' ? 'Create Machine' : formMode === 'update' ? 'Update Machine Detail' : 'Machine Details' }}
+          </ion-title>
+          <ion-buttons slot="start">
+            <ion-button color="medium" (click)="closeForm()">
+              <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <app-machine-process
+          [mode]="formMode"
+          [formData]="selectedMachine"
+          (formSubmit)="handleFormSubmit($event)">
+        </app-machine-process>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

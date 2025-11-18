@@ -42,7 +42,22 @@ export class AppComponent {
   navigateTo(page: string) {
     console.log('Navigating to:', page);
     this.menuController.close('rightMenu').then(() => {
-      this.router.navigate([`/${page}`]);
+      const normalized = page.replace(/^\//, '');
+      const route = this.router.config.find(r => r.path === normalized);
+
+      if (!route) {
+        console.warn(`Route not found for "${page}", navigating anyway`);
+        this.router.navigate([`/${normalized}`]).catch(err => console.error('Navigation error:', err));
+        return;
+      }
+
+      if ((route as any).loadChildren) {
+        // lazy-loaded module
+        this.router.navigateByUrl(`/${normalized}`).catch(err => console.error('Navigation error:', err));
+      } else {
+        // component route (or regular route)
+        this.router.navigate([`/${normalized}`]).catch(err => console.error('Navigation error:', err));
+      }
     }).catch(err => {
       console.error('Menu close error:', err);
     });
