@@ -1,21 +1,24 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { FooterComponent } from '../../components/footer/footer.component';
-import { Location } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { NgForm, FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
-import { CompanyService } from '../../services/company.service';
+import { FooterComponent } from '../../components/footer/footer.component';
+import { CommonModule, Location } from '@angular/common';
 import { Company } from 'src/app/models/company.model';
 
 @Component({
   selector: 'app-company',
   templateUrl: './company.component.html',
   styleUrls: ['./company.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [FooterComponent, FormsModule, IonicModule]
+  imports: [FooterComponent, FormsModule, IonicModule, CommonModule]
 })
-export class CompanyComponent implements OnInit {
+export class CompanyComponent implements OnInit, OnChanges {
+  @Input() mode: 'create' | 'read' | 'update' = 'create';
+  @Input() formData: Partial<Company> | null = null;
+  @Output() formSubmit = new EventEmitter<Company>();
+  @Output() formClosed = new EventEmitter<void>();
 
-  formData: Omit<Company, 'companyIdSeq' | 'createDate' | 'updateDate'> = {
+  // Internal state for form binding
+  model: Omit<Company, 'companyIdSeq' | 'createDate' | 'updateDate'> = {
     companyId: '',
     companyName: '',
     businessCons: 'corporation',
@@ -36,50 +39,33 @@ export class CompanyComponent implements OnInit {
 
   constructor(
     private location: Location,
-    private companyService: CompanyService,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController
-  ) { }
+  ) {}
 
-  ngOnInit() {}
-
-  goBack() {
-    this.location.back();
-  }
-
-  async onSubmit(form: NgForm) {
-    if (!form.valid) {
-      await this.showToast('Please fill all required fields', 'warning');
-      return;
+  ngOnInit() {
+    if (this.formData) {
+      this.patchModel(this.formData);
     }
-
-    const loading = await this.loadingCtrl.create({
-      message: 'Creating company...',
-      spinner: 'crescent'
-    });
-    await loading.present();
-
-    this.isLoading = true;
-
-    this.companyService.createCompany(this.formData).subscribe({
-      next: async (response) => {
-        await loading.dismiss();
-        this.isLoading = false;
-        await this.showToast('Company created successfully!', 'success');
-        form.resetForm();
-        this.resetFormData();
-      },
-      error: async (error) => {
-        await loading.dismiss();
-        this.isLoading = false;
-        const message = error.error?.error || 'Failed to create company. Please try again.';
-        await this.showToast(message, 'danger');
-      }
-    });
   }
 
-  private resetFormData() {
-    this.formData = {
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('Changes detected in CompanyComponent:', changes);
+    if (changes['formData'] && this.formData) {
+      this.patchModel(this.formData);
+    }
+    if (changes['mode'] && this.mode === 'create') {
+      this.resetModel();
+    }
+  }
+
+  // Patch model for ngModel usage
+  private patchModel(data: Partial<Company>) {
+    this.model = { ...this.model, ...data };
+  }
+
+  private resetModel() {
+    this.model = {
       companyId: '',
       companyName: '',
       businessCons: 'corporation',
@@ -97,10 +83,41 @@ export class CompanyComponent implements OnInit {
     };
   }
 
+  goBack() {
+    this.formClosed.emit();
+  }
+
+  onCancel() {
+    this.formClosed.emit();
+  }
+
+  async onSubmit(form: NgForm) {
+    if (this.mode === 'read') return;
+    if (!form.valid) {
+      await this.showToast('Please fill all required fields', 'warning');
+      return;
+    }
+
+    this.isLoading = true;
+    // Simulate async processing or optionally replace with real service call
+    setTimeout(async () => {
+      this.isLoading = false;
+      await this.showToast(
+        this.mode === 'create'
+          ? 'Company created successfully!'
+          : 'Company updated successfully!',
+        'success'
+      );
+      this.formSubmit.emit({ ...this.model } as Company);
+      form.resetForm();
+      this.resetModel();
+    }, 700);
+  }
+
   private async showToast(message: string, color: string) {
     const toast = await this.toastCtrl.create({
       message,
-      duration: 3000,
+      duration: 2000,
       color,
       position: 'top'
     });
