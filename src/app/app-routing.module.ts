@@ -16,23 +16,23 @@ const routes: Routes = [
   },
   {
     path: 'users',
-    loadComponent: () => import('./forms/users/users.component').then(m => m.UsersComponent)
+    loadChildren: () => import('./modules/user-management/user-management.module').then(m => m.UserManagementModule)
   },
   {
     path: 'employees',
-    loadComponent: () => import('./forms/employees/employees.component').then(m => m.EmployeesComponent)
+    loadComponent: () => import('./forms/employee/employee.component').then(m => m.EmployeeComponent)
   },
   {
     path: 'sellers',
-    loadComponent: () => import('./forms/sellers/sellers.component').then(m => m.SellersComponent)
+    loadChildren: () => import('./modules/seller-management/seller-management.module').then(m => m.SellerManagementModule)
   },
   {
     path: 'buyers',
-    loadComponent: () => import('./forms/buyers/buyers.component').then(m => m.BuyersComponent)
+    loadChildren: () => import('./modules/buyer-management/buyer-management.module').then(m => m.BuyerManagementModule)
   },
   {
     path: 'products',
-    loadComponent: () => import('./forms/products/products.component').then(m => m.ProductsComponent)
+    loadChildren: () => import('./modules/product-management/product-management.module').then(m => m.ProductManagementModule)
   }
 ];
 @NgModule({

@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Products</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="openCreateForm()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let product of products">
+      <ion-label (click)="openReadForm(product)">
+        <h2>{{ product.productName }} ({{ product.productId }})</h2>
+        <p>Raw Material: {{ product.rawMaterial }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="secondary" (click)="openUpdateForm(product)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(product)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>
+            {{ formMode === 'create' ? 'Create Product' : formMode === 'update' ? 'Update Product' : 'Product Details' }}
+          </ion-title>
+          <ion-buttons slot="start">
+            <ion-button color="medium" (click)="closeForm()">
+              <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <app-product
+          [mode]="formMode"
+          [formData]="selectedProduct"
+          (formSubmit)="handleFormSubmit($event)"
+          (formClosed)="closeForm()">
+        </app-product>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
