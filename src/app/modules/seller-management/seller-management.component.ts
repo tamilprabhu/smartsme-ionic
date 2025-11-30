@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { Seller } from 'src/app/models/seller.model';
 
 @Component({
@@ -10,11 +10,25 @@ import { Seller } from 'src/app/models/seller.model';
 })
 export class SellerManagementComponent {
   sellers: Seller[] = [];
+  formMode: 'create' | 'read' | 'update' | null = null;
   selectedSeller: Seller | null = null;
-  formMode: 'create' | 'read' | 'update' = 'create';
   showForm = false;
 
-  constructor(private alertController: AlertController) {}
+  constructor(private alertController: AlertController, private navCtrl: NavController) {
+    this.loadSellers();
+  }
+
+  ngOnInit() {
+    console.log('Seller Management Component Initialized');
+  }
+
+  // Dummy API function to load sample sellers
+  loadSellers() {
+    this.sellers = [
+      { sellerId: 'S001', sellerName: 'Alpha Traders', address: '123 Alpha Street', phone: '+91 9876543210', email: 'contact@alphatraders.com', gstin: 'GSTIN001' },
+      { sellerId: 'S002', sellerName: 'Beta Supplies', address: '456 Beta Avenue', phone: '+91 9123456780', email: 'info@betasupplies.in', gstin: 'GSTIN002' }
+    ];
+  }
 
   openCreateForm() {
     this.selectedSeller = null;
@@ -29,7 +43,7 @@ export class SellerManagementComponent {
   }
 
   openUpdateForm(seller: Seller) {
-    this.selectedSeller = { ...seller };
+    this.selectedSeller = seller;
     this.formMode = 'update';
     this.showForm = true;
   }
@@ -39,10 +53,15 @@ export class SellerManagementComponent {
       header: 'Confirm Delete',
       message: `Are you sure you want to delete seller "${seller.sellerName}"?`,
       buttons: [
-        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
         {
           text: 'Delete',
-          handler: () => this.deleteSeller(seller)
+          handler: () => {
+            this.deleteSeller(seller);
+          }
         }
       ]
     });
@@ -53,13 +72,13 @@ export class SellerManagementComponent {
     this.sellers = this.sellers.filter(s => s.sellerId !== seller.sellerId);
   }
 
-  handleFormSubmit(data: Seller) {
+  handleFormSubmit(formData: Seller) {
     if (this.formMode === 'create') {
-      this.sellers.push(data);
+      this.sellers.push(formData);
     } else if (this.formMode === 'update' && this.selectedSeller) {
-      const idx = this.sellers.findIndex(s => s.sellerId === this.selectedSeller?.sellerId);
-      if (idx > -1) {
-        this.sellers[idx] = data;
+      const index = this.sellers.findIndex(s => s.sellerId === this.selectedSeller?.sellerId);
+      if (index > -1) {
+        this.sellers[index] = formData;
       }
     }
     this.closeForm();
@@ -68,10 +87,10 @@ export class SellerManagementComponent {
   closeForm() {
     this.showForm = false;
     this.selectedSeller = null;
+    this.formMode = null;
   }
 
   goBack() {
-    history.back(); // simple browser back
+    this.navCtrl.back();
   }
-
 }

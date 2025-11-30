@@ -13,7 +13,7 @@ import { Buyer } from 'src/app/models/buyer.model';
   imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
 export class BuyerComponent implements OnInit, OnChanges {
-  @Input() mode: 'create' | 'read' | 'update' = 'create';
+  @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Buyer | null = null;
   @Output() formSubmit = new EventEmitter<Buyer>();
   @Output() formClosed = new EventEmitter<void>();

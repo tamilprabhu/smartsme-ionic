@@ -37,6 +37,9 @@ export class ProductionShiftPage implements OnInit {
     less80Reason: ''
   };
 
+  shiftStartDisplay = '';
+  shiftEndDisplay = '';
+
   constructor(
     private location: Location,
     private machineService: MachineService,
@@ -89,5 +92,22 @@ export class ProductionShiftPage implements OnInit {
     if (form.valid) {
       console.log('Production Shift Form Data:', this.formData);
     }
+  }
+
+  onShiftStartChange(ev: any) {
+    const iso = ev.detail.value;        // e.g. 2025-12-01T12:50:00.000Z
+    this.formData.shiftStartDate = iso;
+
+    // Format for display; adapt to your needs
+    const d = new Date(iso);
+    this.shiftStartDisplay = d.toLocaleString(); // or custom pipe/format
+  }
+
+  onShiftEndChange(ev: any) {
+    const iso = ev.detail.value;
+    this.formData.shiftEndDate = iso;
+
+    const d = new Date(iso);
+    this.shiftEndDisplay = d.toLocaleString();
   }
 }

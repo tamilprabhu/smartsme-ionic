@@ -13,7 +13,7 @@ import { Seller } from 'src/app/models/seller.model';
   imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
 export class SellerComponent implements OnInit, OnChanges {
-  @Input() mode: 'create' | 'read' | 'update' = 'create';
+  @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Seller | null = null;
 
   @Output() formSubmit = new EventEmitter<Seller>();

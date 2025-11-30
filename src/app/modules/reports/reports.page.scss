@@ -10,3 +10,19 @@ ion-item {
   background: #fafafa;
   border-left: 3px solid var(--ion-color-primary);
 }
+
+ion-modal.report-datetime-modal {
+  --width: 350px;
+  --height: 396px;  // Fixed pixel height instead of percentage
+  --max-width: 90%;
+  --max-height: 80%;
+  --border-radius: 12px;
+  --backdrop-opacity: 0.4;
+
+  &::part(content) {
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+

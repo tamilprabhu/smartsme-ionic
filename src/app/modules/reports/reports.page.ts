@@ -17,6 +17,8 @@ export class ReportsPage {
       filters: {
         startDate: '',
         endDate: '',
+        startDateDisplay: '',
+        endDateDisplay: '',
         type: ''
       }
     },
@@ -27,6 +29,8 @@ export class ReportsPage {
       filters: {
         startDate: '',
         endDate: '',
+        startDateDisplay: '',
+        endDateDisplay: '',
         type: ''
       }
     },
@@ -37,6 +41,8 @@ export class ReportsPage {
       filters: {
         startDate: '',
         endDate: '',
+        startDateDisplay: '',
+        endDateDisplay: '',
         type: ''
       }
     },
@@ -47,6 +53,8 @@ export class ReportsPage {
       filters: {
         startDate: '',
         endDate: '',
+        startDateDisplay: '',
+        endDateDisplay: '',
         type: ''
       }
     }
@@ -74,6 +82,22 @@ export class ReportsPage {
     return new Promise(resolve => {
       setTimeout(() => resolve(data[reportId as keyof typeof data] || 'No data found.'), 500);
     });
+  }
+
+  onStartDateChange(report: any, ev: any) {
+    const iso = ev.detail.value;
+    report.filters.startDate = iso;
+
+    const d = new Date(iso);
+    report.filters.startDateDisplay = d.toLocaleDateString();
+  }
+
+  onEndDateChange(report: any, ev: any) {
+    const iso = ev.detail.value;
+    report.filters.endDate = iso;
+
+    const d = new Date(iso);
+    report.filters.endDateDisplay = d.toLocaleDateString();
   }
 
 }

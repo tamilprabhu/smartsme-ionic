@@ -13,7 +13,7 @@ import { Product } from 'src/app/models/product.model';
   imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
 export class ProductComponent implements OnInit, OnChanges {
-  @Input() mode: 'create' | 'read' | 'update' = 'create';
+  @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Product | null = null;
   @Output() formSubmit = new EventEmitter<Product>();
   @Output() formClosed = new EventEmitter<void>();
