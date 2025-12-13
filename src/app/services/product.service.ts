@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { API_BASE_URL } from '../config/api.config';
+import { ItemsPerPage } from '../constants/pagination';
 
 export interface Product {
   prodIdSeq: number;
@@ -21,6 +22,16 @@ export interface Product {
   incentiveLimit: number;
   createDate: string;
   updateDate: string;
+}
+
+export interface ProductResponse {
+  items: Product[];
+  paging: {
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    totalItems: number;
+  };
 }
 
 @Injectable({
@@ -42,8 +53,8 @@ export class ProductService {
     });
   }
 
-  getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.API_URL, {
+  getProducts(page: number = 1, limit: number = ItemsPerPage.TEN): Observable<ProductResponse> {
+    return this.http.get<ProductResponse>(`${this.API_URL}?page=${page}&limit=${limit}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

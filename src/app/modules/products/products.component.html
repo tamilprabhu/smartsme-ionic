@@ -13,7 +13,21 @@
 
     <ion-content class="ion-padding">
       <h2>Product Management</h2>
-      <p>Manage product catalog, inventory, and manufacturing specifications.</p>
+      
+      <ion-list>
+        <ion-item *ngFor="let product of products">
+          <ion-label>
+            <h3>{{ product.prodName }}</h3>
+            <p>ID: {{ product.prodId }} | Material: {{ product.rawMaterial }}</p>
+            <p>Weight: {{ product.weight }}kg | Cavity: {{ product.cavity }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ion-infinite-scroll (ionInfinite)="loadProducts($event)" [disabled]="!hasMore">
+        <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more products...">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     </ion-content>
     
   </ion-page>
