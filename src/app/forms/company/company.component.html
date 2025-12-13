@@ -1,0 +1,306 @@
+<ion-content>
+  <ion-card class="sme-form-card ion-no-margin">
+    <ion-card-header>
+      <ion-card-title>
+        {{
+          mode === 'create'
+            ? 'Company Details'
+            : mode === 'update'
+            ? 'Edit Company Details'
+            : 'Company Details'
+        }}
+      </ion-card-title>
+      <ion-card-subtitle *ngIf="mode !== 'read'">
+        Please fill all required information
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <form #companyForm="ngForm" (ngSubmit)="onSubmit(companyForm)">
+        <ion-grid>
+          <!-- Company ID -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Company ID * (e.g., COMP001)"
+                  name="companyId"
+                  [(ngModel)]="model.companyId"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Company Name -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Company Name *"
+                  name="companyName"
+                  [(ngModel)]="model.companyName"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Business Constitution -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select
+                  labelPlacement="floating"
+                  label="Business Constitution *"
+                  name="businessCons"
+                  [(ngModel)]="model.businessCons"
+                  [disabled]="mode === 'read'"
+                  required>
+                  <ion-select-option value="corporation">Corporation</ion-select-option>
+                  <ion-select-option value="partnership">Partnership</ion-select-option>
+                  <ion-select-option value="proprietorship">Proprietorship</ion-select-option>
+                  <ion-select-option value="llp">LLP</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Company Type -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select
+                  labelPlacement="floating"
+                  label="Company Type *"
+                  name="companyType"
+                  [(ngModel)]="model.companyType"
+                  [disabled]="mode === 'read'"
+                  required>
+                  <ion-select-option value="large scale">Large Scale</ion-select-option>
+                  <ion-select-option value="medium scale">Medium Scale</ion-select-option>
+                  <ion-select-option value="small scale">Small Scale</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Nature of Business -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select
+                  labelPlacement="floating"
+                  label="Nature of Business *"
+                  name="natureOfBusiness"
+                  [(ngModel)]="model.natureOfBusiness"
+                  [disabled]="mode === 'read'"
+                  required>
+                  <ion-select-option value="manufacturing">Manufacturing</ion-select-option>
+                  <ion-select-option value="trading">Trading</ion-select-option>
+                  <ion-select-option value="service">Service</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Address -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-textarea
+                  labelPlacement="floating"
+                  label="Address *"
+                  name="address"
+                  [(ngModel)]="model.address"
+                  [readonly]="mode === 'read'"
+                  rows="3"
+                  required>
+                </ion-textarea>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Pincode -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Pincode *"
+                  name="pincode"
+                  type="number"
+                  [(ngModel)]="model.pincode"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Owner Name -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Owner Name *"
+                  name="propName"
+                  [(ngModel)]="model.propName"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Authorized Person -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Authorized Person Name *"
+                  placeholder="Enter authorized person name"
+                  name="authPerson"
+                  [(ngModel)]="model.authPerson"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Direct Phone Number -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Direct Phone Number *"
+                  name="directPhone"
+                  type="tel"
+                  [(ngModel)]="model.directPhone"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Mobile Number -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Mobile Number *"
+                  placeholder="Enter mobile number"
+                  name="mobileNo"
+                  type="tel"
+                  [(ngModel)]="model.mobileNo"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Office Phone Number -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Office Phone Number *"
+                  name="officePhone"
+                  type="tel"
+                  [(ngModel)]="model.officePhone"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Management Phone Number -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Management Phone Number"
+                  name="mgmtPhone"
+                  type="tel"
+                  [(ngModel)]="model.mgmtPhone"
+                  [readonly]="mode === 'read'">
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- Email ID -->
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Email ID *"
+                  name="mailId"
+                  type="email"
+                  [(ngModel)]="model.mailId"
+                  [readonly]="mode === 'read'"
+                  required>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <!-- CREATE / UPDATE MODE -->
+            <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="mode !== 'read'">
+                <!-- Action: Submit / Update (LEFT) -->
+                <ion-col size="6">
+                    <ion-button
+                    expand="block"
+                    type="submit"
+                    color="primary"
+                    [disabled]="!companyForm.valid || isLoading">
+                    <ion-icon
+                        [name]="isLoading ? 'hourglass-outline' : 'checkmark-circle-outline'"
+                        slot="start">
+                    </ion-icon>
+                    {{
+                        isLoading
+                        ? (mode === 'create' ? 'Creating...' : 'Updating...')
+                        : (mode === 'create' ? 'Submit' : 'Update')
+                    }}
+                    </ion-button>
+                </ion-col>
+
+                <!-- Cancel (RIGHT) -->
+                <ion-col size="6">
+                    <ion-button color="medium" fill="outline" expand="block" (click)="onCancel()">
+                    <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                    Cancel
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+
+            <!-- READ MODE: Only Cancel Button -->
+            <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="mode === 'read'">
+            <ion-col size="12">
+                <ion-button color="medium" fill="outline" expand="block" (click)="onCancel()">
+                <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                Cancel
+                </ion-button>
+            </ion-col>
+            </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<app-footer></app-footer>

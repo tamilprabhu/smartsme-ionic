@@ -1,3 +1,4 @@
+
 .operations-stack {
   ion-row {
     flex-direction: column;
@@ -52,5 +53,20 @@
       margin-top: 1px;
       opacity: 0.8;
     }
+  }
+}
+
+ion-modal.datetime-modal {
+  --width: 350px;
+  --height: 445px;  // Fixed pixel height instead of percentage
+  --max-width: 90%;
+  --max-height: 80%;
+  --border-radius: 12px;
+  --backdrop-opacity: 0.4;
+
+  &::part(content) {
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
   }
 }

@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { NgForm } from '@angular/forms';
 import { MachineService, Machine } from '../../services/machine.service';
-import { ProductService, Product } from '../../services/product.service';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product.model';
 import { OrderService, Order } from '../../services/order.service';
 import { ProductionShiftService, ProductionShift } from '../../services/production-shift.service';
 import { UserService, User } from '../../services/user.service';
@@ -36,6 +37,9 @@ export class ProductionShiftPage implements OnInit {
     incentive: 'Y',
     less80Reason: ''
   };
+
+  shiftStartDisplay = '';
+  shiftEndDisplay = '';
 
   constructor(
     private location: Location,
@@ -89,5 +93,22 @@ export class ProductionShiftPage implements OnInit {
     if (form.valid) {
       console.log('Production Shift Form Data:', this.formData);
     }
+  }
+
+  onShiftStartChange(ev: any) {
+    const iso = ev.detail.value;        // e.g. 2025-12-01T12:50:00.000Z
+    this.formData.shiftStartDate = iso;
+
+    // Format for display; adapt to your needs
+    const d = new Date(iso);
+    this.shiftStartDisplay = d.toLocaleString(); // or custom pipe/format
+  }
+
+  onShiftEndChange(ev: any) {
+    const iso = ev.detail.value;
+    this.formData.shiftEndDate = iso;
+
+    const d = new Date(iso);
+    this.shiftEndDisplay = d.toLocaleString();
   }
 }

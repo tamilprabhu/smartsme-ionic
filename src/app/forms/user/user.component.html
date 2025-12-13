@@ -1,0 +1,191 @@
+<ion-card class="sme-form-card ion-no-margin">
+  <ion-card-header>
+    <ion-card-title>
+      {{
+        mode === 'create'
+          ? 'User Details'
+          : mode === 'update'
+          ? 'Edit User Details'
+          : 'User Details'
+      }}
+    </ion-card-title>
+    <ion-card-subtitle *ngIf="mode !== 'read'">
+      Please fill all required information
+    </ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)">
+      <ion-grid>
+        <!-- Username -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input
+                labelPlacement="floating"
+                label="Username *"
+                name="username"
+                [(ngModel)]="model.username"
+                [readonly]="mode === 'read'"
+                required>
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- Password (optional to show in read mode, but kept editable only in create/update) -->
+        <ion-row *ngIf="mode !== 'read'">
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input
+                labelPlacement="floating"
+                label="Password *"
+                name="password"
+                type="password"
+                [(ngModel)]="model.password"
+                required>
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- User Type -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-select
+                labelPlacement="floating"
+                label="User Type *"
+                name="userType"
+                [(ngModel)]="model.userType"
+                [disabled]="mode === 'read'"
+                (ionChange)="onUserTypeChange($event)"
+                required>
+                <ion-select-option value="admin">Admin</ion-select-option>
+                <ion-select-option value="seller">Seller</ion-select-option>
+                <ion-select-option value="buyer">Buyer</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- First Name -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input
+                labelPlacement="floating"
+                label="First Name *"
+                name="firstname"
+                [(ngModel)]="model.firstname"
+                [readonly]="mode === 'read'"
+                required>
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- Last Name -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input
+                labelPlacement="floating"
+                label="Last Name *"
+                name="lastname"
+                [(ngModel)]="model.lastname"
+                [readonly]="mode === 'read'"
+                required>
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- Email -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input
+                labelPlacement="floating"
+                label="Email *"
+                name="email"
+                type="email"
+                [(ngModel)]="model.email"
+                [readonly]="mode === 'read'"
+                required>
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- Mobile -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input
+                labelPlacement="floating"
+                label="Mobile Number *"
+                name="mobile"
+                type="tel"
+                [(ngModel)]="model.mobile"
+                [readonly]="mode === 'read'"
+                required>
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- Address -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-textarea
+                labelPlacement="floating"
+                label="Address *"
+                name="address"
+                [(ngModel)]="model.address"
+                [readonly]="mode === 'read'"
+                rows="3"
+                required>
+              </ion-textarea>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- GSTIN -->
+        <ion-row *ngIf="showGSTIN">
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input
+                labelPlacement="floating"
+                label="GSTIN"
+                placeholder="Enter GSTIN"
+                name="gstin"
+                [(ngModel)]="model.gstin"
+                [readonly]="mode === 'read'">
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- Submit Button -->
+        <ion-row *ngIf="mode !== 'read'">
+          <ion-col size="12">
+            <ion-button
+              expand="block"
+              type="submit"
+              color="primary"
+              size="large"
+              class="ion-margin-top"
+              [disabled]="!userForm.valid">
+              <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+              {{ mode === 'create' ? 'Submit User Details' : 'Update User Details' }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </ion-card-content>
+</ion-card>
+
+<app-footer></app-footer>

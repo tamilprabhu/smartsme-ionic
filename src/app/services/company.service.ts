@@ -3,35 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
+import { Company, CompanyListResponse } from '../models/company.model';
 import { API_BASE_URL } from '../config/api.config';
-
-export interface Company {
-  companyIdSeq?: number;
-  companyId: string;
-  companyName: string;
-  businessCons: string;
-  companyType: string;
-  address: string;
-  pincode: number;
-  propName: string;
-  directPhone: string;
-  officePhone: string;
-  mgmtPhone?: string;
-  mailId: string;
-  natureOfBusiness: string;
-  authPerson: string;
-  mobileNo: string;
-  createDate?: string;
-  updateDate?: string;
-}
-
-export interface CompanyListResponse {
-  companies: Company[];
-  totalCount: number;
-  totalPages: number;
-  currentPage: number;
-}
-
 @Injectable({
   providedIn: 'root'
 })

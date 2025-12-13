@@ -1,11 +1,13 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
+    <ion-title>
+      Production Shift
+    </ion-title>
     <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon name="chevron-back-outline"></ion-icon>
+      <ion-button color="medium" (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Production Shift</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -56,17 +58,57 @@
 
           <ion-row>
             <ion-col size="12">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-datetime [(ngModel)]="formData.shiftStartDate" name="shiftStartDate" label="Shift Start Date *" label-placement="floating" required></ion-datetime>
+              <!-- Fake input that shows the selected value -->
+              <ion-item id="shift-start-trigger" lines="full">
+                <ion-input
+                  label="Shift Start Date *"
+                  label-placement="floating"
+                  readonly
+                  [value]="shiftStartDisplay">
+                </ion-input>
               </ion-item>
+
+              <!-- Modal with the actual datetime picker -->
+              <ion-modal trigger="shift-start-trigger" [keepContentsMounted]="true" cssClass="datetime-modal">
+                <ng-template>
+                  <ion-content>
+                    <ion-datetime
+                      [value]="formData.shiftStartDate"
+                      presentation="date-time"
+                      show-default-buttons="true"
+                      (ionChange)="onShiftStartChange($event)">
+                    </ion-datetime>
+                  </ion-content>
+                </ng-template>
+              </ion-modal>
+
             </ion-col>
           </ion-row>
 
           <ion-row>
             <ion-col size="12">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-datetime [(ngModel)]="formData.shiftEndDate" name="shiftEndDate" label="Shift End Date *" label-placement="floating" required></ion-datetime>
+              <!-- SHIFT END -->
+              <ion-item id="shift-end-trigger" lines="full">
+                <ion-input
+                  label="Shift End Date *" 
+                  label-placement="floating"
+                  readonly
+                  [value]="shiftEndDisplay">
+                </ion-input>
               </ion-item>
+
+              <ion-modal trigger="shift-end-trigger" [keepContentsMounted]="true" cssClass="datetime-modal">
+                <ng-template>
+                  <ion-content>
+                    <ion-datetime
+                      [value]="formData.shiftEndDate"
+                      presentation="date-time"
+                      show-default-buttons="true"
+                      (ionChange)="onShiftEndChange($event)">
+                    </ion-datetime>
+                  </ion-content>
+                </ng-template>
+              </ion-modal>
             </ion-col>
           </ion-row>
 

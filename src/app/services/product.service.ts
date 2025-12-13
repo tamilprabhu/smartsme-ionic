@@ -5,24 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { API_BASE_URL } from '../config/api.config';
 import { ItemsPerPage } from '../constants/pagination';
-
-export interface Product {
-  prodIdSeq: number;
-  prodId: string;
-  companyId: string;
-  prodName: string;
-  rawMaterial: string;
-  weight: string;
-  wastage: number;
-  norms: string;
-  totalWeight: string;
-  cavity: number;
-  shotRate: string;
-  perItemRate: string;
-  incentiveLimit: number;
-  createDate: string;
-  updateDate: string;
-}
+import { Product } from '../models/product.model';
 
 export interface ProductResponse {
   items: Product[];
