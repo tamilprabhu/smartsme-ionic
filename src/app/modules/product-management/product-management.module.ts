@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, AlertController } from '@ionic/angular';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { ProductManagementComponent } from './product-management.component';
 import { ProductComponent } from '../../forms/product/product.component';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @NgModule({
   declarations: [ProductManagementComponent],
@@ -14,9 +15,12 @@ import { ProductComponent } from '../../forms/product/product.component';
     IonicModule,
     ReactiveFormsModule,
     ProductComponent,
+    HeaderComponent,
+    FormsModule,
     RouterModule.forChild([{ path: '', component: ProductManagementComponent }])
   ],
   exports: [ProductManagementComponent],
-  providers: [AlertController]
+  providers: [AlertController],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ProductManagementModule {}
