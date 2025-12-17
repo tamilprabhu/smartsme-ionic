@@ -1,18 +1,12 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="primary" (click)="goBack()">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Machines</ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="primary" (click)="openCreateForm()">
-        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header 
+  title="Machine Management"
+  backAction="back"
+  [showBackButton]="true"
+  rightIcon="add-circle-outline"
+  rightIconColor="primary"
+  (backClicked)="goBack()"
+  (rightButtonClicked)="openCreateForm()">
+</app-header>
 
 <ion-content>
   <ion-list>

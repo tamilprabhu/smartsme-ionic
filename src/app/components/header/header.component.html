@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="showBackButton">
+      <ion-button color="primary" (click)="onBackClick()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>{{ title || "Smart SME" }}</ion-title>
+
+    <ion-buttons slot="end" *ngIf="rightIcon">
+      <ion-button [color]="rightIconColor" (click)="onRightButtonClick()">
+        <ion-icon slot="icon-only" [name]="rightIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

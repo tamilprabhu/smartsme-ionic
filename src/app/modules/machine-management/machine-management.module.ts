@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MachineManagementComponent } from './machine-management.component';
 import { MachineProcessComponent } from 'src/app/forms/machine-process/machine-process.component';
 import { RouterModule } from '@angular/router';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @NgModule({
   declarations: [MachineManagementComponent],
@@ -14,6 +15,7 @@ import { RouterModule } from '@angular/router';
     IonicModule, 
     ReactiveFormsModule, 
     MachineProcessComponent,
+    HeaderComponent,
     RouterModule.forChild([
       { path: '', component: MachineManagementComponent },
     ]),
