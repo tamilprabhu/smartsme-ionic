@@ -56,15 +56,29 @@ export class ProductManagementComponent {
   }
 
   openReadForm(product: Product) {
-    this.selectedProduct = product;
-    this.formMode = 'read';
-    this.showForm = true;
+    this.productService.getProduct(product.prodIdSeq).subscribe({
+      next: (productDetails) => {
+        this.selectedProduct = productDetails;
+        this.formMode = 'read';
+        this.showForm = true;
+      },
+      error: (error) => {
+        console.error('Error loading product details:', error);
+      }
+    });
   }
 
   openUpdateForm(product: Product) {
-    this.selectedProduct = product;
-    this.formMode = 'update';
-    this.showForm = true;
+    this.productService.getProduct(product.prodIdSeq).subscribe({
+      next: (productDetails) => {
+        this.selectedProduct = productDetails;
+        this.formMode = 'update';
+        this.showForm = true;
+      },
+      error: (error) => {
+        console.error('Error loading product details:', error);
+      }
+    });
   }
 
   async confirmDelete(product: Product) {
@@ -88,19 +102,44 @@ export class ProductManagementComponent {
   }
 
   deleteProduct(product: Product) {
-    this.products = this.products.filter(p => p.prodId !== product.prodId);
+    this.productService.deleteProduct(product.prodIdSeq).subscribe({
+      next: () => {
+        this.products = this.products.filter(p => p.prodIdSeq !== product.prodIdSeq);
+        console.log('Product deleted successfully');
+      },
+      error: (error) => {
+        console.error('Error deleting product:', error);
+      }
+    });
   }
 
   handleFormSubmit(formData: Product) {
     if (this.formMode === 'create') {
-      this.products.push(formData);
+      this.productService.createProduct(formData).subscribe({
+        next: (newProduct) => {
+          this.products.unshift(newProduct);
+          this.closeForm();
+          console.log('Product created successfully');
+        },
+        error: (error) => {
+          console.error('Error creating product:', error);
+        }
+      });
     } else if (this.formMode === 'update' && this.selectedProduct) {
-      const index = this.products.findIndex(p => p.prodId === this.selectedProduct?.prodId);
-      if (index > -1) {
-        this.products[index] = formData;
-      }
+      this.productService.updateProduct(this.selectedProduct.prodIdSeq, formData).subscribe({
+        next: (updatedProduct) => {
+          const index = this.products.findIndex(p => p.prodIdSeq === this.selectedProduct?.prodIdSeq);
+          if (index > -1) {
+            this.products[index] = updatedProduct;
+          }
+          this.closeForm();
+          console.log('Product updated successfully');
+        },
+        error: (error) => {
+          console.error('Error updating product:', error);
+        }
+      });
     }
-    this.closeForm();
   }
 
   closeForm() {

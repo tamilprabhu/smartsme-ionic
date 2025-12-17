@@ -52,24 +52,33 @@ export class ProductService {
     );
   }
 
-  createProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Observable<Product> {
-    return this.http.post<Product>(this.API_URL, product, {
+  createProduct(product: Omit<Product, 'prodIdSeq' | 'createDate' | 'updateDate'>): Observable<Product> {
+    const productData = {
+      ...product,
+      createDate: new Date().toISOString(),
+      updateDate: new Date().toISOString()
+    };
+    return this.http.post<Product>(this.API_URL, productData, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  updateProduct(id: number, product: Partial<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>>): Observable<Product> {
-    return this.http.put<Product>(`${this.API_URL}/${id}`, product, {
+  updateProduct(id: number, product: Partial<Omit<Product, 'prodIdSeq' | 'createDate'>>): Observable<Product> {
+    const updateData = {
+      ...product,
+      updateDate: new Date().toISOString()
+    };
+    return this.http.put<Product>(`${this.API_URL}/${id}`, updateData, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  deleteProduct(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`, {
+  deleteProduct(id: number): Observable<{message: string}> {
+    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

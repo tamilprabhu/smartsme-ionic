@@ -70,7 +70,21 @@ export class ProductComponent implements OnInit, OnChanges {
   }
 
   patchForm(data: Product) {
-    this.productForm.patchValue(data);
+    this.productForm.patchValue({
+      productId: data.prodId,
+      productName: data.prodName,
+      rawMaterial: data.rawMaterial,
+      weight: data.weight,
+      wastage: data.wastage,
+      norms: data.norms,
+      totalWeight: data.totalWeight,
+      cavity: data.cavity,
+      shotRate: data.shotRate,
+      rate: data.perItemRate,
+      incentiveLimit: data.incentiveLimit,
+      productionShotQty: 0, // Default value
+      perHourProdQty: 0 // Default value
+    });
   }
 
   resetForm() {
@@ -94,7 +108,27 @@ export class ProductComponent implements OnInit, OnChanges {
       this.productForm.markAllAsTouched();
       return;
     }
-    const formValue = this.productForm.getRawValue(); // includes disabled fields
-    this.formSubmit.emit(formValue);
+    const formValue = this.productForm.getRawValue();
+    
+    // Map form fields to API structure
+    const apiData = {
+      prodIdSeq: this.formData?.prodIdSeq || 0,
+      prodId: formValue.productId,
+      prodName: formValue.productName,
+      rawMaterial: formValue.rawMaterial,
+      weight: formValue.weight,
+      wastage: formValue.wastage,
+      norms: formValue.norms,
+      totalWeight: formValue.totalWeight,
+      cavity: formValue.cavity,
+      shotRate: formValue.shotRate,
+      perItemRate: formValue.rate,
+      incentiveLimit: formValue.incentiveLimit,
+      companyId: 'FINO001',
+      createDate: this.formData?.createDate || new Date().toISOString(),
+      updateDate: new Date().toISOString()
+    };
+    
+    this.formSubmit.emit(apiData);
   }
 }
