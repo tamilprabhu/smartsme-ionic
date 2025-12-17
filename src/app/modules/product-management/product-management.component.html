@@ -39,13 +39,13 @@
   <!-- Results Count -->
   <ion-item *ngIf="searchQuery" class="results-info">
     <ion-label>
-      Found <strong>{{ filteredProducts.length }}</strong> product(s)
+      Found <strong>{{ products.length }}</strong> product(s)
     </ion-label>
   </ion-item>
 
   <!-- Products List -->
-  <ion-list *ngIf="filteredProducts.length > 0">
-    <ion-item *ngFor="let product of filteredProducts" class="product-item">
+  <ion-list *ngIf="products.length > 0">
+    <ion-item *ngFor="let product of products" class="product-item">
       <ion-label (click)="openReadForm(product)">
         <h2>{{ product.prodName }} <ion-badge color="primary">#{{ product.prodId }}</ion-badge></h2>
         <p class="material">Raw Material: <strong>{{ product.rawMaterial }}</strong></p>
@@ -63,7 +63,7 @@
   </ion-list>
 
   <!-- Empty State -->
-  <ion-card *ngIf="filteredProducts.length === 0 && !loading" class="empty-state">
+  <ion-card *ngIf="products.length === 0 && !loading" class="empty-state">
     <ion-card-header>
       <ion-card-title>No Products Found</ion-card-title>
     </ion-card-header>
@@ -74,7 +74,7 @@
   </ion-card>
 
   <!-- Infinite Scroll -->
-  <ion-infinite-scroll (ionInfinite)="loadProducts($event)" [disabled]="!hasMore || searchQuery">
+  <ion-infinite-scroll (ionInfinite)="loadProducts($event)" [disabled]="!hasMore">
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more products...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>

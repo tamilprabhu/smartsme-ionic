@@ -21,7 +21,7 @@ export interface ProductResponse {
   providedIn: 'root'
 })
 export class ProductService {
-  private readonly API_URL = `${API_BASE_URL}/products`;
+  private readonly API_URL = `${API_BASE_URL}/product`;
 
   constructor(
     private http: HttpClient,
@@ -36,8 +36,12 @@ export class ProductService {
     });
   }
 
-  getProducts(page: number = 1, limit: number = ItemsPerPage.TEN): Observable<ProductResponse> {
-    return this.http.get<ProductResponse>(`${this.API_URL}?page=${page}&limit=${limit}`, {
+  getProducts(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<ProductResponse> {
+    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
+    if (search && search.trim()) {
+      url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    return this.http.get<ProductResponse>(url, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

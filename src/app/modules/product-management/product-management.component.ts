@@ -15,7 +15,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   @ViewChild('searchInput') searchInput!: IonSearchbar;
 
   products: Product[] = [];
-  filteredProducts: Product[] = [];
   formMode: 'create' | 'read' | 'update' | null = null;
   selectedProduct: Product | null = null;
   showForm = false;
@@ -32,7 +31,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private productService: ProductService
   ) {
-    // Setup reactive search with debounce
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -57,10 +55,13 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     if (this.loading || !this.hasMore) return;
 
     this.loading = true;
-    this.productService.getProducts(this.currentPage).subscribe({
+    this.productService.getProducts(this.currentPage, 10, this.searchQuery).subscribe({
       next: (response) => {
-        this.products = [...this.products, ...response.items];
-        this.applySearch(); // Apply search to new items
+        if (this.currentPage === 1) {
+          this.products = response.items;
+        } else {
+          this.products = [...this.products, ...response.items];
+        }
         this.hasMore = response.paging.currentPage < response.paging.totalPages;
         this.currentPage++;
         this.loading = false;
@@ -76,30 +77,16 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   onSearchInput(event: any) {
     const value = event.target.value || '';
-    // Update display immediately for UI consistency
     this.searchQuery = value;
-    // Send to Subject for debounced filtering
     this.searchSubject.next(value);
   }
 
   performSearch(query: string) {
-    // This gets called after debounce with the actual search value
-    const normalizedQuery = query.toLowerCase().trim();
-    this.applySearch(normalizedQuery);
-  }
-
-  applySearch(query?: string) {
-    const searchTerm = query !== undefined ? query : this.searchQuery.toLowerCase().trim();
-
-    if (!searchTerm) {
-      this.filteredProducts = [...this.products];
-    } else {
-      this.filteredProducts = this.products.filter(product =>
-        product.prodName.toLowerCase().includes(searchTerm) ||
-        product.prodId.toString().includes(searchTerm) ||
-        product.rawMaterial.toLowerCase().includes(searchTerm)
-      );
-    }
+    this.searchQuery = query;
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.products = [];
+    this.loadProducts();
   }
 
   clearSearch() {
@@ -107,8 +94,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     if (this.searchInput) {
       this.searchInput.value = '';
     }
-    this.searchSubject.next('');
-    this.applySearch('');
+    this.performSearch('');
   }
 
   openCreateForm() {
@@ -173,8 +159,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         console.error('Error deleting product:', error);
       }
     });
-    this.products = this.products.filter(p => p.prodId !== product.prodId);
-    this.applySearch(); // Reapply search after deletion
   }
 
   handleFormSubmit(formData: Product) {
@@ -204,7 +188,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         }
       });
     }
-    this.applySearch(); // Reapply search after create/update
     this.closeForm();
   }
 
