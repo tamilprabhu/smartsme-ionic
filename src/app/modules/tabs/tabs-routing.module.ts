@@ -36,6 +36,10 @@ const routes: Routes = [
         loadChildren: () => import('../order-management/order-management.module').then(m => m.OrderManagementModule)
       },
       {
+        path: 'invoice-management',
+        loadChildren: () => import('../invoice-management/invoice-management.module').then(m => m.InvoiceManagementModule)
+      },
+      {
         path: 'menu',
         redirectTo: '',  // Redirects to root or specify the current path segment
         pathMatch: 'full'

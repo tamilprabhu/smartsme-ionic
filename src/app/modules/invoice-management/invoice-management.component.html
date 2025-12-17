@@ -1,0 +1,89 @@
+<app-header 
+  backAction="back"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="openCreateForm()">
+</app-header>
+
+<ion-content>
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Invoices</h1>
+      <p class="page-subtitle">Manage invoice records</p>
+    </div>
+    <ion-button 
+      class="add-button"
+      fill="solid" 
+      color="primary"
+      (click)="openCreateForm()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar 
+      #searchInput
+      placeholder="Search by invoice ID, company, or buyer..."
+      [value]="searchQuery"
+      (keyup)="onSearchInput($event)"
+      debounce="0"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="searchQuery" class="results-info">
+    <ion-label>
+      Found <strong>{{ invoices.length }}</strong> invoice(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="invoices.length > 0">
+    <ion-item *ngFor="let invoice of invoices" class="invoice-item">
+      <ion-label (click)="openReadForm(invoice)">
+        <h2>{{ invoice.invoiceId }} <ion-badge color="primary">#{{ invoice.compId }}</ion-badge></h2>
+        <p class="details">Buyer: <strong>{{ invoice.buyrId }}</strong> | Date: <strong>{{ invoice.invoiceDate | date:'short' }}</strong></p>
+        <p class="amount">Product: {{ invoice.prodId }} | Quantity: {{ invoice.quantity }} | Amount: ₹{{ invoice.totalAmount }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="secondary" (click)="openUpdateForm(invoice)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(invoice)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="invoices.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Invoices Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchQuery">No invoices match your search "{{ searchQuery }}"</p>
+      <p *ngIf="!searchQuery && invoices.length === 0">No invoices available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadInvoices($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more invoices...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
+    <ng-template>
+      <app-header 
+        [title]="formMode === 'create' ? 'Create Invoice' : formMode === 'update' ? 'Update Invoice' : 'Invoice Details'"
+        backAction="dismiss"
+        [showBackButton]="true"
+        (backClicked)="closeForm()">
+      </app-header>
+
+      <ion-content>
+        <p>Invoice Form - To be implemented</p>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

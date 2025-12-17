@@ -55,6 +55,8 @@ export class OperationsPage {
       this.router.navigate(['/tabs/stock-management']);
     } else if (operation === 'Order') {
       this.router.navigate(['/tabs/order-management']);
+    } else if (operation === 'Invoice') {
+      this.router.navigate(['/tabs/invoice-management']);
     }
   }
 
