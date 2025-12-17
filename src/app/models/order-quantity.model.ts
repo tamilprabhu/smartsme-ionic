@@ -1,0 +1,35 @@
+export interface OrderQuantity {
+  orderId: string;
+  companyId: string;
+  orderQuantity: number;
+  productQuantity: number;
+  fettlIpQuantity: number;
+  fettlAcQuantity: number;
+  fettlRjQuantity: number;
+  drillIpQuantity: number;
+  drillAcQuantity: number;
+  drillRjQuantity: number;
+  tappIpQuantity: number;
+  tappAcQuantity: number;
+  tappRjQuantity: number;
+  machIpQuantity: number;
+  machAcQuantity: number;
+  machRjQuantity: number;
+  trimIpQuantity: number;
+  trimAcQuantity: number;
+  trimRjQuantity: number;
+  shotbIpQuantity: number;
+  shotbAcQuantity: number;
+  shotbRjQuantity: number;
+  pwdrIpQuantity: number;
+  pwdrAcQuantity: number;
+  pwdrRjQuantity: number;
+  assmblIpQuantity: number;
+  assmblAcQuantity: number;
+  assmblRjQuantity: number;
+  qlinsIpQuantity: number;
+  qlinsAcQuantity: number;
+  qlinsRjQuantity: number;
+  createDate: string;
+  updateDate: string;
+}

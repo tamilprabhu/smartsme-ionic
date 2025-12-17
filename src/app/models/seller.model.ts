@@ -1,8 +1,11 @@
 export interface Seller {
+  sellerIdSeq: number;
   sellerId: string;
+  companyId: string;
   sellerName: string;
-  address?: string;
-  phone?: string;
-  email?: string;
-  gstin?: string;
+  sellerAddress: string;
+  sellerPhone: string;
+  sellerEmail: string;
+  createDate: string;
+  updateDate: string;
 }

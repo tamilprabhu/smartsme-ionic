@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { CompanyManagementComponent } from './company-management.component';
 import { CompanyComponent } from '../../forms/company/company.component';
+import { HeaderComponent } from '../../components/header/header.component';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
@@ -14,6 +15,7 @@ import { RouterModule } from '@angular/router';
     IonicModule, 
     FormsModule, 
     CompanyComponent,
+    HeaderComponent,
     RouterModule.forChild([
       { path: '', component: CompanyManagementComponent },
     ])

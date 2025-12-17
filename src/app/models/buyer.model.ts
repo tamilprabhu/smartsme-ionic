@@ -1,10 +1,12 @@
-// src/app/models/buyer.model.ts
-
 export interface Buyer {
+  buyerIdSeq: number;
   buyerId: string;
+  companyId: string;
   buyerName: string;
-  address: string;
-  phone: string;
-  email: string;
-  gstin?: string;
+  buyerAddress: string;
+  buyerPhone: string;
+  buyerEmail: string;
+  buyerGstin?: string;
+  createDate: string;
+  updateDate: string;
 }

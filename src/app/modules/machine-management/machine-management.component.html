@@ -4,7 +4,7 @@
   [showBackButton]="true"
   rightIcon="add-circle-outline"
   rightIconColor="primary"
-  (backClicked)="goBack()"
+  (backClicked)="onHeaderBackClick()"
   (rightButtonClicked)="openCreateForm()">
 </app-header>
 
@@ -12,8 +12,9 @@
   <ion-list>
     <ion-item *ngFor="let machine of machines">
       <ion-label (click)="openReadForm(machine)">
-        <h2>{{ machine.machineName }} ({{ machine.machineId }})</h2>
-        <p>{{ machine.workType }}</p>
+        <h2>{{ machine.machineName }} <ion-badge color="primary">#{{ machine.machineId }}</ion-badge></h2>
+        <p class="type">Type: <strong>{{ machine.machineType }}</strong></p>
+        <p class="specs">Capacity: {{ machine.capacity }} | Model: {{ machine.model }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <!-- <ion-button color="tertiary" (click)="openReadForm(machine)">

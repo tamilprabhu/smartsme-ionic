@@ -1,25 +1,50 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="primary" (click)="goBack()">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Users</ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="primary" (click)="openCreateForm()">
-        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header 
+  backAction="back"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="openCreateForm()">
+</app-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let user of users">
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Users</h1>
+      <p class="page-subtitle">Manage user accounts</p>
+    </div>
+    <ion-button 
+      class="add-button"
+      fill="solid" 
+      color="primary"
+      (click)="openCreateForm()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar 
+      #searchInput
+      placeholder="Search by username, name, or email..."
+      [value]="searchQuery"
+      (keyup)="onSearchInput($event)"
+      debounce="0"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="searchQuery" class="results-info">
+    <ion-label>
+      Found <strong>{{ users.length }}</strong> user(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="users.length > 0">
+    <ion-item *ngFor="let user of users" class="user-item">
       <ion-label (click)="openReadForm(user)">
-        <h2>{{ user.username }} ({{ user.userType | titlecase }})</h2>
-        <p>{{ user.firstname }} {{ user.lastname }}</p>
+        <h2>{{ user.name }} <ion-badge color="primary">@{{ user.username }}</ion-badge></h2>
+        <p class="details">{{ user.firstName }} {{ user.lastName }}</p>
+        <p class="contact">Email: {{ user.email }} | Mobile: {{ user.mobile }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="secondary" (click)="openUpdateForm(user)">
@@ -32,34 +57,37 @@
     </ion-item>
   </ion-list>
 
+  <ion-card *ngIf="users.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Users Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchQuery">No users match your search "{{ searchQuery }}"</p>
+      <p *ngIf="!searchQuery && users.length === 0">No users available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadUsers($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more users...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
   <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
     <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>
-            {{
-              formMode === 'create'
-                ? 'Create User'
-                : formMode === 'update'
-                ? 'Update User'
-                : 'User Details'
-            }}
-          </ion-title>
-          <ion-buttons slot="start">
-            <ion-button color="medium" (click)="closeForm()">
-              <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+      <app-header 
+        [title]="formMode === 'create' ? 'Create User' : formMode === 'update' ? 'Update User' : 'User Details'"
+        backAction="dismiss"
+        [showBackButton]="true"
+        (backClicked)="closeForm()">
+      </app-header>
 
       <ion-content>
-        <app-users
-          [mode]="formMode"
+        <app-user
+          [mode]="formMode!"
           [formData]="selectedUser"
           (formSubmit)="handleFormSubmit($event)"
           (formClosed)="closeForm()">
-        </app-users>
+        </app-user>
       </ion-content>
     </ng-template>
   </ion-modal>

@@ -1,12 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
-import { NgForm } from '@angular/forms';
-import { MachineService, Machine } from '../../services/machine.service';
-import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product.model';
-import { OrderService, Order } from '../../services/order.service';
-import { ProductionShiftService, ProductionShift } from '../../services/production-shift.service';
-import { UserService, User } from '../../services/user.service';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { ProductionShift } from '../../models/production-shift.model';
+import { ProductionShiftService } from '../../services/production-shift.service';
 
 @Component({
   selector: 'app-production-shift',
@@ -14,101 +11,159 @@ import { UserService, User } from '../../services/user.service';
   styleUrls: ['production-shift.page.scss'],
   standalone: false,
 })
-export class ProductionShiftPage implements OnInit {
-  machines: Machine[] = [];
-  products: Product[] = [];
-  orders: Order[] = [];
-  users: User[] = [];
-  
-  formData: Partial<ProductionShift> = {
-    orderId: '',
-    machineId: '',
-    shiftType: '1',
-    shiftStartDate: '',
-    shiftEndDate: '',
-    entryType: 'shift',
-    operator1: 0,
-    operator2: 0,
-    supervisor: 0,
-    openingCount: 0,
-    closingCount: 0,
-    production: 0,
-    rejection: 0,
-    incentive: 'Y',
-    less80Reason: ''
-  };
+export class ProductionShiftPage implements OnInit, OnDestroy {
+  @ViewChild('searchInput') searchInput!: IonSearchbar;
 
-  shiftStartDisplay = '';
-  shiftEndDisplay = '';
+  productionShifts: ProductionShift[] = [];
+  formMode: 'create' | 'read' | 'update' | null = null;
+  selectedShift: ProductionShift | null = null;
+  showForm = false;
+  currentPage = 1;
+  hasMore = true;
+  loading = false;
+  searchQuery: string = '';
+
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
-    private location: Location,
-    private machineService: MachineService,
-    private productService: ProductService,
-    private orderService: OrderService,
-    private productionShiftService: ProductionShiftService,
-    private userService: UserService
-  ) {}
+    private alertController: AlertController,
+    private navCtrl: NavController,
+    private productionShiftService: ProductionShiftService
+  ) {
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.performSearch(query);
+    });
+  }
 
   ngOnInit() {
-    this.loadMachines();
-    this.loadProducts();
-    this.loadOrders();
-    this.loadUsers();
+    this.loadProductionShifts();
   }
 
-  goBack() {
-    this.location.back();
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.searchSubject.complete();
   }
 
-  loadMachines() {
-    this.machineService.getMachines().subscribe({
-      next: (machines) => this.machines = machines,
-      error: (error) => console.error('Error loading machines:', error)
+  loadProductionShifts(event?: any) {
+    if (this.loading || !this.hasMore) return;
+    this.loading = true;
+    this.productionShiftService.getProductionShifts(this.currentPage, 10, this.searchQuery).subscribe({
+      next: (response) => {
+        if (this.currentPage === 1) {
+          this.productionShifts = response.items;
+        } else {
+          this.productionShifts = [...this.productionShifts, ...response.items];
+        }
+        this.hasMore = response.paging.currentPage < response.paging.totalPages;
+        this.currentPage++;
+        this.loading = false;
+        if (event) event.target.complete();
+      },
+      error: (error) => {
+        console.error('Error loading production shifts:', error);
+        this.loading = false;
+        if (event) event.target.complete();
+      }
     });
   }
 
-  loadProducts() {
-    this.productService.getProducts().subscribe({
-      next: (response) => this.products = response.items,
-      error: (error) => console.error('Error loading products:', error)
+  onSearchInput(event: any) {
+    this.searchQuery = event.target.value || '';
+    this.searchSubject.next(this.searchQuery);
+  }
+
+  performSearch(query: string) {
+    this.searchQuery = query;
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.productionShifts = [];
+    this.loadProductionShifts();
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    if (this.searchInput) this.searchInput.value = '';
+    this.performSearch('');
+  }
+
+  openCreateForm() {
+    this.selectedShift = null;
+    this.formMode = 'create';
+    this.showForm = true;
+  }
+
+  openReadForm(shift: ProductionShift) {
+    this.productionShiftService.getProductionShift(shift.shiftIdSeq).subscribe({
+      next: (shiftDetails) => {
+        this.selectedShift = shiftDetails;
+        this.formMode = 'read';
+        this.showForm = true;
+      }
     });
   }
 
-  loadOrders() {
-    this.orderService.getOrders().subscribe({
-      next: (orders) => this.orders = orders,
-      error: (error) => console.error('Error loading orders:', error)
+  openUpdateForm(shift: ProductionShift) {
+    this.productionShiftService.getProductionShift(shift.shiftIdSeq).subscribe({
+      next: (shiftDetails) => {
+        this.selectedShift = shiftDetails;
+        this.formMode = 'update';
+        this.showForm = true;
+      }
     });
   }
 
-  loadUsers() {
-    this.userService.getUsers().subscribe({
-      next: (users) => this.users = users,
-      error: (error) => console.error('Error loading users:', error)
+  async confirmDelete(shift: ProductionShift) {
+    const alert = await this.alertController.create({
+      header: 'Confirm Delete',
+      message: `Delete production shift "${shift.shiftId}"?`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Delete', handler: () => this.deleteShift(shift) }
+      ]
+    });
+    await alert.present();
+  }
+
+  deleteShift(shift: ProductionShift) {
+    this.productionShiftService.deleteProductionShift(shift.shiftIdSeq).subscribe({
+      next: () => {
+        this.productionShifts = this.productionShifts.filter(s => s.shiftIdSeq !== shift.shiftIdSeq);
+      }
     });
   }
 
-  onSubmit(form: NgForm) {
-    if (form.valid) {
-      console.log('Production Shift Form Data:', this.formData);
+  handleFormSubmit(formData: ProductionShift) {
+    if (this.formMode === 'create') {
+      this.productionShiftService.createProductionShift(formData).subscribe({
+        next: (newShift) => {
+          this.productionShifts.unshift(newShift);
+          this.closeForm();
+        }
+      });
+    } else if (this.formMode === 'update' && this.selectedShift) {
+      this.productionShiftService.updateProductionShift(this.selectedShift.shiftIdSeq, formData).subscribe({
+        next: (updatedShift) => {
+          const index = this.productionShifts.findIndex(s => s.shiftIdSeq === this.selectedShift?.shiftIdSeq);
+          if (index > -1) this.productionShifts[index] = updatedShift;
+          this.closeForm();
+        }
+      });
     }
   }
 
-  onShiftStartChange(ev: any) {
-    const iso = ev.detail.value;        // e.g. 2025-12-01T12:50:00.000Z
-    this.formData.shiftStartDate = iso;
-
-    // Format for display; adapt to your needs
-    const d = new Date(iso);
-    this.shiftStartDisplay = d.toLocaleString(); // or custom pipe/format
+  closeForm() {
+    this.showForm = false;
+    this.selectedShift = null;
+    this.formMode = null;
   }
 
-  onShiftEndChange(ev: any) {
-    const iso = ev.detail.value;
-    this.formData.shiftEndDate = iso;
-
-    const d = new Date(iso);
-    this.shiftEndDisplay = d.toLocaleString();
+  onHeaderBackClick() {
+    this.navCtrl.back();
   }
 }

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductionShiftPage } from './production-shift.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { HeaderComponent } from '../../components/header/header.component';
 
 import { ProductionShiftPageRoutingModule } from './production-shift-routing.module';
 
@@ -13,6 +14,7 @@ import { ProductionShiftPageRoutingModule } from './production-shift-routing.mod
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
+    HeaderComponent,
     ProductionShiftPageRoutingModule
   ],
   declarations: [ProductionShiftPage]

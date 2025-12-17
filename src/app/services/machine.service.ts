@@ -4,25 +4,24 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { API_BASE_URL } from '../config/api.config';
+import { ItemsPerPage } from '../constants/pagination';
+import { Machine } from '../models/machine.model';
 
-export interface Machine {
-  machineIdSeq: number;
-  machineId: string;
-  companyId: string;
-  machineName: string;
-  machineType: string;
-  capacity: string;
-  model: string;
-  activeFlag: string;
-  createDate: string;
-  updateDate: string;
+export interface MachineResponse {
+  items: Machine[];
+  paging: {
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    totalItems: number;
+  };
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class MachineService {
-  private readonly API_URL = `${API_BASE_URL}/machines`;
+  private readonly API_URL = `${API_BASE_URL}/machine`;
 
   constructor(
     private http: HttpClient,
@@ -37,8 +36,12 @@ export class MachineService {
     });
   }
 
-  getMachines(): Observable<Machine[]> {
-    return this.http.get<Machine[]>(this.API_URL, {
+  getMachines(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<MachineResponse> {
+    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
+    if (search && search.trim()) {
+      url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    return this.http.get<MachineResponse>(url, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
@@ -53,7 +56,7 @@ export class MachineService {
     );
   }
 
-  createMachine(machine: Omit<Machine, 'id' | 'createdAt' | 'updatedAt'>): Observable<Machine> {
+  createMachine(machine: Omit<Machine, 'machineIdSeq' | 'createDate' | 'updateDate'>): Observable<Machine> {
     return this.http.post<Machine>(this.API_URL, machine, {
       headers: this.getHeaders()
     }).pipe(
@@ -61,7 +64,7 @@ export class MachineService {
     );
   }
 
-  updateMachine(id: number, machine: Partial<Omit<Machine, 'id' | 'createdAt' | 'updatedAt'>>): Observable<Machine> {
+  updateMachine(id: number, machine: Partial<Omit<Machine, 'machineIdSeq' | 'createDate'>>): Observable<Machine> {
     return this.http.put<Machine>(`${this.API_URL}/${id}`, machine, {
       headers: this.getHeaders()
     }).pipe(
@@ -69,8 +72,8 @@ export class MachineService {
     );
   }
 
-  deleteMachine(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`, {
+  deleteMachine(id: number): Observable<{message: string}> {
+    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

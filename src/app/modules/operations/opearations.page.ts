@@ -49,6 +49,12 @@ export class OperationsPage {
     console.log(`Navigating to operation: ${operation}`);
     if (operation === 'Production Entry') {
       this.router.navigate(['/tabs/production-shift']);
+    } else if (operation === 'Dispatch') {
+      this.router.navigate(['/tabs/dispatch-management']);
+    } else if (operation === 'Stock Inward') {
+      this.router.navigate(['/tabs/stock-management']);
+    } else if (operation === 'Order') {
+      this.router.navigate(['/tabs/order-management']);
     }
   }
 

@@ -1,0 +1,89 @@
+<app-header 
+  backAction="back"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="openCreateForm()">
+</app-header>
+
+<ion-content>
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Orders</h1>
+      <p class="page-subtitle">Manage customer orders</p>
+    </div>
+    <ion-button 
+      class="add-button"
+      fill="solid" 
+      color="primary"
+      (click)="openCreateForm()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar 
+      #searchInput
+      placeholder="Search by order name, ID, or buyer..."
+      [value]="searchQuery"
+      (keyup)="onSearchInput($event)"
+      debounce="0"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="searchQuery" class="results-info">
+    <ion-label>
+      Found <strong>{{ orders.length }}</strong> order(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="orders.length > 0">
+    <ion-item *ngFor="let order of orders" class="order-item">
+      <ion-label (click)="openReadForm(order)">
+        <h2>{{ order.orderName }} <ion-badge [color]="order.orderStatus === 'completed' ? 'success' : order.orderStatus === 'pending' ? 'warning' : 'primary'">#{{ order.orderId }}</ion-badge></h2>
+        <p class="details">Product: <strong>{{ order.prodId }}</strong> | Buyer: <strong>{{ order.buyerId }}</strong></p>
+        <p class="pricing">Quantity: {{ order.orderQuantity }} | Price: ₹{{ order.totalPrice }} | Target: {{ order.targetDate | date:'short' }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="secondary" (click)="openUpdateForm(order)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(order)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="orders.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Orders Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchQuery">No orders match your search "{{ searchQuery }}"</p>
+      <p *ngIf="!searchQuery && orders.length === 0">No orders available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadOrders($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more orders...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
+    <ng-template>
+      <app-header 
+        [title]="formMode === 'create' ? 'Create Order' : formMode === 'update' ? 'Update Order' : 'Order Details'"
+        backAction="dismiss"
+        [showBackButton]="true"
+        (backClicked)="closeForm()">
+      </app-header>
+
+      <ion-content>
+        <p>Order Form - To be implemented</p>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

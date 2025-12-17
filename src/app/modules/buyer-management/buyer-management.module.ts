@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 import { BuyerManagementComponent } from './buyer-management.component';
 import { BuyerComponent } from '../../forms/buyer/buyer.component';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @NgModule({
   declarations: [BuyerManagementComponent],
@@ -14,6 +15,7 @@ import { BuyerComponent } from '../../forms/buyer/buyer.component';
     IonicModule,
     ReactiveFormsModule,
     BuyerComponent,
+    HeaderComponent,
     RouterModule.forChild([{ path: '', component: BuyerManagementComponent }])
   ],
   exports: [BuyerManagementComponent],

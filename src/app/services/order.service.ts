@@ -4,30 +4,24 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { API_BASE_URL } from '../config/api.config';
+import { ItemsPerPage } from '../constants/pagination';
+import { Order } from '../models/order.model';
 
-export interface Order {
-  orderIdSeq: number;
-  orderId: string;
-  orderName: string;
-  companyId: string;
-  prodId: string;
-  buyerId: string;
-  orderStatus: string;
-  orderDate: string;
-  targetDate: string;
-  orderQuantity: number;
-  price: string;
-  discount: string;
-  totalPrice: string;
-  createDate: string;
-  updateDate: string;
+export interface OrderResponse {
+  items: Order[];
+  paging: {
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    totalItems: number;
+  };
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private readonly API_URL = `${API_BASE_URL}/orders`;
+  private readonly API_URL = `${API_BASE_URL}/order`;
 
   constructor(
     private http: HttpClient,
@@ -42,8 +36,12 @@ export class OrderService {
     });
   }
 
-  getOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(this.API_URL, {
+  getOrders(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<OrderResponse> {
+    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
+    if (search && search.trim()) {
+      url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    return this.http.get<OrderResponse>(url, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
@@ -58,7 +56,7 @@ export class OrderService {
     );
   }
 
-  createOrder(order: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>): Observable<Order> {
+  createOrder(order: Omit<Order, 'orderIdSeq' | 'createDate' | 'updateDate'>): Observable<Order> {
     return this.http.post<Order>(this.API_URL, order, {
       headers: this.getHeaders()
     }).pipe(
@@ -66,7 +64,7 @@ export class OrderService {
     );
   }
 
-  updateOrder(id: number, order: Partial<Omit<Order, 'id' | 'createdAt' | 'updatedAt'>>): Observable<Order> {
+  updateOrder(id: number, order: Partial<Omit<Order, 'orderIdSeq' | 'createDate'>>): Observable<Order> {
     return this.http.put<Order>(`${this.API_URL}/${id}`, order, {
       headers: this.getHeaders()
     }).pipe(
@@ -74,8 +72,8 @@ export class OrderService {
     );
   }
 
-  deleteOrder(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`, {
+  deleteOrder(id: number): Observable<{message: string}> {
+    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

@@ -1,24 +1,50 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="primary" (click)="goBack()">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Buyers</ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="primary" (click)="openCreateForm()">
-        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header 
+  backAction="back"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="openCreateForm()">
+</app-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let buyer of buyers">
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Buyers</h1>
+      <p class="page-subtitle">Manage your buyer information</p>
+    </div>
+    <ion-button 
+      class="add-button"
+      fill="solid" 
+      color="primary"
+      (click)="openCreateForm()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar 
+      #searchInput
+      placeholder="Search by name, ID, or email..."
+      [value]="searchQuery"
+      (keyup)="onSearchInput($event)"
+      debounce="0"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="searchQuery" class="results-info">
+    <ion-label>
+      Found <strong>{{ buyers.length }}</strong> buyer(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="buyers.length > 0">
+    <ion-item *ngFor="let buyer of buyers" class="buyer-item">
       <ion-label (click)="openReadForm(buyer)">
-        <h2>{{ buyer.buyerName }} ({{ buyer.buyerId }})</h2>
+        <h2>{{ buyer.buyerName }} <ion-badge color="primary">#{{ buyer.buyerId }}</ion-badge></h2>
+        <p class="address">Address: <strong>{{ buyer.buyerAddress }}</strong></p>
+        <p class="contact">Phone: {{ buyer.buyerPhone }} | Email: {{ buyer.buyerEmail }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="secondary" (click)="openUpdateForm(buyer)">
@@ -31,20 +57,29 @@
     </ion-item>
   </ion-list>
 
+  <ion-card *ngIf="buyers.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Buyers Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchQuery">No buyers match your search "{{ searchQuery }}"</p>
+      <p *ngIf="!searchQuery && buyers.length === 0">No buyers available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadBuyers($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more buyers...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
   <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
     <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>
-            {{ formMode === 'create' ? 'Create Buyer' : formMode === 'update' ? 'Update Buyer' : 'Buyer Details' }}
-          </ion-title>
-          <ion-buttons slot="start">
-            <ion-button color="medium" (click)="closeForm()">
-              <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+      <app-header 
+        [title]="formMode === 'create' ? 'Create Buyer' : formMode === 'update' ? 'Update Buyer' : 'Buyer Details'"
+        backAction="dismiss"
+        [showBackButton]="true"
+        (backClicked)="closeForm()">
+      </app-header>
 
       <ion-content>
         <app-buyer

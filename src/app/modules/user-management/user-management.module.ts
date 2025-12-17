@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { UserManagementComponent } from './user-management.component';
 import { UserComponent } from 'src/app/forms/user/user.component';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @NgModule({
   declarations: [UserManagementComponent],
@@ -13,6 +14,7 @@ import { UserComponent } from 'src/app/forms/user/user.component';
     IonicModule,
     FormsModule,
     UserComponent,
+    HeaderComponent,
     RouterModule.forChild([
       { path: '', component: UserManagementComponent },
     ])

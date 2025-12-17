@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
-import { AlertController, NavController } from '@ionic/angular';
-import { Buyer } from 'src/app/models/buyer.model';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Buyer } from '../../models/buyer.model';
+import { BuyerService } from '../../services/buyer.service';
 
 @Component({
   selector: 'app-buyer-management',
@@ -8,26 +11,90 @@ import { Buyer } from 'src/app/models/buyer.model';
   styleUrls: ['./buyer-management.component.scss'],
   standalone: false
 })
-export class BuyerManagementComponent {
+export class BuyerManagementComponent implements OnInit, OnDestroy {
+  @ViewChild('searchInput') searchInput!: IonSearchbar;
+
   buyers: Buyer[] = [];
   formMode: 'create' | 'read' | 'update' | null = null;
   selectedBuyer: Buyer | null = null;
   showForm = false;
+  currentPage = 1;
+  hasMore = true;
+  loading = false;
+  searchQuery: string = '';
 
-  constructor(private alertController: AlertController, private navCtrl: NavController) {
-    this.loadBuyers();
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private alertController: AlertController,
+    private navCtrl: NavController,
+    private buyerService: BuyerService
+  ) {
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.performSearch(query);
+    });
   }
 
   ngOnInit() {
     console.log('Buyer Management Component Initialized');
+    this.loadBuyers();
   }
 
-  // Dummy API to load sample buyers
-  loadBuyers() {
-    this.buyers = [
-      { buyerId: 'B001', buyerName: 'Gamma Corp', address: '789 Gamma Road', phone: '+91 9988776655', email: 'sales@gammacorp.com', gstin: 'GSTIN100' },
-      { buyerId: 'B002', buyerName: 'Delta Enterprises', address: '321 Delta Lane', phone: '+91 8877665544', email: 'contact@deltaent.in', gstin: 'GSTIN200' }
-    ];
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.searchSubject.complete();
+  }
+
+  loadBuyers(event?: any) {
+    if (this.loading || !this.hasMore) return;
+
+    this.loading = true;
+    this.buyerService.getBuyers(this.currentPage, 10, this.searchQuery).subscribe({
+      next: (response) => {
+        if (this.currentPage === 1) {
+          this.buyers = response.items;
+        } else {
+          this.buyers = [...this.buyers, ...response.items];
+        }
+        this.hasMore = response.paging.currentPage < response.paging.totalPages;
+        this.currentPage++;
+        this.loading = false;
+        if (event) event.target.complete();
+      },
+      error: (error) => {
+        console.error('Error loading buyers:', error);
+        this.loading = false;
+        if (event) event.target.complete();
+      }
+    });
+  }
+
+  onSearchInput(event: any) {
+    const value = event.target.value || '';
+    this.searchQuery = value;
+    this.searchSubject.next(value);
+  }
+
+  performSearch(query: string) {
+    this.searchQuery = query;
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.buyers = [];
+    this.loadBuyers();
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    if (this.searchInput) {
+      this.searchInput.value = '';
+    }
+    this.performSearch('');
   }
 
   openCreateForm() {
@@ -37,15 +104,29 @@ export class BuyerManagementComponent {
   }
 
   openReadForm(buyer: Buyer) {
-    this.selectedBuyer = buyer;
-    this.formMode = 'read';
-    this.showForm = true;
+    this.buyerService.getBuyer(buyer.buyerIdSeq).subscribe({
+      next: (buyerDetails) => {
+        this.selectedBuyer = buyerDetails;
+        this.formMode = 'read';
+        this.showForm = true;
+      },
+      error: (error) => {
+        console.error('Error loading buyer details:', error);
+      }
+    });
   }
 
   openUpdateForm(buyer: Buyer) {
-    this.selectedBuyer = buyer;
-    this.formMode = 'update';
-    this.showForm = true;
+    this.buyerService.getBuyer(buyer.buyerIdSeq).subscribe({
+      next: (buyerDetails) => {
+        this.selectedBuyer = buyerDetails;
+        this.formMode = 'update';
+        this.showForm = true;
+      },
+      error: (error) => {
+        console.error('Error loading buyer details:', error);
+      }
+    });
   }
 
   async confirmDelete(buyer: Buyer) {
@@ -69,17 +150,43 @@ export class BuyerManagementComponent {
   }
 
   deleteBuyer(buyer: Buyer) {
-    this.buyers = this.buyers.filter(b => b.buyerId !== buyer.buyerId);
+    this.buyerService.deleteBuyer(buyer.buyerIdSeq).subscribe({
+      next: () => {
+        this.buyers = this.buyers.filter(b => b.buyerIdSeq !== buyer.buyerIdSeq);
+        console.log('Buyer deleted successfully');
+      },
+      error: (error) => {
+        console.error('Error deleting buyer:', error);
+      }
+    });
   }
 
   handleFormSubmit(formData: Buyer) {
     if (this.formMode === 'create') {
-      this.buyers.push(formData);
+      this.buyerService.createBuyer(formData).subscribe({
+        next: (newBuyer) => {
+          this.buyers.unshift(newBuyer);
+          this.closeForm();
+          console.log('Buyer created successfully');
+        },
+        error: (error) => {
+          console.error('Error creating buyer:', error);
+        }
+      });
     } else if (this.formMode === 'update' && this.selectedBuyer) {
-      const index = this.buyers.findIndex(b => b.buyerId === this.selectedBuyer?.buyerId);
-      if (index > -1) {
-        this.buyers[index] = formData;
-      }
+      this.buyerService.updateBuyer(this.selectedBuyer.buyerIdSeq, formData).subscribe({
+        next: (updatedBuyer) => {
+          const index = this.buyers.findIndex(b => b.buyerIdSeq === this.selectedBuyer?.buyerIdSeq);
+          if (index > -1) {
+            this.buyers[index] = updatedBuyer;
+          }
+          this.closeForm();
+          console.log('Buyer updated successfully');
+        },
+        error: (error) => {
+          console.error('Error updating buyer:', error);
+        }
+      });
     }
     this.closeForm();
   }
@@ -90,7 +197,8 @@ export class BuyerManagementComponent {
     this.formMode = null;
   }
 
-  goBack() {
+  onHeaderBackClick() {
+    console.log('Header back button clicked - navigating back');
     this.navCtrl.back();
   }
 }

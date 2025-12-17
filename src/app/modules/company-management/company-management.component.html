@@ -1,28 +1,52 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="primary" (click)="goBack()">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Companies</ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="primary" (click)="openCreateForm()">
-        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header 
+  backAction="back"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="openCreateForm()">
+</app-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let company of companies">
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Companies</h1>
+      <p class="page-subtitle">Manage company information</p>
+    </div>
+    <ion-button 
+      class="add-button"
+      fill="solid" 
+      color="primary"
+      (click)="openCreateForm()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar 
+      #searchInput
+      placeholder="Search by name, ID, or business type..."
+      [value]="searchQuery"
+      (keyup)="onSearchInput($event)"
+      debounce="0"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="searchQuery" class="results-info">
+    <ion-label>
+      Found <strong>{{ companies.length }}</strong> company(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="companies.length > 0">
+    <ion-item *ngFor="let company of companies" class="company-item">
       <ion-label (click)="openReadForm(company)">
-        <h2>{{ company.companyName }} ({{ company.companyId }})</h2>
-        <p>{{ company.businessCons | titlecase }} - {{ company.companyType | titlecase }}</p>
+        <h2>{{ company.companyName }} <ion-badge color="primary">#{{ company.companyId }}</ion-badge></h2>
+        <p class="business">Business: <strong>{{ company.businessCons }}</strong> | Type: <strong>{{ company.companyType }}</strong></p>
+        <p class="contact">Contact: {{ company.propName }} | Phone: {{ company.directPhone }}</p>
       </ion-label>
       <ion-buttons slot="end">
-        <!-- You can optionally add read/view button if needed -->
         <ion-button color="secondary" (click)="openUpdateForm(company)">
           <ion-icon slot="icon-only" name="create-outline"></ion-icon>
         </ion-button>
@@ -33,24 +57,33 @@
     </ion-item>
   </ion-list>
 
+  <ion-card *ngIf="companies.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Companies Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchQuery">No companies match your search "{{ searchQuery }}"</p>
+      <p *ngIf="!searchQuery && companies.length === 0">No companies available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadCompanies($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more companies...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
   <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
     <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>
-            {{ formMode === 'create' ? 'Create Company' : formMode === 'update' ? 'Update Company Detail' : 'Company Details' }}
-          </ion-title>
-          <ion-buttons slot="start">
-            <ion-button color="medium" (click)="closeForm()">
-              <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+      <app-header 
+        [title]="formMode === 'create' ? 'Create Company' : formMode === 'update' ? 'Update Company' : 'Company Details'"
+        backAction="dismiss"
+        [showBackButton]="true"
+        (backClicked)="closeForm()">
+      </app-header>
 
       <ion-content>
         <app-company
-          [mode]="formMode"
+          [mode]="formMode!"
           [formData]="selectedCompany"
           (formSubmit)="handleFormSubmit($event)"
           (formClosed)="closeForm()">

@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
-import { AlertController, NavController } from '@ionic/angular';
-import { Machine } from 'src/app/models/machine.model';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Machine } from '../../models/machine.model';
+import { MachineService } from '../../services/machine.service';
 
 @Component({
   selector: 'app-machine-management',
@@ -8,22 +11,90 @@ import { Machine } from 'src/app/models/machine.model';
   styleUrls: ['./machine-management.component.scss'],
   standalone: false
 })
-export class MachineManagementComponent {
+export class MachineManagementComponent implements OnInit, OnDestroy {
+  @ViewChild('searchInput') searchInput!: IonSearchbar;
+
   machines: Machine[] = [];
   formMode: 'create' | 'read' | 'update' | null = null;
   selectedMachine: Machine | null = null;
   showForm = false;
+  currentPage = 1;
+  hasMore = true;
+  loading = false;
+  searchQuery: string = '';
 
-  constructor(private alertController: AlertController, private navCtrl: NavController) {
-    // Sample data
-    this.machines = [
-      { machineId: 'M001', machineName: 'Cutter', workType: 'Cutting', shortName: 'Cut', process: 'Cut Process' },
-      { machineId: 'M002', machineName: 'Welder', workType: 'Welding', shortName: 'Wld', process: 'Weld Process' }
-    ];
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private alertController: AlertController,
+    private navCtrl: NavController,
+    private machineService: MachineService
+  ) {
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.performSearch(query);
+    });
   }
 
   ngOnInit() {
     console.log('Machine Management Component Initialized');
+    this.loadMachines();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.searchSubject.complete();
+  }
+
+  loadMachines(event?: any) {
+    if (this.loading || !this.hasMore) return;
+
+    this.loading = true;
+    this.machineService.getMachines(this.currentPage, 10, this.searchQuery).subscribe({
+      next: (response) => {
+        if (this.currentPage === 1) {
+          this.machines = response.items;
+        } else {
+          this.machines = [...this.machines, ...response.items];
+        }
+        this.hasMore = response.paging.currentPage < response.paging.totalPages;
+        this.currentPage++;
+        this.loading = false;
+        if (event) event.target.complete();
+      },
+      error: (error) => {
+        console.error('Error loading machines:', error);
+        this.loading = false;
+        if (event) event.target.complete();
+      }
+    });
+  }
+
+  onSearchInput(event: any) {
+    const value = event.target.value || '';
+    this.searchQuery = value;
+    this.searchSubject.next(value);
+  }
+
+  performSearch(query: string) {
+    this.searchQuery = query;
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.machines = [];
+    this.loadMachines();
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    if (this.searchInput) {
+      this.searchInput.value = '';
+    }
+    this.performSearch('');
   }
 
   openCreateForm() {
@@ -33,15 +104,29 @@ export class MachineManagementComponent {
   }
 
   openReadForm(machine: Machine) {
-    this.selectedMachine = machine;
-    this.formMode = 'read';
-    this.showForm = true;
+    this.machineService.getMachine(machine.machineIdSeq).subscribe({
+      next: (machineDetails) => {
+        this.selectedMachine = machineDetails;
+        this.formMode = 'read';
+        this.showForm = true;
+      },
+      error: (error) => {
+        console.error('Error loading machine details:', error);
+      }
+    });
   }
 
   openUpdateForm(machine: Machine) {
-    this.selectedMachine = machine;
-    this.formMode = 'update';
-    this.showForm = true;
+    this.machineService.getMachine(machine.machineIdSeq).subscribe({
+      next: (machineDetails) => {
+        this.selectedMachine = machineDetails;
+        this.formMode = 'update';
+        this.showForm = true;
+      },
+      error: (error) => {
+        console.error('Error loading machine details:', error);
+      }
+    });
   }
 
   async confirmDelete(machine: Machine) {
@@ -65,19 +150,43 @@ export class MachineManagementComponent {
   }
 
   deleteMachine(machine: Machine) {
-    this.machines = this.machines.filter(m => m.machineId !== machine.machineId);
+    this.machineService.deleteMachine(machine.machineIdSeq).subscribe({
+      next: () => {
+        this.machines = this.machines.filter(m => m.machineIdSeq !== machine.machineIdSeq);
+        console.log('Machine deleted successfully');
+      },
+      error: (error) => {
+        console.error('Error deleting machine:', error);
+      }
+    });
   }
 
   handleFormSubmit(formData: Machine) {
     if (this.formMode === 'create') {
-      // Add new machine
-      this.machines.push(formData);
+      this.machineService.createMachine(formData).subscribe({
+        next: (newMachine) => {
+          this.machines.unshift(newMachine);
+          this.closeForm();
+          console.log('Machine created successfully');
+        },
+        error: (error) => {
+          console.error('Error creating machine:', error);
+        }
+      });
     } else if (this.formMode === 'update' && this.selectedMachine) {
-      // Update existing machine
-      const index = this.machines.findIndex(m => m.machineId === this.selectedMachine?.machineId);
-      if (index > -1) {
-        this.machines[index] = formData;
-      }
+      this.machineService.updateMachine(this.selectedMachine.machineIdSeq, formData).subscribe({
+        next: (updatedMachine) => {
+          const index = this.machines.findIndex(m => m.machineIdSeq === this.selectedMachine?.machineIdSeq);
+          if (index > -1) {
+            this.machines[index] = updatedMachine;
+          }
+          this.closeForm();
+          console.log('Machine updated successfully');
+        },
+        error: (error) => {
+          console.error('Error updating machine:', error);
+        }
+      });
     }
     this.closeForm();
   }
@@ -88,7 +197,8 @@ export class MachineManagementComponent {
     this.formMode = null;
   }
 
-  goBack() {
+  onHeaderBackClick() {
+    console.log('Header back button clicked - navigating back');
     this.navCtrl.back();
   }
 }

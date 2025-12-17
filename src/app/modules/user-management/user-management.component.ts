@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { User } from 'src/app/models/user.model';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { User } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-management',
@@ -8,30 +11,85 @@ import { User } from 'src/app/models/user.model';
   styleUrls: ['./user-management.component.scss'],
   standalone: false
 })
-export class UserManagementComponent {
-  users: User[] = [
-    {
-      username: 'admin',
-      password: 'password123',
-      userType: 'admin',
-      firstname: 'John',
-      lastname: 'Doe',
-      email: 'john.doe@smartsme.co.in',
-      mobile: '+91 9876543210',
-      address: '123 Main Street, Chennai, Tamil Nadu',
-      gstin: ''
-    }
-  ];
+export class UserManagementComponent implements OnInit, OnDestroy {
+  @ViewChild('searchInput') searchInput!: IonSearchbar;
 
-  formMode: 'create' | 'read' | 'update' = 'create';
+  users: User[] = [];
+  formMode: 'create' | 'read' | 'update' | null = null;
   selectedUser: User | null = null;
   showForm = false;
+  currentPage = 1;
+  hasMore = true;
+  loading = false;
+  searchQuery: string = '';
 
-  constructor(private alertController: AlertController) {}
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
-  goBack() {
-    // navigate back using router or your own logic
-    history.back();
+  constructor(
+    private alertController: AlertController,
+    private navCtrl: NavController,
+    private userService: UserService
+  ) {
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.performSearch(query);
+    });
+  }
+
+  ngOnInit() {
+    this.loadUsers();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.searchSubject.complete();
+  }
+
+  loadUsers(event?: any) {
+    if (this.loading || !this.hasMore) return;
+    this.loading = true;
+    this.userService.getUsers(this.currentPage, 10, this.searchQuery).subscribe({
+      next: (response) => {
+        if (this.currentPage === 1) {
+          this.users = response.items;
+        } else {
+          this.users = [...this.users, ...response.items];
+        }
+        this.hasMore = response.paging.currentPage < response.paging.totalPages;
+        this.currentPage++;
+        this.loading = false;
+        if (event) event.target.complete();
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+        this.loading = false;
+        if (event) event.target.complete();
+      }
+    });
+  }
+
+  onSearchInput(event: any) {
+    this.searchQuery = event.target.value || '';
+    this.searchSubject.next(this.searchQuery);
+  }
+
+  performSearch(query: string) {
+    this.searchQuery = query;
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.users = [];
+    this.loadUsers();
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    if (this.searchInput) this.searchInput.value = '';
+    this.performSearch('');
   }
 
   openCreateForm() {
@@ -41,15 +99,23 @@ export class UserManagementComponent {
   }
 
   openReadForm(user: User) {
-    this.selectedUser = user;
-    this.formMode = 'read';
-    this.showForm = true;
+    this.userService.getUser(user.id).subscribe({
+      next: (userDetails) => {
+        this.selectedUser = userDetails;
+        this.formMode = 'read';
+        this.showForm = true;
+      }
+    });
   }
 
   openUpdateForm(user: User) {
-    this.selectedUser = { ...user };
-    this.formMode = 'update';
-    this.showForm = true;
+    this.userService.getUser(user.id).subscribe({
+      next: (userDetails) => {
+        this.selectedUser = userDetails;
+        this.formMode = 'update';
+        this.showForm = true;
+      }
+    });
   }
 
   async confirmDelete(user: User) {
@@ -58,32 +124,46 @@ export class UserManagementComponent {
       message: `Delete user "${user.username}"?`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Delete',
-          handler: () => this.deleteUser(user)
-        }
+        { text: 'Delete', handler: () => this.deleteUser(user) }
       ]
     });
     await alert.present();
   }
 
   deleteUser(user: User) {
-    this.users = this.users.filter(u => u.username !== user.username);
+    this.userService.deleteUser(user.id).subscribe({
+      next: () => {
+        this.users = this.users.filter(u => u.id !== user.id);
+      }
+    });
   }
 
   handleFormSubmit(formData: User) {
     if (this.formMode === 'create') {
-      this.users.push(formData);
+      this.userService.createUser(formData).subscribe({
+        next: (newUser) => {
+          this.users.unshift(newUser);
+          this.closeForm();
+        }
+      });
     } else if (this.formMode === 'update' && this.selectedUser) {
-      const idx = this.users.findIndex(u => u.username === this.selectedUser?.username);
-      if (idx > -1) this.users[idx] = formData;
+      this.userService.updateUser(this.selectedUser.id, formData).subscribe({
+        next: (updatedUser) => {
+          const index = this.users.findIndex(u => u.id === this.selectedUser?.id);
+          if (index > -1) this.users[index] = updatedUser;
+          this.closeForm();
+        }
+      });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedUser = null;
-    this.formMode = 'create';
+    this.formMode = null;
+  }
+
+  onHeaderBackClick() {
+    this.navCtrl.back();
   }
 }

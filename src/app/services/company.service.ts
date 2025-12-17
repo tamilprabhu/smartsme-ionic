@@ -3,13 +3,25 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
-import { Company, CompanyListResponse } from '../models/company.model';
 import { API_BASE_URL } from '../config/api.config';
+import { ItemsPerPage } from '../constants/pagination';
+import { Company } from '../models/company.model';
+
+export interface CompanyResponse {
+  items: Company[];
+  paging: {
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    totalItems: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyService {
-  private readonly API_URL = `${API_BASE_URL}/companies`;
+  private readonly API_URL = `${API_BASE_URL}/company`;
 
   constructor(
     private http: HttpClient,
@@ -24,41 +36,44 @@ export class CompanyService {
     });
   }
 
-  getCompanies(page: number = 1, limit: number = 10, search: string = ''): Observable<CompanyListResponse> {
-    const params = `?page=${page}&limit=${limit}&search=${search}`;
-    return this.http.get<CompanyListResponse>(`${this.API_URL}${params}`, {
+  getCompanies(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<CompanyResponse> {
+    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
+    if (search && search.trim()) {
+      url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    return this.http.get<CompanyResponse>(url, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  getCompany(companyIdSeq: number): Observable<Company> {
-    return this.http.get<Company>(`${this.API_URL}/${companyIdSeq}`, {
+  getCompany(id: number): Observable<Company> {
+    return this.http.get<Company>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  createCompany(company: Omit<Company, 'companyIdSeq' | 'createDate' | 'updateDate'>): Observable<any> {
-    return this.http.post(this.API_URL, company, {
+  createCompany(company: Omit<Company, 'companyIdSeq' | 'createDate' | 'updateDate'>): Observable<Company> {
+    return this.http.post<Company>(this.API_URL, company, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  updateCompany(companyIdSeq: number, company: Partial<Company>): Observable<any> {
-    return this.http.put(`${this.API_URL}/${companyIdSeq}`, company, {
+  updateCompany(id: number, company: Partial<Omit<Company, 'companyIdSeq' | 'createDate'>>): Observable<Company> {
+    return this.http.put<Company>(`${this.API_URL}/${id}`, company, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  deleteCompany(companyIdSeq: number): Observable<any> {
-    return this.http.delete(`${this.API_URL}/${companyIdSeq}`, {
+  deleteCompany(id: number): Observable<{message: string}> {
+    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

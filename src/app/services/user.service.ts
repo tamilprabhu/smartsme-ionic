@@ -4,19 +4,17 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { API_BASE_URL } from '../config/api.config';
+import { ItemsPerPage } from '../constants/pagination';
+import { User } from '../models/user.model';
 
-export interface User {
-  id?: number;
-  username: string;
-  firstName: string;
-  lastName: string;
-  name: string;
-  email: string;
-  mobile: string;
-  address: string;
-  password?: string;
-  createdDate?: string;
-  updatedDate?: string;
+export interface UserResponse {
+  items: User[];
+  paging: {
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    totalItems: number;
+  };
 }
 
 @Injectable({
@@ -38,8 +36,12 @@ export class UserService {
     });
   }
 
-  getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.API_URL, {
+  getUsers(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<UserResponse> {
+    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
+    if (search && search.trim()) {
+      url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    return this.http.get<UserResponse>(url, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
@@ -62,7 +64,7 @@ export class UserService {
     );
   }
 
-  updateUser(id: number, user: Partial<Omit<User, 'id' | 'createdDate' | 'updatedDate'>>): Observable<User> {
+  updateUser(id: number, user: Partial<Omit<User, 'id' | 'createdDate'>>): Observable<User> {
     return this.http.put<User>(`${this.API_URL}/${id}`, user, {
       headers: this.getHeaders()
     }).pipe(
@@ -70,8 +72,8 @@ export class UserService {
     );
   }
 
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`, {
+  deleteUser(id: number): Observable<{message: string}> {
+    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

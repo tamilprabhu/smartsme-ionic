@@ -53,18 +53,14 @@
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
-              <ion-select
+              <ion-input
                 labelPlacement="floating"
-                label="User Type *"
-                name="userType"
-                [(ngModel)]="model.userType"
-                [disabled]="mode === 'read'"
-                (ionChange)="onUserTypeChange($event)"
+                label="Full Name *"
+                name="name"
+                [(ngModel)]="model.name"
+                [readonly]="mode === 'read'"
                 required>
-                <ion-select-option value="admin">Admin</ion-select-option>
-                <ion-select-option value="seller">Seller</ion-select-option>
-                <ion-select-option value="buyer">Buyer</ion-select-option>
-              </ion-select>
+              </ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -76,8 +72,8 @@
               <ion-input
                 labelPlacement="floating"
                 label="First Name *"
-                name="firstname"
-                [(ngModel)]="model.firstname"
+                name="firstName"
+                [(ngModel)]="model.firstName"
                 [readonly]="mode === 'read'"
                 required>
               </ion-input>
@@ -92,8 +88,8 @@
               <ion-input
                 labelPlacement="floating"
                 label="Last Name *"
-                name="lastname"
-                [(ngModel)]="model.lastname"
+                name="lastName"
+                [(ngModel)]="model.lastName"
                 [readonly]="mode === 'read'"
                 required>
               </ion-input>
@@ -148,22 +144,6 @@
                 rows="3"
                 required>
               </ion-textarea>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-
-        <!-- GSTIN -->
-        <ion-row *ngIf="showGSTIN">
-          <ion-col size="12">
-            <ion-item fill="outline" class="ion-margin-bottom">
-              <ion-input
-                labelPlacement="floating"
-                label="GSTIN"
-                placeholder="Enter GSTIN"
-                name="gstin"
-                [(ngModel)]="model.gstin"
-                [readonly]="mode === 'read'">
-              </ion-input>
             </ion-item>
           </ion-col>
         </ion-row>

@@ -1,24 +1,50 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="primary" (click)="goBack()">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Sellers</ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="primary" (click)="openCreateForm()">
-        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header 
+  backAction="back"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="openCreateForm()">
+</app-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let seller of sellers">
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Sellers</h1>
+      <p class="page-subtitle">Manage your seller information</p>
+    </div>
+    <ion-button 
+      class="add-button"
+      fill="solid" 
+      color="primary"
+      (click)="openCreateForm()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar 
+      #searchInput
+      placeholder="Search by name, ID, or email..."
+      [value]="searchQuery"
+      (keyup)="onSearchInput($event)"
+      debounce="0"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="searchQuery" class="results-info">
+    <ion-label>
+      Found <strong>{{ sellers.length }}</strong> seller(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="sellers.length > 0">
+    <ion-item *ngFor="let seller of sellers" class="seller-item">
       <ion-label (click)="openReadForm(seller)">
-        <h2>{{ seller.sellerName }} ({{ seller.sellerId }})</h2>
+        <h2>{{ seller.sellerName }} <ion-badge color="primary">#{{ seller.sellerId }}</ion-badge></h2>
+        <p class="address">Address: <strong>{{ seller.sellerAddress }}</strong></p>
+        <p class="contact">Phone: {{ seller.sellerPhone }} | Email: {{ seller.sellerEmail }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="secondary" (click)="openUpdateForm(seller)">
@@ -31,24 +57,33 @@
     </ion-item>
   </ion-list>
 
+  <ion-card *ngIf="sellers.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Sellers Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchQuery">No sellers match your search "{{ searchQuery }}"</p>
+      <p *ngIf="!searchQuery && sellers.length === 0">No sellers available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadSellers($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more sellers...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
   <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
     <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>
-            {{ formMode === 'create' ? 'Create Seller' : formMode === 'update' ? 'Update Seller' : 'Seller Details' }}
-          </ion-title>
-          <ion-buttons slot="start">
-            <ion-button color="medium" (click)="closeForm()">
-              <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+      <app-header 
+        [title]="formMode === 'create' ? 'Create Seller' : formMode === 'update' ? 'Update Seller' : 'Seller Details'"
+        backAction="dismiss"
+        [showBackButton]="true"
+        (backClicked)="closeForm()">
+      </app-header>
 
       <ion-content>
         <app-sellers
-          [mode]="formMode"
+          [mode]="formMode!"
           [formData]="selectedSeller"
           (formSubmit)="handleFormSubmit($event)"
           (formClosed)="closeForm()">

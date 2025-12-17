@@ -9,7 +9,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { User } from 'src/app/models/user.model';
 
 @Component({
-  selector: 'app-users',
+  selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
   standalone: true,
@@ -22,20 +22,19 @@ export class UserComponent implements OnInit, OnChanges {
   @Output() formSubmit = new EventEmitter<User>();
   @Output() formClosed = new EventEmitter<void>();
 
-  // used by template [(ngModel)]
   model: User = {
+    id: 0,
     username: '',
-    password: '',
-    userType: 'admin',
-    firstname: '',
-    lastname: '',
+    firstName: '',
+    lastName: '',
+    name: '',
     email: '',
     mobile: '',
     address: '',
-    gstin: ''
+    password: '',
+    createdDate: '',
+    updatedDate: ''
   };
-
-  showGSTIN = false;
 
   constructor(private location: Location) {}
 
@@ -43,17 +42,14 @@ export class UserComponent implements OnInit, OnChanges {
     if (this.formData) {
       this.patchModel(this.formData);
     }
-    this.updateGSTINVisibility(this.model.userType);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['formData'] && this.formData) {
       this.patchModel(this.formData);
-      this.updateGSTINVisibility(this.model.userType);
     }
     if (changes['mode'] && this.mode === 'create') {
       this.resetModel();
-      this.updateGSTINVisibility(this.model.userType);
     }
   }
 
@@ -63,30 +59,22 @@ export class UserComponent implements OnInit, OnChanges {
 
   private resetModel() {
     this.model = {
+      id: 0,
       username: '',
-      password: '',
-      userType: 'admin',
-      firstname: '',
-      lastname: '',
+      firstName: '',
+      lastName: '',
+      name: '',
       email: '',
       mobile: '',
       address: '',
-      gstin: ''
+      password: '',
+      createdDate: '',
+      updatedDate: ''
     };
   }
 
   goBack() {
     this.formClosed.emit();
-  }
-
-  onUserTypeChange(event: any) {
-    const userType = event.detail.value;
-    this.model.userType = userType;
-    this.updateGSTINVisibility(userType);
-  }
-
-  private updateGSTINVisibility(userType: string) {
-    this.showGSTIN = userType === 'seller' || userType === 'buyer';
   }
 
   onSubmit(form: NgForm) {
@@ -99,6 +87,5 @@ export class UserComponent implements OnInit, OnChanges {
     this.formSubmit.emit({ ...this.model });
     form.resetForm();
     this.resetModel();
-    this.updateGSTINVisibility(this.model.userType);
   }
 }

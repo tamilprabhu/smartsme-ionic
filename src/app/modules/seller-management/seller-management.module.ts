@@ -5,7 +5,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { SellerManagementComponent } from './seller-management.component';
-import { SellerComponent } from '../../forms/seller/seller.component'; // Adjust path if needed
+import { SellerComponent } from '../../forms/seller/seller.component';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @NgModule({
   declarations: [SellerManagementComponent],
@@ -15,6 +16,7 @@ import { SellerComponent } from '../../forms/seller/seller.component'; // Adjust
     ReactiveFormsModule,
     FormsModule,
     SellerComponent,
+    HeaderComponent,
     RouterModule.forChild([{ path: '', component: SellerManagementComponent }])
   ],
   exports: [SellerManagementComponent],

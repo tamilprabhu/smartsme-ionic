@@ -24,6 +24,18 @@ const routes: Routes = [
         loadChildren: () => import('../production-shift/production-shift.module').then(m => m.ProductionShiftPageModule)
       },
       {
+        path: 'dispatch-management',
+        loadChildren: () => import('../dispatch-management/dispatch-management.module').then(m => m.DispatchManagementModule)
+      },
+      {
+        path: 'stock-management',
+        loadChildren: () => import('../stock-management/stock-management.module').then(m => m.StockManagementModule)
+      },
+      {
+        path: 'order-management',
+        loadChildren: () => import('../order-management/order-management.module').then(m => m.OrderManagementModule)
+      },
+      {
         path: 'menu',
         redirectTo: '',  // Redirects to root or specify the current path segment
         pathMatch: 'full'

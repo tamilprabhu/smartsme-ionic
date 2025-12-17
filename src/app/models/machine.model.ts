@@ -1,7 +1,12 @@
 export interface Machine {
-    machineId?: string | number;
-    machineName?: string;
-    workType?: string;
-    shortName?: string;
-    process?: string;
+  machineIdSeq: number;
+  machineId: string;
+  companyId: string;
+  machineName: string;
+  machineType: string;
+  capacity: string;
+  model: string;
+  activeFlag: string;
+  createDate: string;
+  updateDate: string;
 }

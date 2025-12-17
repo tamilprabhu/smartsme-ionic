@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
-import { AlertController, NavController } from '@ionic/angular';
-import { Company } from 'src/app/models/company.model';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Company } from '../../models/company.model';
+import { CompanyService } from '../../services/company.service';
 
 @Component({
   selector: 'app-company-management',
@@ -8,35 +11,90 @@ import { Company } from 'src/app/models/company.model';
   styleUrls: ['./company-management.component.scss'],
   standalone: false
 })
-export class CompanyManagementComponent {
+export class CompanyManagementComponent implements OnInit, OnDestroy {
+  @ViewChild('searchInput') searchInput!: IonSearchbar;
+
   companies: Company[] = [];
-  formMode: 'create' | 'read' | 'update' = 'create';
+  formMode: 'create' | 'read' | 'update' | null = null;
   selectedCompany: Company | null = null;
   showForm = false;
+  currentPage = 1;
+  hasMore = true;
+  loading = false;
+  searchQuery: string = '';
+
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private alertController: AlertController,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private companyService: CompanyService
   ) {
-    // Sample data for demo
-    this.companies = [
-      {
-        companyId: 'COMP001',
-        companyName: 'Acme Corp',
-        businessCons: 'corporation',
-        companyType: 'large scale',
-        address: '123 Main St',
-        pincode: 560001,
-        propName: 'John Doe',
-        directPhone: '1234567890',
-        officePhone: '0987654321',
-        mgmtPhone: '',
-        mailId: 'info@acme.com',
-        natureOfBusiness: 'manufacturing',
-        authPerson: 'Jane Manager',
-        mobileNo: '9876543210'
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.performSearch(query);
+    });
+  }
+
+  ngOnInit() {
+    console.log('Company Management Component Initialized');
+    this.loadCompanies();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.searchSubject.complete();
+  }
+
+  loadCompanies(event?: any) {
+    if (this.loading || !this.hasMore) return;
+
+    this.loading = true;
+    this.companyService.getCompanies(this.currentPage, 10, this.searchQuery).subscribe({
+      next: (response) => {
+        if (this.currentPage === 1) {
+          this.companies = response.items;
+        } else {
+          this.companies = [...this.companies, ...response.items];
+        }
+        this.hasMore = response.paging.currentPage < response.paging.totalPages;
+        this.currentPage++;
+        this.loading = false;
+        if (event) event.target.complete();
+      },
+      error: (error) => {
+        console.error('Error loading companies:', error);
+        this.loading = false;
+        if (event) event.target.complete();
       }
-    ];
+    });
+  }
+
+  onSearchInput(event: any) {
+    const value = event.target.value || '';
+    this.searchQuery = value;
+    this.searchSubject.next(value);
+  }
+
+  performSearch(query: string) {
+    this.searchQuery = query;
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.companies = [];
+    this.loadCompanies();
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    if (this.searchInput) {
+      this.searchInput.value = '';
+    }
+    this.performSearch('');
   }
 
   openCreateForm() {
@@ -46,39 +104,89 @@ export class CompanyManagementComponent {
   }
 
   openReadForm(company: Company) {
-    this.selectedCompany = company;
-    this.formMode = 'read';
-    this.showForm = true;
+    this.companyService.getCompany(company.companyIdSeq!).subscribe({
+      next: (companyDetails) => {
+        this.selectedCompany = companyDetails;
+        this.formMode = 'read';
+        this.showForm = true;
+      },
+      error: (error) => {
+        console.error('Error loading company details:', error);
+      }
+    });
   }
 
   openUpdateForm(company: Company) {
-    this.selectedCompany = { ...company };
-    this.formMode = 'update';
-    this.showForm = true;
+    this.companyService.getCompany(company.companyIdSeq!).subscribe({
+      next: (companyDetails) => {
+        this.selectedCompany = companyDetails;
+        this.formMode = 'update';
+        this.showForm = true;
+      },
+      error: (error) => {
+        console.error('Error loading company details:', error);
+      }
+    });
   }
 
   async confirmDelete(company: Company) {
     const alert = await this.alertController.create({
       header: 'Confirm Delete',
-      message: `Delete "${company.companyName}"?`,
+      message: `Are you sure you want to delete company "${company.companyName}"?`,
       buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Delete', handler: () => this.deleteCompany(company) }
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.deleteCompany(company);
+          }
+        }
       ]
     });
     await alert.present();
   }
 
   deleteCompany(company: Company) {
-    this.companies = this.companies.filter(c => c.companyId !== company.companyId);
+    this.companyService.deleteCompany(company.companyIdSeq!).subscribe({
+      next: () => {
+        this.companies = this.companies.filter(c => c.companyIdSeq !== company.companyIdSeq);
+        console.log('Company deleted successfully');
+      },
+      error: (error) => {
+        console.error('Error deleting company:', error);
+      }
+    });
   }
 
   handleFormSubmit(formData: Company) {
     if (this.formMode === 'create') {
-      this.companies.push(formData);
-    } else if (this.formMode === 'update' && formData.companyId) {
-      const index = this.companies.findIndex(c => c.companyId === formData.companyId);
-      if (index > -1) this.companies[index] = formData;
+      this.companyService.createCompany(formData).subscribe({
+        next: (newCompany) => {
+          this.companies.unshift(newCompany);
+          this.closeForm();
+          console.log('Company created successfully');
+        },
+        error: (error) => {
+          console.error('Error creating company:', error);
+        }
+      });
+    } else if (this.formMode === 'update' && this.selectedCompany) {
+      this.companyService.updateCompany(this.selectedCompany.companyIdSeq!, formData).subscribe({
+        next: (updatedCompany) => {
+          const index = this.companies.findIndex(c => c.companyIdSeq === this.selectedCompany?.companyIdSeq);
+          if (index > -1) {
+            this.companies[index] = updatedCompany;
+          }
+          this.closeForm();
+          console.log('Company updated successfully');
+        },
+        error: (error) => {
+          console.error('Error updating company:', error);
+        }
+      });
     }
     this.closeForm();
   }
@@ -86,10 +194,11 @@ export class CompanyManagementComponent {
   closeForm() {
     this.showForm = false;
     this.selectedCompany = null;
-    this.formMode = 'create';
+    this.formMode = null;
   }
 
-  goBack() {
+  onHeaderBackClick() {
+    console.log('Header back button clicked - navigating back');
     this.navCtrl.back();
   }
 }
