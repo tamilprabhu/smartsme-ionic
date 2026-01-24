@@ -7,7 +7,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 import { HeaderComponent } from '../../components/header/header.component';
 
 import { ProductionShiftPageRoutingModule } from './production-shift-routing.module';
-import { ProductionEntryComponent } from 'src/app/production-entry/production-entry.component';
+import { ProductionEntryComponent } from 'src/app/forms/production-entry/production-entry.component';
 
 @NgModule({
   imports: [

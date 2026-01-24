@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChange
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { FooterComponent } from '../components/footer/footer.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 import { ProductionEntry, ProductionShift } from 'src/app/models/production-shift.model';
 
 @Component({
