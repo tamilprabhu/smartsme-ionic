@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Stock } from '../../models/stock.model';
 import { StockService } from '../../services/stock.service';
+import { OperationsService } from 'src/app/services/operations.service';
 
 @Component({
   selector: 'app-stock-management',
@@ -29,7 +30,8 @@ export class StockManagementComponent implements OnInit, OnDestroy {
   constructor(
     private alertController: AlertController,
     private navCtrl: NavController,
-    private stockService: StockService
+    private stockService: StockService,
+    private operationsService: OperationsService
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -199,6 +201,6 @@ export class StockManagementComponent implements OnInit, OnDestroy {
 
   onHeaderBackClick() {
     console.log('Header back button clicked - navigating back');
-    this.navCtrl.back();
+    this.operationsService.navigateToOperations();
   }
 }

@@ -47,6 +47,10 @@ export class OperationsPage {
 
   navigateTo(operation: string) {
     console.log(`Navigating to operation: ${operation}`);
+    // Blur any focused element to prevent aria-hidden conflict
+    if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+    }
     if (operation === 'Production Entry') {
       this.router.navigate(['/tabs/production-shift']);
     } else if (operation === 'Dispatch') {

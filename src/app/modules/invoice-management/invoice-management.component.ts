@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Invoice } from '../../models/invoice.model';
 import { InvoiceService } from '../../services/invoice.service';
+import { OperationsService } from 'src/app/services/operations.service';
 
 @Component({
   selector: 'app-invoice-management',
@@ -29,7 +30,8 @@ export class InvoiceManagementComponent implements OnInit, OnDestroy {
   constructor(
     private alertController: AlertController,
     private navController: NavController,
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private operationsService: OperationsService
   ) {}
 
   ngOnInit() {
@@ -97,7 +99,12 @@ export class InvoiceManagementComponent implements OnInit, OnDestroy {
   }
 
   onHeaderBackClick() {
-    this.navController.back();
+    // Blur any focused element to prevent aria-hidden conflict
+    // if (document.activeElement instanceof HTMLElement) {
+    //   document.activeElement.blur();
+    // }
+    // this.navController.navigateRoot('/tabs/operations');
+    this.operationsService.navigateToOperations();
   }
 
   openCreateForm() {

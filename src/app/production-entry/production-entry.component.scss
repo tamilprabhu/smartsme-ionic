@@ -1,0 +1,18 @@
+ion-card {
+  --box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  margin: 16px;
+}
+
+ion-item {
+  --border-radius: 8px;
+  --background: var(--ion-color-light);
+}
+
+@media (max-width: 768px) {
+  .row {
+    margin: 0 -8px;
+  }
+  [class*="col-"] {
+    padding: 0 8px;
+  }
+}

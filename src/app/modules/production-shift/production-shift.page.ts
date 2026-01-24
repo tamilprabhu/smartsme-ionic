@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { ProductionShift } from '../../models/production-shift.model';
+import { ProductionEntry, ProductionShift } from '../../models/production-shift.model';
 import { ProductionShiftService } from '../../services/production-shift.service';
+import { OperationsService } from 'src/app/services/operations.service';
 
 @Component({
   selector: 'app-production-shift',
@@ -29,7 +30,8 @@ export class ProductionShiftPage implements OnInit, OnDestroy {
   constructor(
     private alertController: AlertController,
     private navCtrl: NavController,
-    private productionShiftService: ProductionShiftService
+    private productionShiftService: ProductionShiftService,
+    private operationsService: OperationsService
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -164,6 +166,6 @@ export class ProductionShiftPage implements OnInit, OnDestroy {
   }
 
   onHeaderBackClick() {
-    this.navCtrl.back();
+    this.operationsService.navigateToOperations();
   }
 }

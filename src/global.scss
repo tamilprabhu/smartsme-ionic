@@ -170,3 +170,18 @@ div {
     background: var(--ion-background-color);
     box-shadow: none;
 }
+
+// Search Card Styles
+.search-card {
+  margin: 16px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0px;
+}
+
+.search-card ion-searchbar {
+  --background: transparent;
+  --border-radius: 8px;
+  padding: 4px;
+}

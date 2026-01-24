@@ -7,6 +7,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 import { HeaderComponent } from '../../components/header/header.component';
 
 import { ProductionShiftPageRoutingModule } from './production-shift-routing.module';
+import { ProductionEntryComponent } from 'src/app/production-entry/production-entry.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { ProductionShiftPageRoutingModule } from './production-shift-routing.mod
     FormsModule,
     ExploreContainerComponentModule,
     HeaderComponent,
+    ProductionEntryComponent,
     ProductionShiftPageRoutingModule
   ],
   declarations: [ProductionShiftPage]

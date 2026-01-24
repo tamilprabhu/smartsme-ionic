@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Dispatch } from '../../models/dispatch.model';
 import { DispatchService } from '../../services/dispatch.service';
+import { OperationsService } from 'src/app/services/operations.service';
 
 @Component({
   selector: 'app-dispatch-management',
@@ -29,7 +30,8 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   constructor(
     private alertController: AlertController,
     private navCtrl: NavController,
-    private dispatchService: DispatchService
+    private dispatchService: DispatchService,
+    private operationsService: OperationsService
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -199,6 +201,6 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
 
   onHeaderBackClick() {
     console.log('Header back button clicked - navigating back');
-    this.navCtrl.back();
+    this.operationsService.navigateToOperations();
   }
 }
