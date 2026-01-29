@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ProductionEntry, ProductionShift } from '../../models/production-shift.model';
 import { ProductionShiftService } from '../../services/production-shift.service';
 import { OperationsService } from 'src/app/services/operations.service';
+import { ShiftType } from '../../enums/shift-type.enum';
 
 @Component({
   selector: 'app-production-shift',
@@ -23,6 +24,7 @@ export class ProductionShiftPage implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  ShiftType = ShiftType;
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();

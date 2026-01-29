@@ -64,7 +64,7 @@
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-select formControlName="shiftType" label="Shift Type" label-placement="floating" [disabled]="isShiftTypeDisabled || mode === 'read'">
-                <ion-select-option *ngFor="let type of shiftTypes" [value]="type">{{type}}</ion-select-option>
+                <ion-select-option *ngFor="let type of shiftTypes" [value]="type.value">{{type.label}}</ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>
@@ -116,14 +116,14 @@
           <ion-col size="12" size-md="6">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-select formControlName="operator1" label="Operator 1 *" label-placement="floating" [disabled]="mode === 'read'">
-                <ion-select-option *ngFor="let user of users" [value]="user">{{user}}</ion-select-option>
+                <ion-select-option *ngFor="let user of users" [value]="user.value">{{user.label}}</ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>
           <ion-col size="12" size-md="6">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-select formControlName="operator2" label="Operator 2" label-placement="floating" [disabled]="mode === 'read'">
-                <ion-select-option *ngFor="let user of users" [value]="user">{{user}}</ion-select-option>
+                <ion-select-option *ngFor="let user of users" [value]="user.value">{{user.label}}</ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>
@@ -133,14 +133,14 @@
           <ion-col size="12" size-md="6">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-select formControlName="operator3" label="Operator 3" label-placement="floating" [disabled]="mode === 'read'">
-                <ion-select-option *ngFor="let user of users" [value]="user">{{user}}</ion-select-option>
+                <ion-select-option *ngFor="let user of users" [value]="user.value">{{user.label}}</ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>
           <ion-col size="12" size-md="6">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-select formControlName="supervisor" label="Supervisor *" label-placement="floating" [disabled]="mode === 'read'">
-                <ion-select-option *ngFor="let user of users" [value]="user">{{user}}</ion-select-option>
+                <ion-select-option *ngFor="let user of users" [value]="user.value">{{user.label}}</ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>

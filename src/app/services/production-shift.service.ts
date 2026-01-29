@@ -57,7 +57,8 @@ export class ProductionShiftService {
   }
 
   createProductionShift(productionShift: Omit<ProductionShift, 'shiftIdSeq' | 'createDate' | 'updateDate'>): Observable<ProductionShift> {
-    return this.http.post<ProductionShift>(this.API_URL, productionShift, {
+    const payload = { ...productionShift, shiftType: Number(productionShift.shiftType) };
+    return this.http.post<ProductionShift>(this.API_URL, payload, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
@@ -65,7 +66,10 @@ export class ProductionShiftService {
   }
 
   updateProductionShift(id: number, productionShift: Partial<Omit<ProductionShift, 'shiftIdSeq' | 'createDate'>>): Observable<ProductionShift> {
-    return this.http.put<ProductionShift>(`${this.API_URL}/${id}`, productionShift, {
+    const payload = productionShift.shiftType ? 
+      { ...productionShift, shiftType: Number(productionShift.shiftType) } : 
+      productionShift;
+    return this.http.put<ProductionShift>(`${this.API_URL}/${id}`, payload, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

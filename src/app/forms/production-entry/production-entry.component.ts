@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ProductionEntry, ProductionShift } from 'src/app/models/production-shift.model';
+import { ShiftType } from 'src/app/enums/shift-type.enum';
 
 @Component({
   selector: 'app-production-entry',
@@ -28,9 +29,18 @@ export class ProductionEntryComponent implements OnInit, OnChanges {
 
   machines = ['Machine A', 'Machine B', 'Machine C'];
   workTypes = ['Shift', 'Hours'];
-  shiftTypes = ['Morning', 'Evening', 'Night'];
+  shiftTypes = [
+    { label: 'Morning', value: ShiftType.MORNING },
+    { label: 'Evening', value: ShiftType.EVENING },
+    { label: 'Night', value: ShiftType.NIGHT }
+  ];
   shiftHours = ['6', '8', '12'];
-  users = ['Operator1', 'Operator2', 'Operator3', 'Supervisor1'];
+  users = [
+    { label: 'Operator1', value: 31 },
+    { label: 'Operator2', value: 32 },
+    { label: 'Operator3', value: 33 },
+    { label: 'Supervisor1', value: 22 }
+  ];
 
   constructor(private fb: FormBuilder) {
     const now = new Date();
