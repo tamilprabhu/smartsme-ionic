@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
-import { API_BASE_URL } from '../config/api.config';
+import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../constants/pagination';
 import { Seller } from '../models/seller.model';
 
@@ -21,7 +21,7 @@ export interface SellerResponse {
   providedIn: 'root'
 })
 export class SellerService {
-  private readonly API_URL = `${API_BASE_URL}/seller`;
+  private readonly API_URL = `${environment.apiBaseUrl}/seller`;
 
   constructor(
     private http: HttpClient,

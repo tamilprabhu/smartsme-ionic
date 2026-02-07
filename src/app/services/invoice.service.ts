@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
-import { API_BASE_URL } from '../config/api.config';
+import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../constants/pagination';
 import { Invoice } from '../models/invoice.model';
 
@@ -21,7 +21,7 @@ export interface InvoiceResponse {
   providedIn: 'root'
 })
 export class InvoiceService {
-  private readonly API_URL = `${API_BASE_URL}/invoice`;
+  private readonly API_URL = `${environment.apiBaseUrl}/invoice`;
 
   constructor(
     private http: HttpClient,

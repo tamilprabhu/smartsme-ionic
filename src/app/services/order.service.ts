@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
-import { API_BASE_URL } from '../config/api.config';
+import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../constants/pagination';
 import { Order } from '../models/order.model';
 
@@ -21,7 +21,7 @@ export interface OrderResponse {
   providedIn: 'root'
 })
 export class OrderService {
-  private readonly API_URL = `${API_BASE_URL}/order`;
+  private readonly API_URL = `${environment.apiBaseUrl}/order`;
 
   constructor(
     private http: HttpClient,

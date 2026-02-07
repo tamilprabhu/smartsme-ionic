@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
-import { API_BASE_URL } from '../config/api.config';
+import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../constants/pagination';
 import { ProductionShift } from '../models/production-shift.model';
 
@@ -21,7 +21,7 @@ export interface ProductionShiftResponse {
   providedIn: 'root'
 })
 export class ProductionShiftService {
-  private readonly API_URL = `${API_BASE_URL}/production-shift`;
+  private readonly API_URL = `${environment.apiBaseUrl}/production-shift`;
 
   constructor(
     private http: HttpClient,

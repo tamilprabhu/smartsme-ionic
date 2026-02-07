@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { API_BASE_URL } from '../config/api.config';
+import { environment } from '../../environments/environment';
 
 interface LoginResponse {
   user: {
@@ -36,6 +36,7 @@ interface DecodedToken {
   providedIn: 'root'
 })
 export class LoginService {
+  private readonly API_URL = `${environment.apiBaseUrl}/auth`;
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
   private currentUser = new BehaviorSubject<any>(this.getStoredUser());
 
@@ -74,7 +75,7 @@ export class LoginService {
   }
 
   login(identifier: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${API_BASE_URL}/auth/login`, {
+    return this.http.post<LoginResponse>(`${this.API_URL}/login`, {
       identifier,
       password
     }).pipe(
@@ -99,7 +100,7 @@ export class LoginService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    return this.http.post<{ accessToken: string }>(`${API_BASE_URL}/auth/refresh`, {
+    return this.http.post<{ accessToken: string }>(`${this.API_URL}/refresh`, {
       refreshToken
     }).pipe(
       map(response => {
