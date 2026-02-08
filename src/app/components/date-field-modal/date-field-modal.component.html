@@ -1,0 +1,24 @@
+<ion-item [id]="resolvedTriggerId" lines="full">
+  <ion-label position="fixed">{{ label }}</ion-label>
+  <ion-input
+    readonly
+    [value]="displayText"
+    [placeholder]="placeholder">
+  </ion-input>
+</ion-item>
+
+<ion-modal
+  [trigger]="resolvedTriggerId"
+  [keepContentsMounted]="true"
+  [cssClass]="modalCssClass">
+  <ng-template>
+    <ion-content>
+      <ion-datetime
+        [presentation]="presentation"
+        [value]="value"
+        [showDefaultButtons]="showButtons"
+        (ionChange)="onDateChange($event)">
+      </ion-datetime>
+    </ion-content>
+  </ng-template>
+</ion-modal>

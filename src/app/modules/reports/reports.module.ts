@@ -7,6 +7,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { ReportsPageRoutingModule } from './reports-routing.module';
 import { FooterComponent } from 'src/app/components/footer/footer.component';
+import { DateFieldModalComponent } from 'src/app/components/date-field-modal/date-field-modal.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { FooterComponent } from 'src/app/components/footer/footer.component';
     FormsModule,
     ExploreContainerComponentModule,
     ReportsPageRoutingModule,
+    DateFieldModalComponent,
     FooterComponent
   ],
   declarations: [ReportsPage],

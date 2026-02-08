@@ -45,6 +45,7 @@
         <h2>{{ stock.stockId }} <ion-badge color="primary">#{{ stock.sellerId }}</ion-badge></h2>
         <p class="material">Material: <strong>{{ stock.rawMaterial }}</strong> | Date: <strong>{{ stock.stockDate | date:'short' }}</strong></p>
         <p class="quantity">Bars: {{ stock.noOfBars }} | Weight: {{ stock.weight }}kg</p>
+        <p class="meta">Inward Type: {{ stock.inwardType }} | Rate: {{ stock.rate }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="secondary" (click)="openUpdateForm(stock)">
@@ -82,7 +83,12 @@
       </app-header>
 
       <ion-content>
-        <p>Stock Form - To be implemented</p>
+        <app-stock
+          [mode]="formMode"
+          [formData]="selectedStock"
+          (formSubmit)="handleFormSubmit($event)"
+          (formClosed)="closeForm()">
+        </app-stock>
       </ion-content>
     </ng-template>
   </ion-modal>

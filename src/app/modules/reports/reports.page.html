@@ -18,56 +18,26 @@
 
         
         <!-- START DATE -->
-        <ion-item id="{{ 'report-start-' + report.id }}" lines="full">
-          <ion-label position="fixed">Start Date</ion-label>
-          <ion-input
-            readonly
-            [value]="report.filters.startDateDisplay"
-            placeholder="Select date">
-          </ion-input>
-        </ion-item>
-
-        <ion-modal
-          trigger="{{ 'report-start-' + report.id }}"
-          [keepContentsMounted]="true"
-          cssClass="report-datetime-modal">
-          <ng-template>
-            <ion-content>
-              <ion-datetime
-                presentation="date"
-                [value]="report.filters.startDate"
-                show-default-buttons="true"
-                (ionChange)="onStartDateChange(report, $event)">
-              </ion-datetime>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
+        <app-date-field-modal
+          [triggerId]="'report-start-' + report.id"
+          modalCssClass="report-datetime-modal"
+          label="Start Date"
+          placeholder="Select date"
+          [value]="report.filters.startDate"
+          [displayValue]="report.filters.startDateDisplay"
+          (valueChange)="onStartDateChange(report, $event)">
+        </app-date-field-modal>
 
         <!-- END DATE -->
-        <ion-item id="{{ 'report-end-' + report.id }}" lines="full">
-          <ion-label position="fixed">End Date</ion-label>
-          <ion-input
-            readonly
-            [value]="report.filters.endDateDisplay"
-            placeholder="Select date">
-          </ion-input>
-        </ion-item>
-
-        <ion-modal
-          trigger="{{ 'report-end-' + report.id }}"
-          [keepContentsMounted]="true"
-          cssClass="report-datetime-modal">
-          <ng-template>
-            <ion-content>
-              <ion-datetime
-                presentation="date"
-                [value]="report.filters.endDate"
-                show-default-buttons="true"
-                (ionChange)="onEndDateChange(report, $event)">
-              </ion-datetime>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
+        <app-date-field-modal
+          [triggerId]="'report-end-' + report.id"
+          modalCssClass="report-datetime-modal"
+          label="End Date"
+          placeholder="Select date"
+          [value]="report.filters.endDate"
+          [displayValue]="report.filters.endDateDisplay"
+          (valueChange)="onEndDateChange(report, $event)">
+        </app-date-field-modal>
 
         <!-- TYPE (unchanged layout, only ensure same label position) -->
         <ion-item>

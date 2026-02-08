@@ -23,30 +23,15 @@
         <!-- Shift Date -->
         <ion-row>
           <ion-col size="12">
-            <ion-item fill="outline" class="ion-margin-bottom" id="shiftDatePicker">
-              <ion-input 
-                readonly
-                [value]="getFormattedDate()"
-                label="Shift Date *" 
-                label-placement="floating">
-              </ion-input>
-              <ion-modal 
-                trigger="shiftDatePicker"
-                [keepContentsMounted]="true"
-                cssClass="shift-datetime-modal">
-                <ng-template>
-                  <ion-content>
-                    <ion-datetime
-                      presentation="date"
-                      [value]="shiftForm.get('shiftDate')?.value"
-                      show-default-buttons="true"
-                      (ionChange)="onShiftDateChange($event)"
-                      [disabled]="mode === 'read'">
-                    </ion-datetime>
-                  </ion-content>
-                </ng-template>
-              </ion-modal>
-            </ion-item>
+            <app-date-field
+              [useModal]="true"
+              triggerId="shift-date-picker"
+              label="Shift Date *"
+              [formGroup]="shiftForm"
+              controlName="shiftDate"
+              modalCssClass="shift-datetime-modal"
+              [readonly]="mode === 'read'">
+            </app-date-field>
           </ion-col>
         </ion-row>
 

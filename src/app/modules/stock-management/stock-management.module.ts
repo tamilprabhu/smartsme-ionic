@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 import { StockManagementComponent } from './stock-management.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
+import { StockComponent } from 'src/app/forms/stock/stock.component';
 
 @NgModule({
   declarations: [StockManagementComponent],
@@ -13,6 +14,7 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
     CommonModule,
     IonicModule,
     ReactiveFormsModule,
+    StockComponent,
     HeaderComponent,
     FormsModule,
     RouterModule.forChild([{ path: '', component: StockManagementComponent }])

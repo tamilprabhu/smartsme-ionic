@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ProductionEntry, ProductionShift } from 'src/app/models/production-shift.model';
 import { ShiftType } from 'src/app/enums/shift-type.enum';
+import { DateFieldComponent } from 'src/app/components/date-field/date-field.component';
 
 @Component({
   selector: 'app-production-entry',
@@ -16,7 +17,8 @@ import { ShiftType } from 'src/app/enums/shift-type.enum';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    FooterComponent
+    FooterComponent,
+    DateFieldComponent
   ]
 })
 export class ProductionEntryComponent implements OnInit, OnChanges {
@@ -153,24 +155,6 @@ export class ProductionEntryComponent implements OnInit, OnChanges {
       const formValue = this.shiftForm.getRawValue() as ProductionShift;
       this.formSubmit.emit(formValue);
     }
-  }
-
-  getFormattedDate(): string {
-    const dateValue = this.shiftForm.get('shiftDate')?.value;
-    if (!dateValue) return '';
-    
-    // ✅ Parse as local date (no timezone issues)
-    const date = new Date(dateValue + 'T00:00:00');
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    });
-  }
-
-  onShiftDateChange(event: any) {
-    const value = event.detail.value;
-    this.shiftForm.get('shiftDate')?.setValue(value, { emitEvent: true });
   }
 
   getFormattedTime(): string {

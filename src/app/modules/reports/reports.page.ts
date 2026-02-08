@@ -84,20 +84,25 @@ export class ReportsPage {
     });
   }
 
-  onStartDateChange(report: any, ev: any) {
-    const iso = ev.detail.value;
+  onStartDateChange(report: any, value: any) {
+    const iso = typeof value === 'string' ? value : value?.detail?.value;
     report.filters.startDate = iso;
-
-    const d = new Date(iso);
-    report.filters.startDateDisplay = d.toLocaleDateString();
+    report.filters.startDateDisplay = this.formatDateDisplay(iso);
   }
 
-  onEndDateChange(report: any, ev: any) {
-    const iso = ev.detail.value;
+  onEndDateChange(report: any, value: any) {
+    const iso = typeof value === 'string' ? value : value?.detail?.value;
     report.filters.endDate = iso;
+    report.filters.endDateDisplay = this.formatDateDisplay(iso);
+  }
 
-    const d = new Date(iso);
-    report.filters.endDateDisplay = d.toLocaleDateString();
+  private formatDateDisplay(value: string): string {
+    if (!value) return '';
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(value)
+      ? new Date(`${value}T00:00:00`)
+      : new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleDateString();
   }
 
 }

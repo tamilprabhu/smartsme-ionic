@@ -1,0 +1,117 @@
+<ion-card class="sme-form-card ion-no-margin">
+  <ion-card-header>
+    <ion-card-title>
+      {{ mode === 'create' ? 'Create Stock' : mode === 'update' ? 'Update Stock' : 'Stock Details' }}
+    </ion-card-title>
+    <ion-card-subtitle *ngIf="mode !== 'read'">Please fill all required information</ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    <form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+      <ion-grid>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-select formControlName="sellerId" label="Seller Name *" label-placement="floating" [disabled]="mode === 'read'">
+                <ion-select-option *ngFor="let seller of sellers" [value]="seller.sellerId">
+                  {{ seller.sellerName }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['sellerId'].invalid && (f['sellerId'].dirty || f['sellerId'].touched) && mode !== 'read'">
+              <small *ngIf="f['sellerId'].errors?.['required']">Seller Name is required.</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <app-date-field
+              [formGroup]="stockForm"
+              controlName="stockDate"
+              label="Date *"
+              [readonly]="mode === 'read'"
+              errorText="Date is required.">
+            </app-date-field>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-select formControlName="rawMaterial" label="Raw Material *" label-placement="floating" [disabled]="mode === 'read'">
+                <ion-select-option *ngFor="let rm of rawMaterials" [value]="rm">{{ rm }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['rawMaterial'].invalid && (f['rawMaterial'].dirty || f['rawMaterial'].touched) && mode !== 'read'">
+              <small *ngIf="f['rawMaterial'].errors?.['required']">Raw Material is required.</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input type="number" formControlName="noOfBars" label="No of Bars *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['noOfBars'].invalid && (f['noOfBars'].dirty || f['noOfBars'].touched) && mode !== 'read'">
+              <small *ngIf="f['noOfBars'].errors?.['required']">No of Bars is required.</small>
+              <small *ngIf="f['noOfBars'].errors?.['min']">No of Bars must be >= 0.</small>
+              <small *ngIf="f['noOfBars'].errors?.['pattern']">No of Bars must be an integer.</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input type="number" step="any" formControlName="weight" label="Weight *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['weight'].invalid && (f['weight'].dirty || f['weight'].touched) && mode !== 'read'">
+              <small *ngIf="f['weight'].errors?.['required']">Weight is required.</small>
+              <small *ngIf="f['weight'].errors?.['min']">Weight must be >= 0.</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input type="text" formControlName="inwardType" label="Inward Type *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['inwardType'].invalid && (f['inwardType'].dirty || f['inwardType'].touched) && mode !== 'read'">
+              <small *ngIf="f['inwardType'].errors?.['required']">Inward Type is required.</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input type="number" step="any" formControlName="rate" label="Rate *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['rate'].invalid && (f['rate'].dirty || f['rate'].touched) && mode !== 'read'">
+              <small *ngIf="f['rate'].errors?.['required']">Rate is required.</small>
+              <small *ngIf="f['rate'].errors?.['min']">Rate must be >= 0.</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="mode !== 'read'">
+          <ion-col size="6">
+            <ion-button expand="block" type="submit" color="primary" [disabled]="stockForm.invalid">
+              Save
+            </ion-button>
+          </ion-col>
+          <ion-col size="6">
+            <ion-button expand="block" type="button" color="medium" (click)="goBack()">
+              Cancel
+            </ion-button>
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+    </form>
+  </ion-card-content>
+</ion-card>

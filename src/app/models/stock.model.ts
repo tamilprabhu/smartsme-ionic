@@ -7,6 +7,8 @@ export interface Stock {
   rawMaterial: string;
   noOfBars: number;
   weight: number;
+  inwardType: string;
+  rate: number;
   createDate: string;
   updateDate: string;
 }
