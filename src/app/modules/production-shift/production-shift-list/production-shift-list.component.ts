@@ -8,9 +8,11 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ProductionShift } from 'src/app/models/production-shift.model';
 import { Machine } from 'src/app/models/machine.model';
 import { Order } from 'src/app/models/order.model';
+import { Product } from 'src/app/models/product.model';
 import { ProductionShiftService } from 'src/app/services/production-shift.service';
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';
+import { ProductService } from 'src/app/services/product.service';
 
 @Component({
   selector: 'app-production-shift-list',
@@ -25,8 +27,10 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
   shifts: ProductionShift[] = [];
   machines: Machine[] = [];
   orders: Order[] = [];
+  products: Product[] = [];
   machineMap: Map<string, string> = new Map();
   orderMap: Map<string, string> = new Map();
+  productMap: Map<string, string> = new Map();
   currentPage = 1;
   hasMore = true;
   loading = false;
@@ -41,7 +45,8 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
     private toastController: ToastController,
     private shiftService: ProductionShiftService,
     private machineService: MachineService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private productService: ProductService
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -53,6 +58,7 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadMachines();
     this.loadOrders();
+    this.loadProducts();
     this.loadShifts();
   }
 
@@ -79,12 +85,25 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
     });
   }
 
+  private loadProducts() {
+    this.productService.getProducts(1, 1000).subscribe({
+      next: (response) => {
+        this.products = response.items;
+        this.products.forEach(p => this.productMap.set(p.prodId, p.prodName));
+      }
+    });
+  }
+
   getMachineName(machineId: string): string {
     return this.machineMap.get(machineId) || machineId;
   }
 
   getOrderName(orderId: string): string {
     return orderId ? (this.orderMap.get(orderId) || orderId) : 'No Order';
+  }
+
+  getProductName(productId: string): string {
+    return this.productMap.get(productId) || productId;
   }
 
   loadShifts(event?: any) {

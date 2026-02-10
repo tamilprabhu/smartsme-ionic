@@ -5,8 +5,10 @@ import { IonicModule } from '@ionic/angular';
 import { ProductionShift } from 'src/app/models/production-shift.model';
 import { Machine } from 'src/app/models/machine.model';
 import { Order } from 'src/app/models/order.model';
+import { Product } from 'src/app/models/product.model';
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';
+import { ProductService } from 'src/app/services/product.service';
 import { EntryType } from 'src/app/enums/entry-type.enum';
 import { ShiftType } from 'src/app/enums/shift-type.enum';
 import { ShiftHours } from 'src/app/enums/shift-hours.enum';
@@ -27,6 +29,7 @@ export class ProductionShiftFormComponent implements OnInit {
   form!: FormGroup;
   machines: Machine[] = [];
   orders: Order[] = [];
+  products: Product[] = [];
 
   entryTypes = [
     { label: 'Shift', value: EntryType.SHIFT.toString() },
@@ -48,13 +51,15 @@ export class ProductionShiftFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private machineService: MachineService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private productService: ProductService
   ) {}
 
   ngOnInit() {
     this.initForm();
     this.loadMachines();
     this.loadOrders();
+    this.loadProducts();
     if (this.initialData) {
       this.form.patchValue(this.initialData);
     }
@@ -78,6 +83,15 @@ export class ProductionShiftFormComponent implements OnInit {
         this.orders = response.items;
       },
       error: (error) => console.error('Failed to load orders', error)
+    });
+  }
+
+  private loadProducts() {
+    this.productService.getProducts(1, 1000).subscribe({
+      next: (response) => {
+        this.products = response.items;
+      },
+      error: (error) => console.error('Failed to load products', error)
     });
   }
 

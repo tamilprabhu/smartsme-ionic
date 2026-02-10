@@ -13,7 +13,11 @@
       </ion-col>
       <ion-col size="12" size-md="6">
         <ion-item fill="outline">
-          <ion-input formControlName="productId" label="Product ID *" labelPlacement="floating"></ion-input>
+          <ion-select formControlName="productId" label="Product *" labelPlacement="floating" interface="popover">
+            <ion-select-option *ngFor="let product of products" [value]="product.prodId">
+              {{ product.prodName }} ({{ product.prodId }})
+            </ion-select-option>
+          </ion-select>
         </ion-item>
       </ion-col>
     </ion-row>

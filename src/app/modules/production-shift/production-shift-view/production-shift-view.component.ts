@@ -5,9 +5,11 @@ import { CommonModule } from '@angular/common';
 import { ProductionShift } from 'src/app/models/production-shift.model';
 import { Machine } from 'src/app/models/machine.model';
 import { Order } from 'src/app/models/order.model';
+import { Product } from 'src/app/models/product.model';
 import { ProductionShiftService } from 'src/app/services/production-shift.service';
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';
+import { ProductService } from 'src/app/services/product.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -21,6 +23,7 @@ export class ProductionShiftViewComponent implements OnInit {
   shift: ProductionShift | null = null;
   machineName: string = '';
   orderName: string = '';
+  productName: string = '';
   loading = true;
 
   constructor(
@@ -29,7 +32,8 @@ export class ProductionShiftViewComponent implements OnInit {
     private toastController: ToastController,
     private shiftService: ProductionShiftService,
     private machineService: MachineService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private productService: ProductService
   ) {}
 
   ngOnInit() {
@@ -41,7 +45,7 @@ export class ProductionShiftViewComponent implements OnInit {
     this.shiftService.getProductionShift(id).subscribe({
       next: (shift) => {
         this.shift = shift;
-        this.loadMasterData(shift.machineId, shift.orderId);
+        this.loadMasterData(shift.machineId, shift.orderId, shift.productId);
         this.loading = false;
       },
       error: () => {
@@ -52,12 +56,13 @@ export class ProductionShiftViewComponent implements OnInit {
     });
   }
 
-  private loadMasterData(machineId: string, orderId: string) {
+  private loadMasterData(machineId: string, orderId: string, productId: string) {
     forkJoin({
       machines: this.machineService.getMachines(1, 100),
-      orders: this.orderService.getOrders(1, 1000)
+      orders: this.orderService.getOrders(1, 1000),
+      products: this.productService.getProducts(1, 1000)
     }).subscribe({
-      next: ({ machines, orders }) => {
+      next: ({ machines, orders, products }) => {
         const machine = machines.items.find(m => m.machineId === machineId);
         this.machineName = machine ? machine.machineName : machineId;
         
@@ -67,10 +72,14 @@ export class ProductionShiftViewComponent implements OnInit {
         } else {
           this.orderName = 'No Order';
         }
+
+        const product = products.items.find(p => p.prodId === productId);
+        this.productName = product ? product.prodName : productId;
       },
       error: () => {
         this.machineName = machineId;
         this.orderName = orderId || 'No Order';
+        this.productName = productId;
       }
     });
   }
