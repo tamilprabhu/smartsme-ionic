@@ -1,4 +1,6 @@
 import { ShiftType } from '../enums/shift-type.enum';
+import { EntryType } from '../enums/entry-type.enum';
+import { ShiftHours } from '../enums/shift-hours.enum';
 
 export interface ProductionShift {
   shiftIdSeq: number;
@@ -6,14 +8,16 @@ export interface ProductionShift {
   companyId: string;
   shiftId: string;
   prodName: string;
+  productId: string;
   machineId: string;
   shiftStartDate: string;
   shiftEndDate: string;
   shiftStartTime: string;
   shiftEndTime: string;
   workType: string;
-  entryType: string;
+  entryType: EntryType;
   shiftType: ShiftType;
+  shiftHours?: ShiftHours;
   operator1: number;
   operator2?: number;
   operator3?: number;
