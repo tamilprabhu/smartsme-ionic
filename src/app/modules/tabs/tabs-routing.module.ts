@@ -21,7 +21,7 @@ const routes: Routes = [
       },
       {
         path: 'production-shift',
-        loadChildren: () => import('../production-shift/production-shift.module').then(m => m.ProductionShiftPageModule)
+        loadChildren: () => import('../production-shift/production-shift.module').then(m => m.ProductionShiftModule)
       },
       {
         path: 'dispatch-management',

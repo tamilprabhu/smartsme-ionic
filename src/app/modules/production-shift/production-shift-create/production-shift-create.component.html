@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/production-shift"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Create Production Shift</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <app-production-shift-form
+        (formSubmit)="onSubmit($event)"
+        (formCancel)="onCancel()">
+      </app-production-shift-form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

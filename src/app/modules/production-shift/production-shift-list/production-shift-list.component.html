@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Production Shifts</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="createShift()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar 
+      #searchInput
+      placeholder="Search shifts..."
+      [value]="searchQuery"
+      (ionInput)="onSearchInput($event)"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="shifts.length > 0">
+    <ion-item *ngFor="let shift of shifts" button (click)="viewShift(shift.shiftIdSeq)">
+      <ion-label>
+        <h2>
+          {{ shift.shiftId }} 
+          <ion-badge color="primary" *ngIf="shift.shiftType">{{ getShiftTypeLabel(shift.shiftType) }}</ion-badge>
+          <ion-badge color="secondary" *ngIf="shift.shiftHours">{{ shift.shiftHours }}h</ion-badge>
+        </h2>
+        <p>Order: <strong>{{ shift.orderId }}</strong> | Machine: <strong>{{ shift.machineId }}</strong></p>
+        <p>Production: {{ shift.production }} | Net: {{ shift.netProduction }} | Rejection: {{ shift.rejection }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="secondary" (click)="editShift(shift.shiftIdSeq, $event)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(shift, $event)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="shifts.length === 0 && !loading">
+    <ion-card-header>
+      <ion-card-title>No Shifts Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchQuery">No shifts match "{{ searchQuery }}"</p>
+      <p *ngIf="!searchQuery">No shifts available. Create one to get started.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadShifts($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

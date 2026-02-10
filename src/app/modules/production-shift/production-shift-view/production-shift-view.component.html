@@ -1,0 +1,131 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/production-shift"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Shift Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editShift()" *ngIf="shift">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="shift">
+    <ion-card-header>
+      <ion-card-title>{{ shift.shiftId }}</ion-card-title>
+      <ion-card-subtitle>
+        <ion-badge color="secondary">{{ getEntryTypeLabel(shift.entryType) }}</ion-badge>
+        <ion-badge color="primary" *ngIf="shift.shiftType">{{ getShiftTypeLabel(shift.shiftType) }}</ion-badge>
+        <ion-badge color="tertiary" *ngIf="shift.shiftHours">{{ shift.shiftHours }} hours</ion-badge>
+      </ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>
+            <h3>Order ID</h3>
+            <p>{{ shift.orderId }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Product ID</h3>
+            <p>{{ shift.productId }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Machine ID</h3>
+            <p>{{ shift.machineId }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Start Date</h3>
+            <p>{{ shift.shiftStartDate | date:'medium' }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>End Date</h3>
+            <p>{{ shift.shiftEndDate | date:'medium' }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="shift.shiftType">
+          <ion-label>
+            <h3>Shift Type</h3>
+            <p>{{ getShiftTypeLabel(shift.shiftType) }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="shift.shiftHours">
+          <ion-label>
+            <h3>Shift Hours</h3>
+            <p>{{ shift.shiftHours }} hours</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Operators</h3>
+            <p>{{ shift.operator1 }}<span *ngIf="shift.operator2">, {{ shift.operator2 }}</span><span *ngIf="shift.operator3">, {{ shift.operator3 }}</span></p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Supervisor</h3>
+            <p>{{ shift.supervisor }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Opening Count</h3>
+            <p>{{ shift.openingCount }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Closing Count</h3>
+            <p>{{ shift.closingCount }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Production</h3>
+            <p>{{ shift.production }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Rejection</h3>
+            <p>{{ shift.rejection }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Net Production</h3>
+            <p><strong>{{ shift.netProduction }}</strong></p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Incentive</h3>
+            <p>{{ shift.incentive === 'Y' ? 'Yes' : 'No' }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="shift.less80Reason">
+          <ion-label>
+            <h3>Less 80% Reason</h3>
+            <p>{{ shift.less80Reason }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <div *ngIf="loading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+  </div>
+</ion-content>

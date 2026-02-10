@@ -1,0 +1,153 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-item fill="outline">
+          <ion-input formControlName="orderId" label="Order ID *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="6">
+        <ion-item fill="outline">
+          <ion-input formControlName="productId" label="Product ID *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-item fill="outline">
+          <ion-input formControlName="machineId" label="Machine ID *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-item fill="outline">
+          <ion-input formControlName="shiftStartDate" type="datetime-local" label="Start Date *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="6">
+        <ion-item fill="outline">
+          <ion-input formControlName="shiftEndDate" type="datetime-local" label="End Date *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-item fill="outline">
+          <ion-select formControlName="entryType" label="Entry Type *" labelPlacement="floating">
+            <ion-select-option *ngFor="let type of entryTypes" [value]="type.value">{{type.label}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="isShiftTypeRequired">
+      <ion-col size="12">
+        <ion-item fill="outline">
+          <ion-select formControlName="shiftType" label="Shift Type *" labelPlacement="floating">
+            <ion-select-option *ngFor="let type of shiftTypes" [value]="type.value">{{type.label}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="isShiftHoursRequired">
+      <ion-col size="12">
+        <ion-item fill="outline">
+          <ion-select formControlName="shiftHours" label="Shift Hours *" labelPlacement="floating">
+            <ion-select-option *ngFor="let hours of shiftHoursOptions" [value]="hours.value">{{hours.label}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-md="4">
+        <ion-item fill="outline">
+          <ion-input formControlName="operator1" type="number" label="Operator 1 *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <ion-item fill="outline">
+          <ion-input formControlName="operator2" type="number" label="Operator 2" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <ion-item fill="outline">
+          <ion-input formControlName="operator3" type="number" label="Operator 3" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-item fill="outline">
+          <ion-input formControlName="supervisor" type="number" label="Supervisor *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-item fill="outline">
+          <ion-input formControlName="openingCount" type="number" label="Opening Count *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="6">
+        <ion-item fill="outline">
+          <ion-input formControlName="closingCount" type="number" label="Closing Count *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-md="4">
+        <ion-item fill="outline">
+          <ion-input formControlName="production" type="number" label="Production *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <ion-item fill="outline">
+          <ion-input formControlName="rejection" type="number" label="Rejection *" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <ion-item fill="outline">
+          <ion-input formControlName="netProduction" type="number" label="Net Production" labelPlacement="floating" readonly></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-item fill="outline">
+          <ion-select formControlName="incentive" label="Incentive *" labelPlacement="floating">
+            <ion-select-option value="Y">Yes</ion-select-option>
+            <ion-select-option value="N">No</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="6">
+        <ion-item fill="outline">
+          <ion-input formControlName="less80Reason" label="Less 80% Reason" labelPlacement="floating"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="!readonly">
+      <ion-col size="12">
+        <ion-button expand="block" type="submit" color="primary" [disabled]="form.invalid">
+          Submit
+        </ion-button>
+      </ion-col>
+      <ion-col size="12">
+        <ion-button expand="block" type="button" color="medium" (click)="onCancel()">
+          Cancel
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</form>
