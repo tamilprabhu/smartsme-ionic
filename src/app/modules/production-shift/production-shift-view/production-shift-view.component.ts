@@ -4,8 +4,11 @@ import { ToastController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ProductionShift } from 'src/app/models/production-shift.model';
 import { Machine } from 'src/app/models/machine.model';
+import { Order } from 'src/app/models/order.model';
 import { ProductionShiftService } from 'src/app/services/production-shift.service';
 import { MachineService } from 'src/app/services/machine.service';
+import { OrderService } from 'src/app/services/order.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-production-shift-view',
@@ -17,6 +20,7 @@ import { MachineService } from 'src/app/services/machine.service';
 export class ProductionShiftViewComponent implements OnInit {
   shift: ProductionShift | null = null;
   machineName: string = '';
+  orderName: string = '';
   loading = true;
 
   constructor(
@@ -24,7 +28,8 @@ export class ProductionShiftViewComponent implements OnInit {
     private router: Router,
     private toastController: ToastController,
     private shiftService: ProductionShiftService,
-    private machineService: MachineService
+    private machineService: MachineService,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
@@ -36,7 +41,7 @@ export class ProductionShiftViewComponent implements OnInit {
     this.shiftService.getProductionShift(id).subscribe({
       next: (shift) => {
         this.shift = shift;
-        this.loadMachineName(shift.machineId);
+        this.loadMasterData(shift.machineId, shift.orderId);
         this.loading = false;
       },
       error: () => {
@@ -47,14 +52,25 @@ export class ProductionShiftViewComponent implements OnInit {
     });
   }
 
-  private loadMachineName(machineId: string) {
-    this.machineService.getMachines(1, 100).subscribe({
-      next: (response) => {
-        const machine = response.items.find(m => m.machineId === machineId);
+  private loadMasterData(machineId: string, orderId: string) {
+    forkJoin({
+      machines: this.machineService.getMachines(1, 100),
+      orders: this.orderService.getOrders(1, 1000)
+    }).subscribe({
+      next: ({ machines, orders }) => {
+        const machine = machines.items.find(m => m.machineId === machineId);
         this.machineName = machine ? machine.machineName : machineId;
+        
+        if (orderId) {
+          const order = orders.items.find(o => o.orderId === orderId);
+          this.orderName = order ? order.orderName : orderId;
+        } else {
+          this.orderName = 'No Order';
+        }
       },
       error: () => {
         this.machineName = machineId;
+        this.orderName = orderId || 'No Order';
       }
     });
   }

@@ -30,7 +30,7 @@
           <ion-badge color="primary" *ngIf="shift.shiftType">{{ getShiftTypeLabel(shift.shiftType) }}</ion-badge>
           <ion-badge color="secondary" *ngIf="shift.shiftHours">{{ shift.shiftHours }}h</ion-badge>
         </h2>
-        <p>Order: <strong>{{ shift.orderId }}</strong> | Machine: <strong>{{ getMachineName(shift.machineId) }}</strong></p>
+        <p>Order: <strong>{{ getOrderName(shift.orderId) }}</strong> | Machine: <strong>{{ getMachineName(shift.machineId) }}</strong></p>
         <p>Production: {{ shift.production }} | Net: {{ shift.netProduction }} | Rejection: {{ shift.rejection }}</p>
       </ion-label>
       <ion-buttons slot="end">

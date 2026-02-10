@@ -4,7 +4,9 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ProductionShift } from 'src/app/models/production-shift.model';
 import { Machine } from 'src/app/models/machine.model';
+import { Order } from 'src/app/models/order.model';
 import { MachineService } from 'src/app/services/machine.service';
+import { OrderService } from 'src/app/services/order.service';
 import { EntryType } from 'src/app/enums/entry-type.enum';
 import { ShiftType } from 'src/app/enums/shift-type.enum';
 import { ShiftHours } from 'src/app/enums/shift-hours.enum';
@@ -24,6 +26,7 @@ export class ProductionShiftFormComponent implements OnInit {
 
   form!: FormGroup;
   machines: Machine[] = [];
+  orders: Order[] = [];
 
   entryTypes = [
     { label: 'Shift', value: EntryType.SHIFT.toString() },
@@ -44,12 +47,14 @@ export class ProductionShiftFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private machineService: MachineService
+    private machineService: MachineService,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
     this.initForm();
     this.loadMachines();
+    this.loadOrders();
     if (this.initialData) {
       this.form.patchValue(this.initialData);
     }
@@ -67,9 +72,18 @@ export class ProductionShiftFormComponent implements OnInit {
     });
   }
 
+  private loadOrders() {
+    this.orderService.getOrders(1, 1000).subscribe({
+      next: (response) => {
+        this.orders = response.items;
+      },
+      error: (error) => console.error('Failed to load orders', error)
+    });
+  }
+
   private initForm() {
     this.form = this.fb.group({
-      orderId: ['', Validators.required],
+      orderId: [''],
       productId: ['', Validators.required],
       machineId: ['', Validators.required],
       shiftStartDate: ['', Validators.required],
