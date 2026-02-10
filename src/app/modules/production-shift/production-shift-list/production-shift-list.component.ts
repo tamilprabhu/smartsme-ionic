@@ -6,7 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ProductionShift } from 'src/app/models/production-shift.model';
+import { Machine } from 'src/app/models/machine.model';
 import { ProductionShiftService } from 'src/app/services/production-shift.service';
+import { MachineService } from 'src/app/services/machine.service';
 
 @Component({
   selector: 'app-production-shift-list',
@@ -19,6 +21,8 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
   @ViewChild('searchInput') searchInput!: IonSearchbar;
 
   shifts: ProductionShift[] = [];
+  machines: Machine[] = [];
+  machineMap: Map<string, string> = new Map();
   currentPage = 1;
   hasMore = true;
   loading = false;
@@ -31,7 +35,8 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
     private router: Router,
     private alertController: AlertController,
     private toastController: ToastController,
-    private shiftService: ProductionShiftService
+    private shiftService: ProductionShiftService,
+    private machineService: MachineService
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -41,12 +46,26 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.loadMachines();
     this.loadShifts();
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private loadMachines() {
+    this.machineService.getMachines(1, 100).subscribe({
+      next: (response) => {
+        this.machines = response.items;
+        this.machines.forEach(m => this.machineMap.set(m.machineId, m.machineName));
+      }
+    });
+  }
+
+  getMachineName(machineId: string): string {
+    return this.machineMap.get(machineId) || machineId;
   }
 
   loadShifts(event?: any) {

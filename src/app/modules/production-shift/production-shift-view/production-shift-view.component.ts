@@ -3,7 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ProductionShift } from 'src/app/models/production-shift.model';
+import { Machine } from 'src/app/models/machine.model';
 import { ProductionShiftService } from 'src/app/services/production-shift.service';
+import { MachineService } from 'src/app/services/machine.service';
 
 @Component({
   selector: 'app-production-shift-view',
@@ -14,13 +16,15 @@ import { ProductionShiftService } from 'src/app/services/production-shift.servic
 })
 export class ProductionShiftViewComponent implements OnInit {
   shift: ProductionShift | null = null;
+  machineName: string = '';
   loading = true;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private toastController: ToastController,
-    private shiftService: ProductionShiftService
+    private shiftService: ProductionShiftService,
+    private machineService: MachineService
   ) {}
 
   ngOnInit() {
@@ -32,12 +36,25 @@ export class ProductionShiftViewComponent implements OnInit {
     this.shiftService.getProductionShift(id).subscribe({
       next: (shift) => {
         this.shift = shift;
+        this.loadMachineName(shift.machineId);
         this.loading = false;
       },
       error: () => {
         this.showToast('Failed to load shift', 'danger');
         this.loading = false;
         this.router.navigate(['/tabs/production-shift']);
+      }
+    });
+  }
+
+  private loadMachineName(machineId: string) {
+    this.machineService.getMachines(1, 100).subscribe({
+      next: (response) => {
+        const machine = response.items.find(m => m.machineId === machineId);
+        this.machineName = machine ? machine.machineName : machineId;
+      },
+      error: () => {
+        this.machineName = machineId;
       }
     });
   }

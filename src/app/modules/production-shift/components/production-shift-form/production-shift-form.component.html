@@ -16,7 +16,11 @@
     <ion-row>
       <ion-col size="12">
         <ion-item fill="outline">
-          <ion-input formControlName="machineId" label="Machine ID *" labelPlacement="floating"></ion-input>
+          <ion-select formControlName="machineId" label="Machine *" labelPlacement="floating" interface="popover">
+            <ion-select-option *ngFor="let machine of machines" [value]="machine.machineId">
+              {{ machine.machineName }} ({{ machine.machineId }})
+            </ion-select-option>
+          </ion-select>
         </ion-item>
       </ion-col>
     </ion-row>

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ProductionShift } from 'src/app/models/production-shift.model';
+import { Machine } from 'src/app/models/machine.model';
+import { MachineService } from 'src/app/services/machine.service';
 import { EntryType } from 'src/app/enums/entry-type.enum';
 import { ShiftType } from 'src/app/enums/shift-type.enum';
 import { ShiftHours } from 'src/app/enums/shift-hours.enum';
@@ -21,6 +23,7 @@ export class ProductionShiftFormComponent implements OnInit {
   @Output() formCancel = new EventEmitter<void>();
 
   form!: FormGroup;
+  machines: Machine[] = [];
 
   entryTypes = [
     { label: 'Shift', value: EntryType.SHIFT.toString() },
@@ -39,16 +42,29 @@ export class ProductionShiftFormComponent implements OnInit {
     { label: '12 Hours', value: ShiftHours.TWELVE }
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private machineService: MachineService
+  ) {}
 
   ngOnInit() {
     this.initForm();
+    this.loadMachines();
     if (this.initialData) {
       this.form.patchValue(this.initialData);
     }
     if (this.readonly) {
       this.form.disable();
     }
+  }
+
+  private loadMachines() {
+    this.machineService.getMachines(1, 100).subscribe({
+      next: (response) => {
+        this.machines = response.items;
+      },
+      error: (error) => console.error('Failed to load machines', error)
+    });
   }
 
   private initForm() {
