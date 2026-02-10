@@ -42,15 +42,15 @@
   <ion-list *ngIf="productionShifts.length > 0">
     <ion-item *ngFor="let shift of productionShifts" class="shift-item">
       <ion-label (click)="openReadForm(shift)">
-        <h2>{{ shift.shiftId }} <ion-badge color="primary">{{ shift.shiftType === ShiftType.MORNING ? 'Morning' : shift.shiftType === ShiftType.EVENING ? 'Evening' : 'Night' }}</ion-badge></h2>
+        <h2>{{ shift.shiftId }} <ion-badge color="primary">{{ getShiftTypeLabel(shift.shiftType) }}</ion-badge></h2>
         <p class="details">Order: <strong>{{ shift.orderId }}</strong> | Machine: <strong>{{ shift.machineId }}</strong></p>
-        <p class="production">Production: {{ shift.production }} | Net: {{ shift.netProduction }}</p>
+        <p class="production">Production: {{ shift.production }} | Net: {{ shift.netProduction }} | Rejection: {{ shift.rejection }}</p>
       </ion-label>
       <ion-buttons slot="end">
-        <ion-button color="secondary" (click)="openUpdateForm(shift)">
+        <ion-button color="secondary" (click)="openUpdateForm(shift); $event.stopPropagation()">
           <ion-icon slot="icon-only" name="create-outline"></ion-icon>
         </ion-button>
-        <ion-button color="danger" (click)="confirmDelete(shift)">
+        <ion-button color="danger" (click)="confirmDelete(shift); $event.stopPropagation()">
           <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
         </ion-button>
       </ion-buttons>

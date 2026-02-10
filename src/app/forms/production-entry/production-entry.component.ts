@@ -3,9 +3,10 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { ProductionEntry, ProductionShift } from 'src/app/models/production-shift.model';
+import { ProductionShift } from 'src/app/models/production-shift.model';
+import { EntryType } from 'src/app/enums/entry-type.enum';
 import { ShiftType } from 'src/app/enums/shift-type.enum';
-import { DateFieldComponent } from 'src/app/components/date-field/date-field.component';
+import { ShiftHours } from 'src/app/enums/shift-hours.enum';
 
 @Component({
   selector: 'app-production-entry',
@@ -17,129 +18,150 @@ import { DateFieldComponent } from 'src/app/components/date-field/date-field.com
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    FooterComponent,
-    DateFieldComponent
+    FooterComponent
   ]
 })
 export class ProductionEntryComponent implements OnInit, OnChanges {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: ProductionShift | null = null;
-  @Output() formSubmit = new EventEmitter<ProductionShift>();
+  @Output() formSubmit = new EventEmitter<Partial<ProductionShift>>();
   @Output() formClosed = new EventEmitter<void>();
 
   shiftForm!: FormGroup;
 
-  machines = ['Machine A', 'Machine B', 'Machine C'];
-  workTypes = ['Shift', 'Hours'];
-  shiftTypes = [
-    { label: 'Morning', value: ShiftType.MORNING },
-    { label: 'Evening', value: ShiftType.EVENING },
-    { label: 'Night', value: ShiftType.NIGHT }
+  entryTypes = [
+    { label: 'Shift', value: EntryType.SHIFT.toString() },
+    { label: 'Hours', value: EntryType.HOURS.toString() }
   ];
-  shiftHours = ['6', '8', '12'];
-  users = [
-    { label: 'Operator1', value: 31 },
-    { label: 'Operator2', value: 32 },
-    { label: 'Operator3', value: 33 },
-    { label: 'Supervisor1', value: 22 }
+
+  shiftTypes = [
+    { label: 'Morning', value: ShiftType.MORNING.toString() },
+    { label: 'Evening', value: ShiftType.EVENING.toString() },
+    { label: 'Night', value: ShiftType.NIGHT.toString() }
+  ];
+
+  shiftHoursOptions = [
+    { label: '6 Hours', value: ShiftHours.SIX },
+    { label: '8 Hours', value: ShiftHours.EIGHT },
+    { label: '12 Hours', value: ShiftHours.TWELVE }
   ];
 
   constructor(private fb: FormBuilder) {
-    const now = new Date();
-    
-    // Date: Local date only
-    const todayLocal = now.toISOString().split('T')[0];
-    
-    // ✅ Time: FULL ISO DATETIME (required by ion-datetime time picker)
-    const currentISOTime = now.getFullYear() + '-' +
-  String(now.getMonth() + 1).padStart(2, '0') + '-' +
-  String(now.getDate()).padStart(2, '0') + 'T' +
-  String(now.getHours()).padStart(2, '0') + ':' +
-  String(now.getMinutes()).padStart(2, '0') + ':' +
-  String(now.getSeconds()).padStart(2, '0') + '.' +
-  String(now.getMilliseconds()).padStart(3, '0');
-
-    console.log('Current ISO Time:', currentISOTime);
     this.shiftForm = this.fb.group({
-      machine: ['', Validators.required],
-      workType: ['', Validators.required],
+      orderId: ['', Validators.required],
+      productId: ['', Validators.required],
+      machineId: ['', Validators.required],
+      shiftStartDate: ['', Validators.required],
+      shiftEndDate: ['', Validators.required],
+      entryType: ['', Validators.required],
       shiftType: [''],
       shiftHours: [''],
       operator1: ['', Validators.required],
       operator2: [''],
       operator3: [''],
       supervisor: ['', Validators.required],
-      shiftDate: [todayLocal],
-      shiftStartTime: [currentISOTime, Validators.required]  // ✅ Full ISO
+      openingCount: [0, [Validators.required, Validators.min(0)]],
+      closingCount: [0, [Validators.required, Validators.min(0)]],
+      production: [0, [Validators.required, Validators.min(0)]],
+      rejection: [0, [Validators.required, Validators.min(0)]],
+      netProduction: [0, [Validators.required, Validators.min(0)]],
+      incentive: ['N', Validators.required],
+      less80Reason: ['']
     });
   }
 
   ngOnInit() {
-    this.onWorkTypeChange();
-    this.shiftForm.get('workType')?.valueChanges.subscribe(() => this.onWorkTypeChange());
+    this.setupFormListeners();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['formData'] && this.formData) {
-      this.shiftForm.patchValue(this.formData);
+      this.populateForm(this.formData);
       if (this.mode === 'read') {
         this.shiftForm.disable();
       } else {
         this.shiftForm.enable();
+        this.setupFormListeners();
       }
     } else if (this.mode === 'create') {
-      this.resetForm();
+      this.shiftForm.reset({
+        openingCount: 0,
+        closingCount: 0,
+        production: 0,
+        rejection: 0,
+        netProduction: 0,
+        incentive: 'N'
+      });
       this.shiftForm.enable();
     }
   }
 
-  resetForm() {
-    const now = new Date();
-    const currentTime = now.getFullYear() + '-' +
-      String(now.getMonth() + 1).padStart(2, '0') + '-' +
-      String(now.getDate()).padStart(2, '0') + 'T' +
-      String(now.getHours()).padStart(2, '0') + ':' +
-      String(now.getMinutes()).padStart(2, '0') + ':' +
-      String(now.getSeconds()).padStart(2, '0') + '.' +
-      String(now.getMilliseconds()).padStart(3, '0');
+  private populateForm(data: ProductionShift) {
     this.shiftForm.patchValue({
-      shiftStartTime: currentTime  // Reset to current time
+      orderId: data.orderId,
+      productId: data.productId,
+      machineId: data.machineId,
+      shiftStartDate: data.shiftStartDate,
+      shiftEndDate: data.shiftEndDate,
+      entryType: data.entryType,
+      shiftType: data.shiftType,
+      shiftHours: data.shiftHours,
+      operator1: data.operator1,
+      operator2: data.operator2,
+      operator3: data.operator3,
+      supervisor: data.supervisor,
+      openingCount: data.openingCount,
+      closingCount: data.closingCount,
+      production: data.production,
+      rejection: data.rejection,
+      netProduction: data.netProduction,
+      incentive: data.incentive,
+      less80Reason: data.less80Reason
     });
   }
 
-  get f() {
-    return this.shiftForm.controls;
+  private setupFormListeners() {
+    this.shiftForm.get('entryType')?.valueChanges.subscribe(() => this.onEntryTypeChange());
+    this.shiftForm.get('production')?.valueChanges.subscribe(() => this.calculateNetProduction());
+    this.shiftForm.get('rejection')?.valueChanges.subscribe(() => this.calculateNetProduction());
+    this.onEntryTypeChange();
   }
 
-  get isShiftTypeDisabled(): boolean {
-    return this.shiftForm.get('shiftType')?.disabled ?? true;
-  }
-
-  get isShiftHoursDisabled(): boolean {
-    return this.shiftForm.get('shiftHours')?.disabled ?? true;
-  }
-
-  get isFormInvalid(): boolean {
-    return this.shiftForm.invalid;
-  }
-
-  onWorkTypeChange() {
-    const workType = this.shiftForm.get('workType')?.value;
+  onEntryTypeChange() {
+    const entryType = this.shiftForm.get('entryType')?.value;
     const shiftTypeControl = this.shiftForm.get('shiftType');
     const shiftHoursControl = this.shiftForm.get('shiftHours');
 
-    if (workType === 'Shift') {
-      shiftTypeControl?.enable();
-      shiftHoursControl?.disable();
-    } else if (workType === 'Hours') {
-      shiftHoursControl?.enable();
-      shiftTypeControl?.disable();
+    if (entryType === EntryType.SHIFT.toString()) {
+      shiftTypeControl?.setValidators([Validators.required]);
+      shiftHoursControl?.clearValidators();
+      shiftHoursControl?.setValue('');
+    } else if (entryType === EntryType.HOURS.toString()) {
+      shiftHoursControl?.setValidators([Validators.required]);
+      shiftTypeControl?.clearValidators();
+      shiftTypeControl?.setValue('');
     } else {
-      shiftTypeControl?.disable();
-      shiftHoursControl?.disable();
+      shiftTypeControl?.clearValidators();
+      shiftHoursControl?.clearValidators();
     }
+    
     shiftTypeControl?.updateValueAndValidity();
     shiftHoursControl?.updateValueAndValidity();
+  }
+
+  calculateNetProduction() {
+    const production = this.shiftForm.get('production')?.value || 0;
+    const rejection = this.shiftForm.get('rejection')?.value || 0;
+    const netProduction = production - rejection;
+    this.shiftForm.get('netProduction')?.setValue(netProduction, { emitEvent: false });
+  }
+
+  get isShiftTypeRequired(): boolean {
+    return this.shiftForm.get('entryType')?.value === EntryType.SHIFT.toString();
+  }
+
+  get isShiftHoursRequired(): boolean {
+    return this.shiftForm.get('entryType')?.value === EntryType.HOURS.toString();
   }
 
   goBack() {
@@ -147,34 +169,11 @@ export class ProductionEntryComponent implements OnInit, OnChanges {
   }
 
   onSubmit() {
-    if (this.mode === 'read') {
-      return;
-    }
+    if (this.mode === 'read') return;
+    
     if (this.shiftForm.valid) {
-      // ✅ Get ALL values from FormGroup
-      const formValue = this.shiftForm.getRawValue() as ProductionShift;
+      const formValue = this.shiftForm.getRawValue();
       this.formSubmit.emit(formValue);
     }
   }
-
-  getFormattedTime(): string {
-    const timeValue = this.shiftForm.get('shiftStartTime')?.value;
-    console.log('Raw Time Value:', timeValue);
-    if (!timeValue) return '';
-    
-    // ✅ Extract and format ISO datetime to 12-hour display
-    const date = new Date(timeValue);
-    return date.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true 
-    });
-  }
-
-  onShiftTimeChange(event: any) {
-    const value = event.detail.value;  // Already ISO format from picker
-    console.log('Selected Time ISO:', value);
-    this.shiftForm.get('shiftStartTime')?.setValue(value, { emitEvent: true });
-  }
-
 }
