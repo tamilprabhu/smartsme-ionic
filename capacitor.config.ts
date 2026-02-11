@@ -1,9 +1,12 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'smartsme-fe',
-  webDir: 'www'
+    appId: 'io.ionic.starter',
+    appName: 'smartsme-fe',
+    webDir: 'www',
+    android: {
+    	 allowMixedContent: true 
+    }
 };
 
 export default config;
