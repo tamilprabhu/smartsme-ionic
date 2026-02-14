@@ -3,14 +3,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { ProductionShift } from 'src/app/models/production-shift.model';
-import { Machine } from 'src/app/models/machine.model';
-import { Order } from 'src/app/models/order.model';
-import { Product } from 'src/app/models/product.model';
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';
 import { ProductService } from 'src/app/services/product.service';
-import { EmployeeDropdownItem, EmployeeService } from 'src/app/services/employee.service';
-import { EmployeeSearchModalComponent } from 'src/app/components/employee-search-modal/employee-search-modal.component';
+import { EmployeeService } from 'src/app/services/employee.service';
+import { LookupItem, LookupSearchModalComponent } from 'src/app/components/lookup-search-modal/lookup-search-modal.component';
 import { EntryType } from 'src/app/enums/entry-type.enum';
 import { ShiftType } from 'src/app/enums/shift-type.enum';
 import { ShiftHours } from 'src/app/enums/shift-hours.enum';
@@ -29,13 +26,13 @@ export class ProductionShiftFormComponent implements OnInit {
   @Output() formCancel = new EventEmitter<void>();
 
   form!: FormGroup;
-  machines: Machine[] = [];
-  orders: Order[] = [];
-  products: Product[] = [];
-  operator1Selection: EmployeeDropdownItem | null = null;
-  operator2Selection: EmployeeDropdownItem | null = null;
-  operator3Selection: EmployeeDropdownItem | null = null;
-  supervisorSelection: EmployeeDropdownItem | null = null;
+  orderSelection: LookupItem | null = null;
+  productSelection: LookupItem | null = null;
+  machineSelection: LookupItem | null = null;
+  operator1Selection: LookupItem | null = null;
+  operator2Selection: LookupItem | null = null;
+  operator3Selection: LookupItem | null = null;
+  supervisorSelection: LookupItem | null = null;
 
   entryTypes = [
     { label: 'Shift', value: EntryType.SHIFT.toString() },
@@ -65,50 +62,27 @@ export class ProductionShiftFormComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.loadMachines();
-    this.loadOrders();
-    this.loadProducts();
     if (this.initialData) {
       this.form.patchValue(this.initialData);
     }
+    this.hydrateLookups();
     this.hydrateSelections();
     if (this.readonly) {
       this.form.disable();
     }
   }
 
-  private loadMachines() {
-    this.machineService.getMachines(1, 100).subscribe({
-      next: (response) => {
-        this.machines = response.items;
-      },
-      error: (error) => console.error('Failed to load machines', error)
-    });
-  }
-
-  private loadOrders() {
-    this.orderService.getOrders(1, 1000).subscribe({
-      next: (response) => {
-        this.orders = response.items;
-      },
-      error: (error) => console.error('Failed to load orders', error)
-    });
-  }
-
-  private loadProducts() {
-    this.productService.getProducts(1, 1000).subscribe({
-      next: (response) => {
-        this.products = response.items;
-      },
-      error: (error) => console.error('Failed to load products', error)
-    });
-  }
-
   private hydrateSelections() {
-    this.resolveSelection('operator1', ['PRODUCTION_EMPLOYEE']);
-    this.resolveSelection('operator2', ['PRODUCTION_EMPLOYEE']);
-    this.resolveSelection('operator3', ['PRODUCTION_EMPLOYEE']);
-    this.resolveSelection('supervisor', ['SHIFT_INCHARGE']);
+    this.resolveEmployeeSelection('operator1', ['PRODUCTION_EMPLOYEE']);
+    this.resolveEmployeeSelection('operator2', ['PRODUCTION_EMPLOYEE']);
+    this.resolveEmployeeSelection('operator3', ['PRODUCTION_EMPLOYEE']);
+    this.resolveEmployeeSelection('supervisor', ['SHIFT_INCHARGE']);
+  }
+
+  private hydrateLookups() {
+    this.resolveLookup('orderId', 'order');
+    this.resolveLookup('productId', 'product');
+    this.resolveLookup('machineId', 'machine');
   }
 
   private initForm() {
@@ -161,41 +135,56 @@ export class ProductionShiftFormComponent implements OnInit {
     shiftHoursControl?.updateValueAndValidity();
   }
 
-  async openEmployeeModal(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor') {
+  async openLookupModal(field: 'orderId' | 'productId' | 'machineId' | 'operator1' | 'operator2' | 'operator3' | 'supervisor') {
     if (this.readonly) {
       return;
     }
-    const isSupervisor = field === 'supervisor';
-    const allowClear = field === 'operator2' || field === 'operator3';
     const titleMap: Record<string, string> = {
+      orderId: 'Select Order',
+      productId: 'Select Product',
+      machineId: 'Select Machine',
       operator1: 'Select Operator 1',
       operator2: 'Select Operator 2',
       operator3: 'Select Operator 3',
       supervisor: 'Select Supervisor'
     };
+    const resourceMap: Record<string, 'order' | 'product' | 'machine' | 'employee'> = {
+      orderId: 'order',
+      productId: 'product',
+      machineId: 'machine',
+      operator1: 'employee',
+      operator2: 'employee',
+      operator3: 'employee',
+      supervisor: 'employee'
+    };
+    const allowClear = field === 'orderId' || field === 'operator2' || field === 'operator3';
+    const roleNames = resourceMap[field] === 'employee'
+      ? (field === 'supervisor' ? ['SHIFT_INCHARGE'] : ['PRODUCTION_EMPLOYEE'])
+      : [];
 
     const selectedValue = this.form.get(field)?.value ?? null;
     const modal = await this.modalController.create({
-      component: EmployeeSearchModalComponent,
+      component: LookupSearchModalComponent,
       componentProps: {
         title: titleMap[field],
-        roleNames: isSupervisor ? ['SHIFT_INCHARGE'] : ['PRODUCTION_EMPLOYEE'],
+        resource: resourceMap[field],
         selectedValue,
-        allowClear
+        allowClear,
+        roleNames
       }
     });
 
     await modal.present();
-    const { data, role } = await modal.onWillDismiss<EmployeeDropdownItem | null>();
+    const { data, role } = await modal.onWillDismiss<LookupItem | null>();
 
     if (role === 'select' && data) {
       this.form.get(field)?.setValue(data.value);
-      this.setSelection(field, data);
+      this.setLookupSelection(field, data);
     }
 
     if (role === 'clear') {
       this.form.get(field)?.setValue(null);
-      this.setSelection(field, null);
+      this.setLookupSelection(field, null);
     }
   }
 
@@ -224,7 +213,7 @@ export class ProductionShiftFormComponent implements OnInit {
   }
 
   getSelectionLabel(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor'): string {
-    const selection = this.getSelection(field);
+    const selection = this.getLookupSelection(field);
     if (selection?.label) {
       return selection.label;
     }
@@ -238,7 +227,19 @@ export class ProductionShiftFormComponent implements OnInit {
     return 'Select';
   }
 
-  private resolveSelection(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor', roleNames: string[]) {
+  getLookupLabel(field: 'orderId' | 'productId' | 'machineId'): string {
+    const selection = this.getLookupSelection(field);
+    if (selection?.label) {
+      return selection.label;
+    }
+    const value = this.form.get(field)?.value;
+    if (value) {
+      return `${value}`;
+    }
+    return field === 'orderId' ? 'None' : 'Select';
+  }
+
+  private resolveEmployeeSelection(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor', roleNames: string[]) {
     const value = this.form.get(field)?.value;
     if (!value) {
       return;
@@ -247,15 +248,74 @@ export class ProductionShiftFormComponent implements OnInit {
       next: (response) => {
         const match = response.items.find(item => item.value === value);
         if (match) {
-          this.setSelection(field, match);
+          this.setLookupSelection(field, {
+            value: match.value,
+            label: match.label
+          });
         }
       },
       error: (error) => console.error(`Failed to resolve ${field}`, error)
     });
   }
 
-  private setSelection(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor', item: EmployeeDropdownItem | null) {
-    if (field === 'operator1') {
+  private resolveLookup(field: 'orderId' | 'productId' | 'machineId', resource: 'order' | 'product' | 'machine') {
+    const value = this.form.get(field)?.value;
+    if (!value) {
+      return;
+    }
+    const searchValue = `${value}`;
+    if (resource === 'order') {
+      this.orderService.getOrders(1, 10, searchValue).subscribe({
+        next: (response) => {
+          const match = response.items.find(item => item.orderId === value);
+          if (match) {
+            this.setLookupSelection(field, {
+              value: match.orderId,
+              label: `${match.orderName} (${match.orderId})`
+            });
+          }
+        },
+        error: (error) => console.error(`Failed to resolve ${field}`, error)
+      });
+      return;
+    }
+    if (resource === 'machine') {
+      this.machineService.getMachines(1, 10, searchValue).subscribe({
+        next: (response) => {
+          const match = response.items.find(item => item.machineId === value);
+          if (match) {
+            this.setLookupSelection(field, {
+              value: match.machineId,
+              label: `${match.machineName} (${match.machineId})`
+            });
+          }
+        },
+        error: (error) => console.error(`Failed to resolve ${field}`, error)
+      });
+      return;
+    }
+    this.productService.getProducts(1, 10, searchValue).subscribe({
+      next: (response) => {
+        const match = response.items.find(item => item.prodId === value);
+        if (match) {
+          this.setLookupSelection(field, {
+            value: match.prodId,
+            label: `${match.prodName} (${match.prodId})`
+          });
+        }
+      },
+      error: (error) => console.error(`Failed to resolve ${field}`, error)
+    });
+  }
+
+  private setLookupSelection(field: 'orderId' | 'productId' | 'machineId' | 'operator1' | 'operator2' | 'operator3' | 'supervisor', item: LookupItem | null) {
+    if (field === 'orderId') {
+      this.orderSelection = item;
+    } else if (field === 'productId') {
+      this.productSelection = item;
+    } else if (field === 'machineId') {
+      this.machineSelection = item;
+    } else if (field === 'operator1') {
       this.operator1Selection = item;
     } else if (field === 'operator2') {
       this.operator2Selection = item;
@@ -266,7 +326,16 @@ export class ProductionShiftFormComponent implements OnInit {
     }
   }
 
-  private getSelection(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor') {
+  private getLookupSelection(field: 'orderId' | 'productId' | 'machineId' | 'operator1' | 'operator2' | 'operator3' | 'supervisor') {
+    if (field === 'orderId') {
+      return this.orderSelection;
+    }
+    if (field === 'productId') {
+      return this.productSelection;
+    }
+    if (field === 'machineId') {
+      return this.machineSelection;
+    }
     if (field === 'operator1') {
       return this.operator1Selection;
     }

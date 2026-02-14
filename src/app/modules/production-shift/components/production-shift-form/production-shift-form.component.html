@@ -2,34 +2,24 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-md="6">
-        <ion-item fill="outline">
-          <ion-select formControlName="orderId" label="Order (Optional)" labelPlacement="floating" interface="popover">
-            <ion-select-option [value]="null">None</ion-select-option>
-            <ion-select-option *ngFor="let order of orders" [value]="order.orderId">
-              {{ order.orderName }} ({{ order.orderId }})
-            </ion-select-option>
-          </ion-select>
+        <ion-item fill="outline" button (click)="openLookupModal('orderId')">
+          <ion-label>Order (Optional)</ion-label>
+          <ion-note slot="end">{{ getLookupLabel('orderId') }}</ion-note>
         </ion-item>
       </ion-col>
       <ion-col size="12" size-md="6">
-        <ion-item fill="outline">
-          <ion-select formControlName="productId" label="Product *" labelPlacement="floating" interface="popover">
-            <ion-select-option *ngFor="let product of products" [value]="product.prodId">
-              {{ product.prodName }} ({{ product.prodId }})
-            </ion-select-option>
-          </ion-select>
+        <ion-item fill="outline" button (click)="openLookupModal('productId')">
+          <ion-label>Product *</ion-label>
+          <ion-note slot="end">{{ getLookupLabel('productId') }}</ion-note>
         </ion-item>
       </ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col size="12">
-        <ion-item fill="outline">
-          <ion-select formControlName="machineId" label="Machine *" labelPlacement="floating" interface="popover">
-            <ion-select-option *ngFor="let machine of machines" [value]="machine.machineId">
-              {{ machine.machineName }} ({{ machine.machineId }})
-            </ion-select-option>
-          </ion-select>
+        <ion-item fill="outline" button (click)="openLookupModal('machineId')">
+          <ion-label>Machine *</ion-label>
+          <ion-note slot="end">{{ getLookupLabel('machineId') }}</ion-note>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -79,19 +69,19 @@
 
     <ion-row>
       <ion-col size="12" size-md="4">
-        <ion-item fill="outline" button (click)="openEmployeeModal('operator1')">
+        <ion-item fill="outline" button (click)="openLookupModal('operator1')">
           <ion-label>Operator 1 *</ion-label>
           <ion-note slot="end">{{ getSelectionLabel('operator1') }}</ion-note>
         </ion-item>
       </ion-col>
       <ion-col size="12" size-md="4">
-        <ion-item fill="outline" button (click)="openEmployeeModal('operator2')">
+        <ion-item fill="outline" button (click)="openLookupModal('operator2')">
           <ion-label>Operator 2</ion-label>
           <ion-note slot="end">{{ getSelectionLabel('operator2') }}</ion-note>
         </ion-item>
       </ion-col>
       <ion-col size="12" size-md="4">
-        <ion-item fill="outline" button (click)="openEmployeeModal('operator3')">
+        <ion-item fill="outline" button (click)="openLookupModal('operator3')">
           <ion-label>Operator 3</ion-label>
           <ion-note slot="end">{{ getSelectionLabel('operator3') }}</ion-note>
         </ion-item>
@@ -100,7 +90,7 @@
 
     <ion-row>
       <ion-col size="12">
-        <ion-item fill="outline" button (click)="openEmployeeModal('supervisor')">
+        <ion-item fill="outline" button (click)="openLookupModal('supervisor')">
           <ion-label>Supervisor *</ion-label>
           <ion-note slot="end">{{ getSelectionLabel('supervisor') }}</ion-note>
         </ion-item>
