@@ -5,12 +5,18 @@
     </ion-buttons>
     <ion-title>Production Shifts</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="toggleSearch()">
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="toggleSortOptions()">
+        <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
+      </ion-button>
       <ion-button (click)="createShift()">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar *ngIf="showSearch">
     <ion-searchbar 
       #searchInput
       placeholder="Search shifts..."
@@ -18,6 +24,40 @@
       (ionInput)="onSearchInput($event)"
       (ionClear)="clearSearch()">
     </ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="showSortOptions">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item fill="outline">
+            <ion-select
+              label="Sort By"
+              labelPlacement="floating"
+              interface="popover"
+              [(ngModel)]="sortBy"
+              (ionChange)="onSortChange()">
+              <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">
+                {{ option.label }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item fill="outline">
+            <ion-select
+              label="Sort Order"
+              labelPlacement="floating"
+              interface="popover"
+              [(ngModel)]="sortOrder"
+              (ionChange)="onSortChange()">
+              <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">
+                {{ option.label }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-toolbar>
 </ion-header>
 

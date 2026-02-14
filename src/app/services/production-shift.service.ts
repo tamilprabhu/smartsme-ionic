@@ -6,6 +6,8 @@ import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../constants/pagination';
 import { ProductionShift } from '../models/production-shift.model';
+import { SortBy } from '../enums/sort-by.enum';
+import { SortOrder } from '../enums/sort-order.enum';
 
 export interface ProductionShiftResponse {
   items: ProductionShift[];
@@ -36,10 +38,22 @@ export class ProductionShiftService {
     });
   }
 
-  getProductionShifts(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<ProductionShiftResponse> {
+  getProductionShifts(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.SEQUENCE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<ProductionShiftResponse> {
     let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
     if (search && search.trim()) {
       url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    if (sortBy) {
+      url += `&sortBy=${encodeURIComponent(sortBy)}`;
+    }
+    if (sortOrder) {
+      url += `&sortOrder=${encodeURIComponent(sortOrder)}`;
     }
     return this.http.get<ProductionShiftResponse>(url, {
       headers: this.getHeaders()

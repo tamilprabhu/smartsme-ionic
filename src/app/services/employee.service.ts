@@ -6,6 +6,8 @@ import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../constants/pagination';
 import { Employee } from '../models/employee.model';
+import { SortBy } from '../enums/sort-by.enum';
+import { SortOrder } from '../enums/sort-order.enum';
 
 export interface EmployeeResponse {
   items: Employee[];
@@ -53,10 +55,22 @@ export class EmployeeService {
     });
   }
 
-  getEmployees(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<EmployeeResponse> {
+  getEmployees(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.SEQUENCE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<EmployeeResponse> {
     let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
     if (search && search.trim()) {
       url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    if (sortBy) {
+      url += `&sortBy=${encodeURIComponent(sortBy)}`;
+    }
+    if (sortOrder) {
+      url += `&sortOrder=${encodeURIComponent(sortOrder)}`;
     }
     return this.http.get<EmployeeResponse>(url, {
       headers: this.getHeaders()
@@ -97,11 +111,24 @@ export class EmployeeService {
     );
   }
 
-  getEmployeesByRole(roleNames: string[], page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<EmployeeDropdownResponse> {
+  getEmployeesByRole(
+    roleNames: string[],
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.SEQUENCE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<EmployeeDropdownResponse> {
     const roleParam = roleNames.map(role => role.trim()).filter(Boolean).join(',');
     let url = `${this.API_URL}/role/${encodeURIComponent(roleParam)}?page=${page}&itemsPerPage=${limit}`;
     if (search && search.trim()) {
       url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    if (sortBy) {
+      url += `&sortBy=${encodeURIComponent(sortBy)}`;
+    }
+    if (sortOrder) {
+      url += `&sortOrder=${encodeURIComponent(sortOrder)}`;
     }
     return this.http.get<EmployeeDropdownResponse>(url, {
       headers: this.getHeaders()

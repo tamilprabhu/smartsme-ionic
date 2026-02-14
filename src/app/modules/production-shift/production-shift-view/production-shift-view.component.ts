@@ -10,6 +10,7 @@ import { ProductionShiftService } from 'src/app/services/production-shift.servic
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';
 import { ProductService } from 'src/app/services/product.service';
+import { EmployeeService } from 'src/app/services/employee.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -24,6 +25,10 @@ export class ProductionShiftViewComponent implements OnInit {
   machineName: string = '';
   orderName: string = '';
   productName: string = '';
+  operator1Name: string = '';
+  operator2Name: string = '';
+  operator3Name: string = '';
+  supervisorName: string = '';
   loading = true;
 
   constructor(
@@ -33,7 +38,8 @@ export class ProductionShiftViewComponent implements OnInit {
     private shiftService: ProductionShiftService,
     private machineService: MachineService,
     private orderService: OrderService,
-    private productService: ProductService
+    private productService: ProductService,
+    private employeeService: EmployeeService
   ) {}
 
   ngOnInit() {
@@ -46,6 +52,7 @@ export class ProductionShiftViewComponent implements OnInit {
       next: (shift) => {
         this.shift = shift;
         this.loadMasterData(shift.machineId, shift.orderId, shift.productId);
+        this.loadEmployeeNames(shift.operator1, shift.operator2, shift.operator3, shift.supervisor);
         this.loading = false;
       },
       error: () => {
@@ -80,6 +87,28 @@ export class ProductionShiftViewComponent implements OnInit {
         this.machineName = machineId;
         this.orderName = orderId || 'No Order';
         this.productName = productId;
+      }
+    });
+  }
+
+  private loadEmployeeNames(operator1?: number | null, operator2?: number | null, operator3?: number | null, supervisor?: number | null) {
+    this.resolveEmployeeName(operator1, ['PRODUCTION_EMPLOYEE'], (label) => this.operator1Name = label);
+    this.resolveEmployeeName(operator2, ['PRODUCTION_EMPLOYEE'], (label) => this.operator2Name = label);
+    this.resolveEmployeeName(operator3, ['PRODUCTION_EMPLOYEE'], (label) => this.operator3Name = label);
+    this.resolveEmployeeName(supervisor, ['SHIFT_INCHARGE'], (label) => this.supervisorName = label);
+  }
+
+  private resolveEmployeeName(userId?: number | null, roleNames: string[] = [], setter?: (value: string) => void) {
+    if (!userId || !setter) {
+      return;
+    }
+    this.employeeService.getEmployeesByRole(roleNames, 1, 10, `${userId}`).subscribe({
+      next: (response) => {
+        const match = response.items.find(item => item.value === userId);
+        setter(match?.label || `${userId}`);
+      },
+      error: () => {
+        setter(`${userId}`);
       }
     });
   }

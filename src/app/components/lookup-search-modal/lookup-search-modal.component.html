@@ -39,11 +39,12 @@
     <ion-label color="danger">{{ errorMessage }}</ion-label>
   </ion-item>
 
-  <ion-button
-    expand="block"
-    fill="outline"
-    *ngIf="!loading && page < totalPages"
-    (click)="loadMore()">
-    Load more
-  </ion-button>
+  <ion-infinite-scroll
+    (ionInfinite)="loadMore($event)"
+    [disabled]="loading || page >= totalPages">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

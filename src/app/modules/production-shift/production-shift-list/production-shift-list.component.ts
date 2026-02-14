@@ -13,6 +13,8 @@ import { ProductionShiftService } from 'src/app/services/production-shift.servic
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';
 import { ProductService } from 'src/app/services/product.service';
+import { SortBy } from 'src/app/enums/sort-by.enum';
+import { SortOrder } from 'src/app/enums/sort-order.enum';
 
 @Component({
   selector: 'app-production-shift-list',
@@ -35,6 +37,23 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery = '';
+  sortBy: SortBy = SortBy.SEQUENCE;
+  sortOrder: SortOrder = SortOrder.DESC;
+
+  sortByOptions = [
+    { label: 'Sequence', value: SortBy.SEQUENCE },
+    { label: 'Create Date', value: SortBy.CREATE_DATE },
+    { label: 'Update Date', value: SortBy.UPDATE_DATE },
+    { label: 'Created By', value: SortBy.CREATED_BY },
+    { label: 'Updated By', value: SortBy.UPDATED_BY }
+  ];
+
+  sortOrderOptions = [
+    { label: 'Descending', value: SortOrder.DESC },
+    { label: 'Ascending', value: SortOrder.ASC }
+  ];
+  showSortOptions = false;
+  showSearch = false;
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -113,7 +132,7 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    this.shiftService.getProductionShifts(this.currentPage, 10, this.searchQuery).subscribe({
+    this.shiftService.getProductionShifts(this.currentPage, 10, this.searchQuery, this.sortBy, this.sortOrder).subscribe({
       next: (response) => {
         if (this.currentPage === 1) {
           this.shifts = response.items;
@@ -150,6 +169,24 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
     this.searchQuery = '';
     if (this.searchInput) this.searchInput.value = '';
     this.performSearch('');
+  }
+
+  toggleSearch() {
+    this.showSearch = !this.showSearch;
+    if (!this.showSearch) {
+      this.clearSearch();
+    }
+  }
+
+  toggleSortOptions() {
+    this.showSortOptions = !this.showSortOptions;
+  }
+
+  onSortChange() {
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.shifts = [];
+    this.loadShifts();
   }
 
   getShiftTypeLabel(shiftType: string): string {

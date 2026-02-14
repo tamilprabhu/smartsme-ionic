@@ -59,11 +59,15 @@ export class LookupSearchModalComponent implements OnInit {
     }, 300);
   }
 
-  loadMore() {
+  loadMore(event?: any) {
     if (this.loading || this.page >= this.totalPages) {
+      if (event) {
+        event.target.complete();
+        event.target.disabled = true;
+      }
       return;
     }
-    this.loadPage(this.page + 1, true);
+    this.loadPage(this.page + 1, true, event);
   }
 
   selectItem(item: LookupItem) {
@@ -82,7 +86,7 @@ export class LookupSearchModalComponent implements OnInit {
     return item.value === this.selectedValue;
   }
 
-  private loadPage(page: number, append: boolean = false) {
+  private loadPage(page: number, append: boolean = false, event?: any) {
     this.loading = true;
     this.errorMessage = '';
 
@@ -91,11 +95,18 @@ export class LookupSearchModalComponent implements OnInit {
       this.totalPages = totalPages;
       this.items = append ? [...this.items, ...items] : items;
       this.loading = false;
+      if (event) {
+        event.target.complete();
+        event.target.disabled = this.page >= this.totalPages;
+      }
     };
 
     const onError = (error: any) => {
       this.errorMessage = error?.message || 'Failed to load items';
       this.loading = false;
+      if (event) {
+        event.target.complete();
+      }
     };
 
     if (this.resource === 'order') {
