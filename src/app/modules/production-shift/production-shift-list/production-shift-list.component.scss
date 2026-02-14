@@ -1,1 +1,29 @@
+// Local layout refinements for filter/search alignment
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 4px 8px 12px 8px;
+}
 
+.filter-item {
+  --inner-padding-start: 8px;
+  --inner-padding-end: 8px;
+}
+
+@media (max-width: 640px) {
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+}
+ion-header {
+  ion-toolbar {
+    --background: var(--ion-color-light);
+    --border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  ion-title {
+    font-weight: 600;
+    font-size: 18px;
+  }
+}

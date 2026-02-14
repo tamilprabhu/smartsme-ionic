@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, IonSearchbar, ToastController, IonicModule } from '@ionic/angular';
+import { AlertController, IonSearchbar, ToastController, IonicModule, NavController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -60,6 +60,7 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    private navCtrl: NavController,
     private alertController: AlertController,
     private toastController: ToastController,
     private shiftService: ProductionShiftService,
@@ -72,6 +73,10 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(query => this.performSearch(query));
+  }
+
+  onBackClick() {
+    this.navCtrl.back();
   }
 
   ngOnInit() {

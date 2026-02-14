@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-button color="primary" (click)="onBackClick()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Production Shifts</ion-title>
     <ion-buttons slot="end">
@@ -12,58 +14,60 @@
         <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
       </ion-button>
       <ion-button (click)="createShift()">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
+        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-  </ion-toolbar>
-  <ion-toolbar *ngIf="showSearch">
-    <ion-searchbar 
-      #searchInput
-      placeholder="Search shifts..."
-      [value]="searchQuery"
-      (ionInput)="onSearchInput($event)"
-      (ionClear)="clearSearch()">
-    </ion-searchbar>
-  </ion-toolbar>
-  <ion-toolbar *ngIf="showSortOptions">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="6">
-          <ion-item fill="outline">
-            <ion-select
-              label="Sort By"
-              labelPlacement="floating"
-              interface="popover"
-              [(ngModel)]="sortBy"
-              (ionChange)="onSortChange()">
-              <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">
-                {{ option.label }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
-        <ion-col size="6">
-          <ion-item fill="outline">
-            <ion-select
-              label="Sort Order"
-              labelPlacement="floating"
-              interface="popover"
-              [(ngModel)]="sortOrder"
-              (ionChange)="onSortChange()">
-              <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">
-                {{ option.label }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-card class="search-card" *ngIf="showSearch">
+    <ion-searchbar
+      #searchInput
+      placeholder="Search by shift ID, order, or machine..."
+      [value]="searchQuery"
+      (ionInput)="onSearchInput($event)"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-card class="search-card" *ngIf="showSortOptions">
+    <div class="filter-row">
+      <ion-item fill="outline" class="filter-item">
+        <ion-select
+          label="Sort By"
+          labelPlacement="floating"
+          interface="popover"
+          [(ngModel)]="sortBy"
+          (ionChange)="onSortChange()">
+          <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">
+            {{ option.label }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item fill="outline" class="filter-item">
+        <ion-select
+          label="Sort Order"
+          labelPlacement="floating"
+          interface="popover"
+          [(ngModel)]="sortOrder"
+          (ionChange)="onSortChange()">
+          <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">
+            {{ option.label }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+  </ion-card>
+
+  <ion-item *ngIf="searchQuery" class="results-info">
+    <ion-label>
+      Found <strong>{{ shifts.length }}</strong> shift(s)
+    </ion-label>
+  </ion-item>
+
   <ion-list *ngIf="shifts.length > 0">
-    <ion-item *ngFor="let shift of shifts" button (click)="viewShift(shift.shiftIdSeq)">
+    <ion-item *ngFor="let shift of shifts" class="sme-list-item" button (click)="viewShift(shift.shiftIdSeq)">
       <ion-label>
         <h2>
           {{ shift.shiftId }} 
@@ -84,7 +88,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-card *ngIf="shifts.length === 0 && !loading">
+  <ion-card *ngIf="shifts.length === 0 && !loading" class="empty-state">
     <ion-card-header>
       <ion-card-title>No Shifts Found</ion-card-title>
     </ion-card-header>

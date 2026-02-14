@@ -10,7 +10,7 @@ import { Product } from 'src/app/models/product.model';
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule]
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
 export class ProductComponent implements OnInit, OnChanges {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';

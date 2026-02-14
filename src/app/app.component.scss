@@ -75,46 +75,38 @@ $shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
 }
 
-.ion-list {
+.menu-list {
   padding: 8px 0;
+}
 
-  ion-item {
-    --background: unset;
-    --color: #222; // Dark text for contrast
-    font-size: 1.15rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    min-height: 52px;
+.menu-item {
+  --background: unset;
+  --color: #222;
+  --inner-padding-start: 16px;
+  --inner-padding-end: 12px;
+  --min-height: 48px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  align-items: center;
+  color: var(--color);
 
-    /* Ensure Ionic item uses the CSS variable for visible text */
-    color: var(--color);
-
-    ion-icon {
-      font-size: 2rem;
-      margin-right: 20px;
-      &.home {
-        color: #1EA4FF;
-      }
-      &.profile {
-        color: #FF7700;
-      }
-      &.settings {
-        color: #377DFF;
-      }
-      &.messages {
-        color: #23E1B3;
-      }
-      &.logout {
-        color: #377DFF;
-      }
-    }
-    &:hover,
-    &.active {
-      background: rgba(30,164,255,0.08);
-      --color: #222;
-    }
+  &:hover,
+  &.active {
+    background: rgba(30,164,255,0.08);
+    --color: #222;
   }
+}
+
+.menu-icon {
+  width: 22px;
+  font-size: 18px;
+  margin-right: 14px;
+  text-align: center;
+  color: var(--ion-color-primary);
+}
+
+.menu-label {
+  line-height: 1.2;
 }
 
 .menu-container {

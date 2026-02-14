@@ -1,3 +1,31 @@
 ion-item {
   margin-bottom: 16px;
 }
+
+.lookup-item {
+  --inner-padding-start: 12px;
+  --inner-padding-end: 12px;
+}
+
+.lookup-item ion-input {
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.form-section {
+  padding: 4px 4px 8px 4px;
+}
+
+.form-section__title {
+  margin: 8px 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  letter-spacing: 0.2px;
+}
+
+.form-section__subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ion-color-medium);
+}

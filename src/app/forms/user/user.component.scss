@@ -1,5 +1,6 @@
 ion-content {
-    height: 300px;
+    height: auto;
+  min-height: 100%;
 }
 
 ion-header ion-toolbar {

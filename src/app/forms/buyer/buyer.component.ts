@@ -10,7 +10,7 @@ import { Buyer } from 'src/app/models/buyer.model';
   templateUrl: './buyer.component.html',
   styleUrls: ['./buyer.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule]
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
 export class BuyerComponent implements OnInit, OnChanges {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';

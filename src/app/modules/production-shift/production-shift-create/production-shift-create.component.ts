@@ -5,13 +5,14 @@ import { CommonModule } from '@angular/common';
 import { ProductionShift } from 'src/app/models/production-shift.model';
 import { ProductionShiftService } from 'src/app/services/production-shift.service';
 import { ProductionShiftFormComponent } from '../components/production-shift-form/production-shift-form.component';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
   selector: 'app-production-shift-create',
   templateUrl: './production-shift-create.component.html',
   styleUrls: ['./production-shift-create.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, ProductionShiftFormComponent]
+  imports: [CommonModule, IonicModule, ProductionShiftFormComponent, HeaderComponent]
 })
 export class ProductionShiftCreateComponent {
   constructor(

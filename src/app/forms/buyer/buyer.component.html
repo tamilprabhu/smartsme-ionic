@@ -1,14 +1,21 @@
-<ion-card class="sme-form-card ion-no-margin">
-  <ion-card-header>
-    <ion-card-title>
-      {{ mode === 'create' ? 'Create Buyer' : mode === 'update' ? 'Update Buyer' : 'Buyer Details' }}
-    </ion-card-title>
-    <ion-card-subtitle *ngIf="mode !== 'read'">Please fill all required information</ion-card-subtitle>
-  </ion-card-header>
+<ion-content>
+  <ion-card class="sme-form-card ion-no-margin">
+    <ion-card-header>
+      <ion-card-title>
+        {{
+          mode === 'create'
+            ? 'Buyer Details'
+            : mode === 'update'
+            ? 'Edit Buyer Details'
+            : 'Buyer Details'
+        }}
+      </ion-card-title>
+      <ion-card-subtitle *ngIf="mode !== 'read'">Please fill all required information</ion-card-subtitle>
+    </ion-card-header>
 
-  <ion-card-content>
-    <form [formGroup]="buyerForm" (ngSubmit)="onSubmit()">
-      <ion-grid>
+    <ion-card-content>
+      <form [formGroup]="buyerForm" (ngSubmit)="onSubmit()">
+        <ion-grid>
 
         <!-- Buyer ID -->
         <ion-row>
@@ -116,33 +123,39 @@
           </ion-col>
         </ion-row>
 
-        <!-- Submit and Cancel Buttons -->
-        <ion-row *ngIf="mode !== 'read'">
+        <!-- CREATE / UPDATE MODE -->
+        <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="mode !== 'read'">
           <ion-col size="6">
             <ion-button
               expand="block"
               type="submit"
               color="primary"
-              size="large"
-              class="ion-margin-top"
               [disabled]="buyerForm.invalid">
-              Save
+              <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+              {{ mode === 'create' ? 'Submit' : 'Update' }}
             </ion-button>
           </ion-col>
           <ion-col size="6">
-            <ion-button
-              expand="block"
-              color="medium"
-              size="large"
-              class="ion-margin-top"
-              type="button"
-              (click)="goBack()">
+            <ion-button color="medium" fill="outline" expand="block" (click)="goBack()">
+              <ion-icon name="close-circle-outline" slot="start"></ion-icon>
               Cancel
             </ion-button>
           </ion-col>
         </ion-row>
 
-      </ion-grid>
-    </form>
-  </ion-card-content>
-</ion-card>
+        <!-- READ MODE: Only Cancel Button -->
+        <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="mode === 'read'">
+          <ion-col size="12">
+            <ion-button color="medium" fill="outline" expand="block" (click)="goBack()">
+              <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+              Cancel
+            </ion-button>
+          </ion-col>
+        </ion-row>
+
+        </ion-grid>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<app-footer></app-footer>

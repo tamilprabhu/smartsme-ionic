@@ -12,13 +12,14 @@ import { OrderService } from 'src/app/services/order.service';
 import { ProductService } from 'src/app/services/product.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { forkJoin } from 'rxjs';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
   selector: 'app-production-shift-view',
   templateUrl: './production-shift-view.component.html',
   styleUrls: ['./production-shift-view.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule]
+  imports: [CommonModule, IonicModule, HeaderComponent]
 })
 export class ProductionShiftViewComponent implements OnInit {
   shift: ProductionShift | null = null;

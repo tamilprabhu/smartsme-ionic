@@ -221,10 +221,7 @@ export class ProductionShiftFormComponent implements OnInit {
     if (value) {
       return `${value}`;
     }
-    if (field === 'operator2' || field === 'operator3') {
-      return 'None';
-    }
-    return 'Select';
+    return '';
   }
 
   getLookupLabel(field: 'orderId' | 'productId' | 'machineId'): string {
@@ -236,7 +233,7 @@ export class ProductionShiftFormComponent implements OnInit {
     if (value) {
       return `${value}`;
     }
-    return field === 'orderId' ? 'None' : 'Select';
+    return '';
   }
 
   private resolveEmployeeSelection(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor', roleNames: string[]) {

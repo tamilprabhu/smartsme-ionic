@@ -6,13 +6,14 @@ import { Stock } from 'src/app/models/stock.model';
 import { Seller } from 'src/app/models/seller.model';
 import { SellerService } from 'src/app/services/seller.service';
 import { DateFieldComponent } from 'src/app/components/date-field/date-field.component';
+import { FooterComponent } from 'src/app/components/footer/footer.component';
 
 @Component({
   selector: 'app-stock',
   templateUrl: './stock.component.html',
   styleUrls: ['./stock.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, DateFieldComponent]
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, DateFieldComponent, FooterComponent]
 })
 export class StockComponent implements OnInit, OnChanges {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';

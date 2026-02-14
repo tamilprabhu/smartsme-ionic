@@ -1,26 +1,59 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <ion-grid>
     <ion-row>
+      <ion-col size="12">
+        <div class="form-section">
+          <h3 class="form-section__title">References</h3>
+          <p class="form-section__subtitle">Select related order, product, and machine</p>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
       <ion-col size="12" size-md="6">
-        <ion-item fill="outline" button (click)="openLookupModal('orderId')">
-          <ion-label>Order (Optional)</ion-label>
-          <ion-note slot="end">{{ getLookupLabel('orderId') }}</ion-note>
+        <ion-item class="lookup-item" fill="outline" button (click)="openLookupModal('orderId')">
+          <ion-input
+            label="Order (Optional)"
+            labelPlacement="floating"
+            [value]="getLookupLabel('orderId')"
+            inputmode="none"
+            readonly>
+          </ion-input>
         </ion-item>
       </ion-col>
       <ion-col size="12" size-md="6">
-        <ion-item fill="outline" button (click)="openLookupModal('productId')">
-          <ion-label>Product *</ion-label>
-          <ion-note slot="end">{{ getLookupLabel('productId') }}</ion-note>
+        <ion-item class="lookup-item" fill="outline" button (click)="openLookupModal('productId')">
+          <ion-input
+            label="Product *"
+            labelPlacement="floating"
+            [value]="getLookupLabel('productId')"
+            inputmode="none"
+            readonly>
+          </ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col size="12">
-        <ion-item fill="outline" button (click)="openLookupModal('machineId')">
-          <ion-label>Machine *</ion-label>
-          <ion-note slot="end">{{ getLookupLabel('machineId') }}</ion-note>
+        <ion-item class="lookup-item" fill="outline" button (click)="openLookupModal('machineId')">
+          <ion-input
+            label="Machine *"
+            labelPlacement="floating"
+            [value]="getLookupLabel('machineId')"
+            inputmode="none"
+            readonly>
+          </ion-input>
         </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="form-section">
+          <h3 class="form-section__title">Schedule</h3>
+          <p class="form-section__subtitle">Set shift timing and type</p>
+        </div>
       </ion-col>
     </ion-row>
 
@@ -68,32 +101,70 @@
     </ion-row>
 
     <ion-row>
+      <ion-col size="12">
+        <div class="form-section">
+          <h3 class="form-section__title">Team</h3>
+          <p class="form-section__subtitle">Assign operators and supervisor</p>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
       <ion-col size="12" size-md="4">
-        <ion-item fill="outline" button (click)="openLookupModal('operator1')">
-          <ion-label>Operator 1 *</ion-label>
-          <ion-note slot="end">{{ getSelectionLabel('operator1') }}</ion-note>
+        <ion-item class="lookup-item" fill="outline" button (click)="openLookupModal('operator1')">
+          <ion-input
+            label="Operator 1 *"
+            labelPlacement="floating"
+            [value]="getSelectionLabel('operator1')"
+            inputmode="none"
+            readonly>
+          </ion-input>
         </ion-item>
       </ion-col>
       <ion-col size="12" size-md="4">
-        <ion-item fill="outline" button (click)="openLookupModal('operator2')">
-          <ion-label>Operator 2</ion-label>
-          <ion-note slot="end">{{ getSelectionLabel('operator2') }}</ion-note>
+        <ion-item class="lookup-item" fill="outline" button (click)="openLookupModal('operator2')">
+          <ion-input
+            label="Operator 2"
+            labelPlacement="floating"
+            [value]="getSelectionLabel('operator2')"
+            inputmode="none"
+            readonly>
+          </ion-input>
         </ion-item>
       </ion-col>
       <ion-col size="12" size-md="4">
-        <ion-item fill="outline" button (click)="openLookupModal('operator3')">
-          <ion-label>Operator 3</ion-label>
-          <ion-note slot="end">{{ getSelectionLabel('operator3') }}</ion-note>
+        <ion-item class="lookup-item" fill="outline" button (click)="openLookupModal('operator3')">
+          <ion-input
+            label="Operator 3"
+            labelPlacement="floating"
+            [value]="getSelectionLabel('operator3')"
+            inputmode="none"
+            readonly>
+          </ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col size="12">
-        <ion-item fill="outline" button (click)="openLookupModal('supervisor')">
-          <ion-label>Supervisor *</ion-label>
-          <ion-note slot="end">{{ getSelectionLabel('supervisor') }}</ion-note>
+        <ion-item class="lookup-item" fill="outline" button (click)="openLookupModal('supervisor')">
+          <ion-input
+            label="Supervisor *"
+            labelPlacement="floating"
+            [value]="getSelectionLabel('supervisor')"
+            inputmode="none"
+            readonly>
+          </ion-input>
         </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="form-section">
+          <h3 class="form-section__title">Counts</h3>
+          <p class="form-section__subtitle">Opening, closing, and output values</p>
+        </div>
       </ion-col>
     </ion-row>
 
@@ -144,14 +215,16 @@
       </ion-col>
     </ion-row>
 
-    <ion-row *ngIf="!readonly">
-      <ion-col size="12">
+    <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="!readonly">
+      <ion-col size="6">
         <ion-button expand="block" type="submit" color="primary" [disabled]="form.invalid">
+          <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
           Submit
         </ion-button>
       </ion-col>
-      <ion-col size="12">
-        <ion-button expand="block" type="button" color="medium" (click)="onCancel()">
+      <ion-col size="6">
+        <ion-button expand="block" type="button" color="medium" fill="outline" (click)="onCancel()">
+          <ion-icon name="close-circle-outline" slot="start"></ion-icon>
           Cancel
         </ion-button>
       </ion-col>

@@ -1,16 +1,11 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/production-shift"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Shift Details</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="editShift()" *ngIf="shift">
-        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Shift Details"
+  backAction="back"
+  [showBackButton]="true"
+  [rightIcon]="shift ? 'create-outline' : undefined"
+  rightIconColor="primary"
+  (rightButtonClicked)="editShift()">
+</app-header>
 
 <ion-content>
   <ion-card *ngIf="shift">

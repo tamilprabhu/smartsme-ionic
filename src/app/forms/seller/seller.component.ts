@@ -10,7 +10,7 @@ import { Seller } from 'src/app/models/seller.model';
   templateUrl: './seller.component.html',
   styleUrls: ['./seller.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule]
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
 export class SellerComponent implements OnInit, OnChanges {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';

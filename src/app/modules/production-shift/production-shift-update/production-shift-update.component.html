@@ -1,14 +1,11 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="'/tabs/production-shift/' + shiftId"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Edit Production Shift</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Edit Production Shift"
+  backAction="back"
+  [showBackButton]="true">
+</app-header>
 
 <ion-content>
-  <ion-card *ngIf="!loading && shift">
+  <ion-card *ngIf="!loading && shift" class="sme-form-card shift-form-card ion-no-margin">
     <ion-card-content>
       <app-production-shift-form
         [initialData]="shift"
