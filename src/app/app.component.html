@@ -1,72 +1,65 @@
 <ion-app>
-  <!-- Show login component only when NOT logged in -->
-  <app-login *ngIf="!isLoggedIn" (loginSuccess)="onUserLoggedIn()"></app-login>
+  <ion-menu *ngIf="isLoggedIn" side="end" menuId="rightMenu" contentId="main-content">
+    <ion-header>
+      <ion-toolbar>
+          <ion-item lines="none" class="profile-item">
+          <ion-avatar>
+            <img [src]="user?.photoUrl || 'assets/images/default-avatar.jpg'" alt="Profile" />
+          </ion-avatar>
+          <ion-label>
+            <h3>{{user?.name || 'User'}}</h3>
+            <p class="ion-text-wrap">{{user?.username || 'N/A'}}</p>
+            <ion-button fill="clear" size="small" class="profile-view-btn" (click)="navigateTo('profile')">
+              View Profile
+            </ion-button>
+          </ion-label>
+        </ion-item>
+      </ion-toolbar>
+    </ion-header>
 
-  <!-- Show the main content only when logged in -->
-  <ng-container *ngIf="isLoggedIn">
-    <ion-menu side="end" menuId="rightMenu" contentId="main-content">
-      <ion-header>
-        <ion-toolbar>
-            <ion-item lines="none" class="profile-item">
-            <ion-avatar>
-              <img [src]="user?.photoUrl || 'assets/images/default-avatar.jpg'" alt="Profile" />
-            </ion-avatar>
-            <ion-label>
-              <h3>{{user?.name || 'User'}}</h3>
-              <p class="ion-text-wrap">{{user?.username || 'N/A'}}</p>
-              <ion-button fill="clear" size="small" class="profile-view-btn" (click)="navigateTo('profile')">
-                View Profile
-              </ion-button>
-            </ion-label>
-          </ion-item>
-        </ion-toolbar>
-      </ion-header>
-
-      <ion-content>
+    <ion-content>
+      <div class="menu-container">
         <ion-list>
-            <ion-item button (click)="navigateTo('company')">
-            <i slot="start" class="fa fa-sitemap" aria-hidden="true"></i>
-            <span>Company</span>
-            </ion-item>
-            <ion-item button (click)="navigateTo('machine-process')">
-            <i slot="start" class="fa fa-cogs" aria-hidden="true"></i>
-            <span>Machine Process</span>
-            </ion-item>
-            <ion-item button (click)="navigateTo('users')">
-            <i slot="start" class="fa fa-user" aria-hidden="true"></i>
-            <span>Users</span>
-            </ion-item>
-            <!-- <ion-item button (click)="navigateTo('employees')">
-            <i slot="start" class="fa fa-black-tie" aria-hidden="true"></i>
-            <span>Employees</span>
-            </ion-item> -->
-            <ion-item button (click)="navigateTo('sellers')">
-            <i slot="start" class="fa fa-sellsy" aria-hidden="true"></i>
-            <span>Sellers</span>
-            </ion-item>
-            <ion-item button (click)="navigateTo('buyers')">
-            <i slot="start" class="fa fa-buysellads" aria-hidden="true"></i>
-            <span>Buyers</span>
-            </ion-item>
-            <ion-item button (click)="navigateTo('products')">
-            <i slot="start" class="fa fa-product-hunt" aria-hidden="true"></i>
-            <span>Products</span>
-            </ion-item>
-            <ion-item button (click)="navigateTo('change-password')">
-            <i slot="start" class="fa fa-lock" aria-hidden="true"></i>
-            <span>Change Password</span>
-            </ion-item>
+          <ion-item button (click)="navigateTo('company')">
+          <i slot="start" class="fa fa-sitemap" aria-hidden="true"></i>
+          <span>Company</span>
+          </ion-item>
+          <ion-item button (click)="navigateTo('machine-process')">
+          <i slot="start" class="fa fa-cogs" aria-hidden="true"></i>
+          <span>Machine Process</span>
+          </ion-item>
+          <ion-item button (click)="navigateTo('users')">
+          <i slot="start" class="fa fa-user" aria-hidden="true"></i>
+          <span>Users</span>
+          </ion-item>
+          <!-- <ion-item button (click)="navigateTo('employees')">
+          <i slot="start" class="fa fa-black-tie" aria-hidden="true"></i>
+          <span>Employees</span>
+          </ion-item> -->
+          <ion-item button (click)="navigateTo('sellers')">
+          <i slot="start" class="fa fa-sellsy" aria-hidden="true"></i>
+          <span>Sellers</span>
+          </ion-item>
+          <ion-item button (click)="navigateTo('buyers')">
+          <i slot="start" class="fa fa-buysellads" aria-hidden="true"></i>
+          <span>Buyers</span>
+          </ion-item>
+          <ion-item button (click)="navigateTo('products')">
+          <i slot="start" class="fa fa-product-hunt" aria-hidden="true"></i>
+          <span>Products</span>
+          </ion-item>
+          <ion-item button (click)="navigateTo('change-password')">
+          <i slot="start" class="fa fa-lock" aria-hidden="true"></i>
+          <span>Change Password</span>
+          </ion-item>
         </ion-list>
-      </ion-content>
-      <ion-footer >
-        <ion-toolbar>
-          <ion-button expand="full" fill="clear" (click)="logout()">
-            <ion-icon slot="start" name="log-out" class="logout"></ion-icon>
-            Logout
-          </ion-button>
-        </ion-toolbar>
-      </ion-footer>
-    </ion-menu>
-    <ion-router-outlet id="main-content"></ion-router-outlet>
-  </ng-container>
+        <div class="menu-spacer"></div>
+        <ion-button expand="full" fill="clear" class="menu-logout-button" (click)="logout()">
+          <ion-icon slot="start" name="log-out" class="logout"></ion-icon>
+          Logout
+        </ion-button>
+      </div>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="main-content"></ion-router-outlet>
 </ion-app>

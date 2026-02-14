@@ -1,46 +1,88 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+import { GuestGuard } from './guards/guest.guard';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./modules/tabs/tabs.module').then(m => m.TabsPageModule)
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    loadComponent: () => import('./guest/home/guest-home.component').then(m => m.GuestHomeComponent),
+    canActivate: [GuestGuard]
+  },
+  {
+    path: 'signup',
+    loadComponent: () => import('./guest/signup/guest-signup.component').then(m => m.GuestSignupComponent),
+    canActivate: [GuestGuard]
+  },
+  {
+    path: 'about',
+    loadComponent: () => import('./guest/about/guest-about.component').then(m => m.GuestAboutComponent),
+    canActivate: [GuestGuard]
+  },
+  {
+    path: 'contact',
+    loadComponent: () => import('./guest/contact/guest-contact.component').then(m => m.GuestContactComponent),
+    canActivate: [GuestGuard]
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent),
+    canActivate: [GuestGuard]
+  },
+  {
+    path: 'tabs',
+    loadChildren: () => import('./modules/tabs/tabs.module').then(m => m.TabsPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'company',
-    loadChildren: () => import('./modules/company-management/company-management.module').then(m => m.CompanyManagementModule)
+    loadChildren: () => import('./modules/company-management/company-management.module').then(m => m.CompanyManagementModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'machine-process',
-    loadChildren: () => import('./modules/machine-management/machine-management.module').then(m => m.MachineManagementModule)
+    loadChildren: () => import('./modules/machine-management/machine-management.module').then(m => m.MachineManagementModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'users',
-    loadChildren: () => import('./modules/user-management/user-management.module').then(m => m.UserManagementModule)
+    loadChildren: () => import('./modules/user-management/user-management.module').then(m => m.UserManagementModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'employees',
-    loadComponent: () => import('./forms/employee/employee.component').then(m => m.EmployeeComponent)
+    loadComponent: () => import('./forms/employee/employee.component').then(m => m.EmployeeComponent),
+    canActivate: [AuthGuard]
   },
   {
     path: 'sellers',
-    loadChildren: () => import('./modules/seller-management/seller-management.module').then(m => m.SellerManagementModule)
+    loadChildren: () => import('./modules/seller-management/seller-management.module').then(m => m.SellerManagementModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'buyers',
-    loadChildren: () => import('./modules/buyer-management/buyer-management.module').then(m => m.BuyerManagementModule)
+    loadChildren: () => import('./modules/buyer-management/buyer-management.module').then(m => m.BuyerManagementModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'products',
-    loadChildren: () => import('./modules/product-management/product-management.module').then(m => m.ProductManagementModule)
+    loadChildren: () => import('./modules/product-management/product-management.module').then(m => m.ProductManagementModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'change-password',
-    loadComponent: () => import('./forms/change-password/change-password.component').then(m => m.ChangePasswordComponent)
+    loadComponent: () => import('./forms/change-password/change-password.component').then(m => m.ChangePasswordComponent),
+    canActivate: [AuthGuard]
   },
   {
     path: 'profile',
-    loadComponent: () => import('./forms/profile/profile.component').then(m => m.ProfileComponent)
+    loadComponent: () => import('./forms/profile/profile.component').then(m => m.ProfileComponent),
+    canActivate: [AuthGuard]
   }
 ];
 @NgModule({

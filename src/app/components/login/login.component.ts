@@ -1,15 +1,15 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
-import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, FooterComponent],
+  imports: [IonicModule, FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
@@ -18,12 +18,11 @@ export class LoginComponent {
   password: string = '';
   isLoading: boolean = false;
 
-  @Output() loginSuccess = new EventEmitter<void>();
-
   constructor(
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private router: Router
   ) {}
 
   async login() {
@@ -45,7 +44,7 @@ export class LoginComponent {
         await loading.dismiss();
         this.isLoading = false;
         await this.showToast(`Welcome ${response.user.name}!`, 'success');
-        this.loginSuccess.emit();
+        this.router.navigate(['/tabs']).catch(() => this.router.navigate(['/']));
       },
       error: async (error) => {
         await loading.dismiss();

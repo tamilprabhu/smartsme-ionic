@@ -30,13 +30,10 @@ export class AppComponent {
     });
   }
 
-  onUserLoggedIn() {
-    console.log("User logged in successfully");
-  }
-
   logout() {
     this.loginService.logout();
     this.menuController.close('rightMenu');
+    this.router.navigate(['/home']).catch(() => this.router.navigate(['/']));
   }
 
   navigateTo(page: string) {

@@ -72,6 +72,10 @@ export class LoginService {
     }
   }
 
+  isAuthenticated(): boolean {
+    return this.hasToken();
+  }
+
   private decodeToken(token: string): DecodedToken {
     const payload = token.split('.')[1];
     const decoded = atob(payload);
