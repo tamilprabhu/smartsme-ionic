@@ -52,7 +52,7 @@ export class LoginComponent {
         this.isLoading = false;
         const message = error.error?.error === 'Invalid password' 
           ? 'Invalid username or password' 
-          : 'Login failed. Please try again.';
+          : 'Login failed. Please try again. -- ' + error.toString();
         await this.showToast(message, 'danger');
       }
     });

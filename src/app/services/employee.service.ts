@@ -17,6 +17,23 @@ export interface EmployeeResponse {
   };
 }
 
+export interface EmployeeDropdownItem {
+  value: number;
+  label: string;
+  userId: number;
+  employeeId: number;
+}
+
+export interface EmployeeDropdownResponse {
+  items: EmployeeDropdownItem[];
+  paging: {
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    totalItems: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -74,6 +91,19 @@ export class EmployeeService {
 
   deleteEmployee(id: number): Observable<{message: string}> {
     return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(error => throwError(() => error))
+    );
+  }
+
+  getEmployeesByRole(roleNames: string[], page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<EmployeeDropdownResponse> {
+    const roleParam = roleNames.map(role => role.trim()).filter(Boolean).join(',');
+    let url = `${this.API_URL}/role/${encodeURIComponent(roleParam)}?page=${page}&itemsPerPage=${limit}`;
+    if (search && search.trim()) {
+      url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    return this.http.get<EmployeeDropdownResponse>(url, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

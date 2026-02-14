@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { ProductionShift } from 'src/app/models/production-shift.model';
 import { Machine } from 'src/app/models/machine.model';
 import { Order } from 'src/app/models/order.model';
@@ -9,6 +9,8 @@ import { Product } from 'src/app/models/product.model';
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';
 import { ProductService } from 'src/app/services/product.service';
+import { EmployeeDropdownItem, EmployeeService } from 'src/app/services/employee.service';
+import { EmployeeSearchModalComponent } from 'src/app/components/employee-search-modal/employee-search-modal.component';
 import { EntryType } from 'src/app/enums/entry-type.enum';
 import { ShiftType } from 'src/app/enums/shift-type.enum';
 import { ShiftHours } from 'src/app/enums/shift-hours.enum';
@@ -30,6 +32,10 @@ export class ProductionShiftFormComponent implements OnInit {
   machines: Machine[] = [];
   orders: Order[] = [];
   products: Product[] = [];
+  operator1Selection: EmployeeDropdownItem | null = null;
+  operator2Selection: EmployeeDropdownItem | null = null;
+  operator3Selection: EmployeeDropdownItem | null = null;
+  supervisorSelection: EmployeeDropdownItem | null = null;
 
   entryTypes = [
     { label: 'Shift', value: EntryType.SHIFT.toString() },
@@ -52,7 +58,9 @@ export class ProductionShiftFormComponent implements OnInit {
     private fb: FormBuilder,
     private machineService: MachineService,
     private orderService: OrderService,
-    private productService: ProductService
+    private productService: ProductService,
+    private employeeService: EmployeeService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -63,6 +71,7 @@ export class ProductionShiftFormComponent implements OnInit {
     if (this.initialData) {
       this.form.patchValue(this.initialData);
     }
+    this.hydrateSelections();
     if (this.readonly) {
       this.form.disable();
     }
@@ -93,6 +102,13 @@ export class ProductionShiftFormComponent implements OnInit {
       },
       error: (error) => console.error('Failed to load products', error)
     });
+  }
+
+  private hydrateSelections() {
+    this.resolveSelection('operator1', ['PRODUCTION_EMPLOYEE']);
+    this.resolveSelection('operator2', ['PRODUCTION_EMPLOYEE']);
+    this.resolveSelection('operator3', ['PRODUCTION_EMPLOYEE']);
+    this.resolveSelection('supervisor', ['SHIFT_INCHARGE']);
   }
 
   private initForm() {
@@ -145,6 +161,44 @@ export class ProductionShiftFormComponent implements OnInit {
     shiftHoursControl?.updateValueAndValidity();
   }
 
+  async openEmployeeModal(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor') {
+    if (this.readonly) {
+      return;
+    }
+    const isSupervisor = field === 'supervisor';
+    const allowClear = field === 'operator2' || field === 'operator3';
+    const titleMap: Record<string, string> = {
+      operator1: 'Select Operator 1',
+      operator2: 'Select Operator 2',
+      operator3: 'Select Operator 3',
+      supervisor: 'Select Supervisor'
+    };
+
+    const selectedValue = this.form.get(field)?.value ?? null;
+    const modal = await this.modalController.create({
+      component: EmployeeSearchModalComponent,
+      componentProps: {
+        title: titleMap[field],
+        roleNames: isSupervisor ? ['SHIFT_INCHARGE'] : ['PRODUCTION_EMPLOYEE'],
+        selectedValue,
+        allowClear
+      }
+    });
+
+    await modal.present();
+    const { data, role } = await modal.onWillDismiss<EmployeeDropdownItem | null>();
+
+    if (role === 'select' && data) {
+      this.form.get(field)?.setValue(data.value);
+      this.setSelection(field, data);
+    }
+
+    if (role === 'clear') {
+      this.form.get(field)?.setValue(null);
+      this.setSelection(field, null);
+    }
+  }
+
   calculateNetProduction() {
     const production = this.form.get('production')?.value || 0;
     const rejection = this.form.get('rejection')?.value || 0;
@@ -167,5 +221,61 @@ export class ProductionShiftFormComponent implements OnInit {
 
   onCancel() {
     this.formCancel.emit();
+  }
+
+  getSelectionLabel(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor'): string {
+    const selection = this.getSelection(field);
+    if (selection?.label) {
+      return selection.label;
+    }
+    const value = this.form.get(field)?.value;
+    if (value) {
+      return `${value}`;
+    }
+    if (field === 'operator2' || field === 'operator3') {
+      return 'None';
+    }
+    return 'Select';
+  }
+
+  private resolveSelection(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor', roleNames: string[]) {
+    const value = this.form.get(field)?.value;
+    if (!value) {
+      return;
+    }
+    this.employeeService.getEmployeesByRole(roleNames, 1, 10, `${value}`).subscribe({
+      next: (response) => {
+        const match = response.items.find(item => item.value === value);
+        if (match) {
+          this.setSelection(field, match);
+        }
+      },
+      error: (error) => console.error(`Failed to resolve ${field}`, error)
+    });
+  }
+
+  private setSelection(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor', item: EmployeeDropdownItem | null) {
+    if (field === 'operator1') {
+      this.operator1Selection = item;
+    } else if (field === 'operator2') {
+      this.operator2Selection = item;
+    } else if (field === 'operator3') {
+      this.operator3Selection = item;
+    } else if (field === 'supervisor') {
+      this.supervisorSelection = item;
+    }
+  }
+
+  private getSelection(field: 'operator1' | 'operator2' | 'operator3' | 'supervisor') {
+    if (field === 'operator1') {
+      return this.operator1Selection;
+    }
+    if (field === 'operator2') {
+      return this.operator2Selection;
+    }
+    if (field === 'operator3') {
+      return this.operator3Selection;
+    }
+    return this.supervisorSelection;
   }
 }
