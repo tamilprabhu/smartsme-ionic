@@ -1,25 +1,52 @@
 <app-header 
-  title="Machine Management"
   backAction="back"
   [showBackButton]="true"
-  rightIcon="add-circle-outline"
   rightIconColor="primary"
   (backClicked)="onHeaderBackClick()"
   (rightButtonClicked)="openCreateForm()">
 </app-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let machine of machines">
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Machines</h1>
+      <p class="page-subtitle">Manage machines and specs</p>
+    </div>
+    <ion-button 
+      class="add-button"
+      fill="solid" 
+      color="primary"
+      (click)="openCreateForm()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar 
+      #searchInput
+      placeholder="Search by name, ID, or type..."
+      [value]="searchQuery"
+      (keyup)="onSearchInput($event)"
+      debounce="0"
+      (ionClear)="clearSearch()">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="searchQuery" class="results-info">
+    <ion-label>
+      Found <strong>{{ machines.length }}</strong> machine(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="machines.length > 0">
+    <ion-item *ngFor="let machine of machines" class="sme-list-item">
       <ion-label (click)="openReadForm(machine)">
         <h2>{{ machine.machineName }} <ion-badge color="primary">#{{ machine.machineId }}</ion-badge></h2>
         <p class="type">Type: <strong>{{ machine.machineType }}</strong></p>
         <p class="specs">Capacity: {{ machine.capacity }} | Model: {{ machine.model }}</p>
       </ion-label>
       <ion-buttons slot="end">
-        <!-- <ion-button color="tertiary" (click)="openReadForm(machine)">
-          <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
-        </ion-button> -->
         <ion-button color="secondary" (click)="openUpdateForm(machine)">
           <ion-icon slot="icon-only" name="create-outline"></ion-icon>
         </ion-button>
@@ -30,20 +57,29 @@
     </ion-item>
   </ion-list>
 
+  <ion-card *ngIf="machines.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Machines Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchQuery">No machines match your search "{{ searchQuery }}"</p>
+      <p *ngIf="!searchQuery && machines.length === 0">No machines available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadMachines($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more machines...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
   <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
     <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>
-            {{ formMode === 'create' ? 'Create Machine' : formMode === 'update' ? 'Update Machine Detail' : 'Machine Details' }}
-          </ion-title>
-          <ion-buttons slot="start">
-            <ion-button color="medium" (click)="closeForm()">
-              <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+      <app-header 
+        [title]="formMode === 'create' ? 'Create Machine' : formMode === 'update' ? 'Update Machine Detail' : 'Machine Details'"
+        backAction="dismiss"
+        [showBackButton]="true"
+        (backClicked)="closeForm()">
+      </app-header>
 
       <ion-content>
         <app-machine-process
@@ -54,5 +90,4 @@
       </ion-content>
     </ng-template>
   </ion-modal>
-
 </ion-content>

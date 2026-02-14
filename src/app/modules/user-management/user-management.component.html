@@ -40,7 +40,7 @@
   </ion-item>
 
   <ion-list *ngIf="users.length > 0">
-    <ion-item *ngFor="let user of users" class="user-item">
+    <ion-item *ngFor="let user of users" class="sme-list-item">
       <ion-label (click)="openReadForm(user)">
         <h2>{{ user.name }} <ion-badge color="primary">@{{ user.username }}</ion-badge></h2>
         <p class="details">{{ user.firstName }} {{ user.lastName }}</p>

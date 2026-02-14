@@ -40,7 +40,7 @@
   </ion-item>
 
   <ion-list *ngIf="stocks.length > 0">
-    <ion-item *ngFor="let stock of stocks" class="stock-item">
+    <ion-item *ngFor="let stock of stocks" class="sme-list-item">
       <ion-label (click)="openReadForm(stock)">
         <h2>{{ stock.stockId }} <ion-badge color="primary">#{{ stock.sellerId }}</ion-badge></h2>
         <p class="material">Material: <strong>{{ stock.rawMaterial }}</strong> | Date: <strong>{{ stock.stockDate | date:'short' }}</strong></p>

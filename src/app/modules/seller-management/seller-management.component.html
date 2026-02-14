@@ -40,7 +40,7 @@
   </ion-item>
 
   <ion-list *ngIf="sellers.length > 0">
-    <ion-item *ngFor="let seller of sellers" class="seller-item">
+    <ion-item *ngFor="let seller of sellers" class="sme-list-item">
       <ion-label (click)="openReadForm(seller)">
         <h2>{{ seller.sellerName }} <ion-badge color="primary">#{{ seller.sellerId }}</ion-badge></h2>
         <p class="address">Address: <strong>{{ seller.sellerAddress }}</strong></p>

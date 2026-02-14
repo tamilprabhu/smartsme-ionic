@@ -40,7 +40,7 @@
   </ion-item>
 
   <ion-list *ngIf="companies.length > 0">
-    <ion-item *ngFor="let company of companies" class="company-item">
+    <ion-item *ngFor="let company of companies" class="sme-list-item">
       <ion-label (click)="openReadForm(company)">
         <h2>{{ company.companyName }} <ion-badge color="primary">#{{ company.companyId }}</ion-badge></h2>
         <p class="business">Business: <strong>{{ company.businessCons }}</strong> | Type: <strong>{{ company.companyType }}</strong></p>
