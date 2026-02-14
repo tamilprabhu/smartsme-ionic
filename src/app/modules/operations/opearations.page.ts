@@ -27,8 +27,8 @@ export class OperationsPage {
       },
       {
         icon: 'construct-outline',
-        title: 'Production Entry',
-        subtitle: 'Log and monitor production'
+        title: 'Production Shift',
+        subtitle: 'Log and monitor production shifts'
       },
       {
         icon: 'document-text-outline',
@@ -51,7 +51,7 @@ export class OperationsPage {
     if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
     }
-    if (operation === 'Production Entry') {
+    if (operation === 'Production Shift') {
       this.router.navigate(['/tabs/production-shift']);
     } else if (operation === 'Dispatch') {
       this.router.navigate(['/tabs/dispatch-management']);
