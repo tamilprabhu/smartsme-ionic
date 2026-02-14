@@ -127,14 +127,3 @@ $shadow: 0 1px 3px rgba(0,0,0,0.08);
 .menu-spacer {
   flex: 1 1 auto;
 }
-
-.menu-logout-button {
-  --color: var(--ion-color-dark, #222);
-  --color-activated: var(--ion-color-dark, #222);
-  --color-focused: var(--ion-color-dark, #222);
-  font-weight: 600;
-
-  ion-icon {
-    color: var(--ion-color-dark, #222);
-  }
-}
