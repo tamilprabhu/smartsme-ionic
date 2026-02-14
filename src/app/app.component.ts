@@ -23,6 +23,7 @@ export class AppComponent {
   ngOnInit() {
     this.loginService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
+      this.menuController.enable(status, 'rightMenu');
     });
 
     this.loginService.currentUser$.subscribe(user => {
@@ -32,8 +33,9 @@ export class AppComponent {
 
   logout() {
     this.loginService.logout();
-    this.menuController.close('rightMenu');
-    this.router.navigate(['/home']).catch(() => this.router.navigate(['/']));
+    this.menuController.close('rightMenu').finally(() => {
+      this.router.navigate(['/home']).catch(() => this.router.navigate(['/']));
+    });
   }
 
   navigateTo(page: string) {
