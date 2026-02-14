@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
-import { ItemsPerPage } from 'src/app/constants/pagination';
+import { ItemsPerPage } from 'src/app/enums/items-per-page.enum';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';

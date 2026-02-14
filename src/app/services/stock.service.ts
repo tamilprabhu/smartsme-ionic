@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
-import { ItemsPerPage } from '../constants/pagination';
+import { ItemsPerPage } from '../enums/items-per-page.enum';
 import { Stock } from '../models/stock.model';
 
 export interface StockResponse {

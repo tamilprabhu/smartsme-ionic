@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
-import { ItemsPerPage } from '../constants/pagination';
+import { ItemsPerPage } from '../enums/items-per-page.enum';
 import { Employee } from '../models/employee.model';
 import { SortBy } from '../enums/sort-by.enum';
 import { SortOrder } from '../enums/sort-order.enum';
