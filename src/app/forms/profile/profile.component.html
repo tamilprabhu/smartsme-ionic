@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card class="sme-form-card ion-no-margin">
+    <ion-card-header>
+      <ion-card-title>User Details</ion-card-title>
+      <ion-card-subtitle *ngIf="profile">{{ profile.name }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list *ngIf="profile; else loadingState">
+        <ion-item>
+          <ion-label>
+            <h3>Username</h3>
+            <p>{{ profile.username }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>First Name</h3>
+            <p>{{ profile.firstName }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Last Name</h3>
+            <p>{{ profile.lastName }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Email</h3>
+            <p>{{ profile.email }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Mobile</h3>
+            <p>{{ profile.mobile }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Address</h3>
+            <p>{{ profile.address }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Roles</h3>
+            <p>{{ getRolesLabel() }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Companies</h3>
+            <p>
+              {{ getCompaniesLabel() }}
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ng-template #loadingState>
+        <ion-item lines="none">
+          <ion-label>
+            <p>{{ isLoading ? 'Loading profile...' : 'No profile data available' }}</p>
+          </ion-label>
+        </ion-item>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

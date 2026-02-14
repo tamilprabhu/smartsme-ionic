@@ -33,6 +33,14 @@ const routes: Routes = [
   {
     path: 'products',
     loadChildren: () => import('./modules/product-management/product-management.module').then(m => m.ProductManagementModule)
+  },
+  {
+    path: 'change-password',
+    loadComponent: () => import('./forms/change-password/change-password.component').then(m => m.ChangePasswordComponent)
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./forms/profile/profile.component').then(m => m.ProfileComponent)
   }
 ];
 @NgModule({

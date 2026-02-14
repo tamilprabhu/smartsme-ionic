@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -30,6 +30,23 @@ interface DecodedToken {
   type: 'access' | 'refresh';
   iat: number;
   exp: number;
+}
+
+interface ChangePasswordResponse {
+  message: string;
+}
+
+export interface ProfileResponse {
+  id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  name: string;
+  email: string;
+  mobile: string;
+  address: string;
+  roles: Array<{ id: number; name: string }>;
+  companies: Array<{ companyId: string; companyName: string }>;
 }
 
 @Injectable({
@@ -64,6 +81,14 @@ export class LoginService {
   private getStoredUser(): any {
     const user = localStorage.getItem('currentUser');
     return user ? JSON.parse(user) : null;
+  }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
   }
 
   get isLoggedIn$(): Observable<boolean> {
@@ -111,6 +136,25 @@ export class LoginService {
         this.logout();
         return throwError(() => error);
       })
+    );
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<ChangePasswordResponse> {
+    return this.http.post<ChangePasswordResponse>(`${this.API_URL}/change-password`, {
+      currentPassword,
+      newPassword
+    }, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(error => throwError(() => error))
+    );
+  }
+
+  getProfile(): Observable<ProfileResponse> {
+    return this.http.get<ProfileResponse>(`${this.API_URL}/me`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(error => throwError(() => error))
     );
   }
 

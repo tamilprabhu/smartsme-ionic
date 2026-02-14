@@ -7,13 +7,16 @@
     <ion-menu side="end" menuId="rightMenu" contentId="main-content">
       <ion-header>
         <ion-toolbar>
-          <ion-item lines="none" class="profile-item">
+            <ion-item lines="none" class="profile-item">
             <ion-avatar>
               <img [src]="user?.photoUrl || 'assets/images/default-avatar.jpg'" alt="Profile" />
             </ion-avatar>
             <ion-label>
               <h3>{{user?.name || 'User'}}</h3>
               <p class="ion-text-wrap">{{user?.username || 'N/A'}}</p>
+              <ion-button fill="clear" size="small" class="profile-view-btn" (click)="navigateTo('profile')">
+                View Profile
+              </ion-button>
             </ion-label>
           </ion-item>
         </ion-toolbar>
@@ -48,6 +51,10 @@
             <ion-item button (click)="navigateTo('products')">
             <i slot="start" class="fa fa-product-hunt" aria-hidden="true"></i>
             <span>Products</span>
+            </ion-item>
+            <ion-item button (click)="navigateTo('change-password')">
+            <i slot="start" class="fa fa-lock" aria-hidden="true"></i>
+            <span>Change Password</span>
             </ion-item>
         </ion-list>
       </ion-content>
