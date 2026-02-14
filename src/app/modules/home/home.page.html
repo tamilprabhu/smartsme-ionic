@@ -1,17 +1,55 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Home
-    </ion-title>
+    <ion-title>Dashboard</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Home</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <section class="dash-hero">
+    <div class="dash-hero__brand">
+      <img class="dash-hero__logo" src="assets/icon/favicon.png" alt="App Logo" />
+      <div class="dash-hero__text">
+        <h1>Smart SME</h1>
+        <p>{{ companyName || 'Company' }}</p>
+      </div>
+    </div>
+  </section>
 
-  <app-explore-container name="Home page"></app-explore-container>
+  <section class="dash-grid">
+    <ion-card class="dash-card" *ngIf="canViewStock">
+      <ion-card-header>
+        <ion-card-title>Stock Inward</ion-card-title>
+        <ion-card-subtitle>Heads-up on recent inward</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="dash-metric">
+          <span>Total Entries</span>
+          <strong>{{ stockSummary.total | number }}</strong>
+        </div>
+        <div class="dash-metric" *ngIf="stockSummary.latestDate">
+          <span>Latest Inward</span>
+          <strong>{{ stockSummary.latestDate | date:'mediumDate' }}</strong>
+        </div>
+        <div class="dash-metric" *ngIf="stockSummary.latestMaterial">
+          <span>Material</span>
+          <strong>{{ stockSummary.latestMaterial }}</strong>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="dash-card" *ngIf="summaryCards.length">
+      <ion-card-header>
+        <ion-card-title>Overview</ion-card-title>
+        <ion-card-subtitle>Counts & summary</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="dash-summary">
+          <div class="dash-summary__item" *ngFor="let item of summaryCards">
+            <div class="dash-summary__label">{{ item.label }}</div>
+            <div class="dash-summary__value">{{ item.count | number }}</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </section>
 </ion-content>

@@ -4,13 +4,15 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+import { FooterComponent } from 'src/app/components/footer/footer.component';
 
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [CommonModule, FormsModule, IonicModule, HeaderComponent, FooterComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ChangePasswordComponent {
@@ -51,7 +53,7 @@ export class ChangePasswordComponent {
   }
 
   goBack() {
-    this.router.navigate(['/tabs']).catch(() => this.router.navigate(['/']));
+    this.router.navigate(['/profile']).catch(() => this.router.navigate(['/tabs']));
   }
 
   private resetForm(form: NgForm) {

@@ -1,15 +1,10 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon name="chevron-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Profile</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Profile"
+  backAction="back"
+  [showBackButton]="true">
+</app-header>
 
-<ion-content class="ion-padding">
+<ion-content>
   <ion-card class="sme-form-card ion-no-margin">
     <ion-card-header>
       <ion-card-title>User Details</ion-card-title>
@@ -79,4 +74,18 @@
       </ng-template>
     </ion-card-content>
   </ion-card>
+
+  <ion-card class="sme-form-card ion-no-margin">
+    <ion-card-header>
+      <ion-card-title>Security</ion-card-title>
+      <ion-card-subtitle>Manage your password</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" color="primary" (click)="goToChangePassword()">
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        Change Password
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
+<app-footer></app-footer>

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, IonSearchbar, ToastController, IonicModule, NavController } from '@ionic/angular';
+import { AlertController, IonSearchbar, ToastController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -15,13 +15,14 @@ import { OrderService } from 'src/app/services/order.service';
 import { ProductService } from 'src/app/services/product.service';
 import { SortBy } from 'src/app/enums/sort-by.enum';
 import { SortOrder } from 'src/app/enums/sort-order.enum';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
   selector: 'app-production-shift-list',
   templateUrl: './production-shift-list.component.html',
   styleUrls: ['./production-shift-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule]
+  imports: [CommonModule, FormsModule, IonicModule, HeaderComponent]
 })
 export class ProductionShiftListComponent implements OnInit, OnDestroy {
   @ViewChild('searchInput') searchInput!: IonSearchbar;
@@ -60,7 +61,6 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private navCtrl: NavController,
     private alertController: AlertController,
     private toastController: ToastController,
     private shiftService: ProductionShiftService,
@@ -73,10 +73,6 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(query => this.performSearch(query));
-  }
-
-  onBackClick() {
-    this.navCtrl.back();
   }
 
   ngOnInit() {

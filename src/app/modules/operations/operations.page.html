@@ -1,27 +1,26 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Operations</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Operations"
+  backAction="back"
+  [showBackButton]="true">
+</app-header>
 
 <ion-content>
-  <ion-card class="sme-form-card ">
-    <ion-card-header>
-        <ion-card-title></ion-card-title>
-        <ion-card-subtitle></ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="operations-stack">
-        <ion-card button *ngFor="let op of operations" class="op-card" (click)="navigateTo(op.title)">
-          <div class="operation-row">
-            <ion-icon [name]="op.icon"></ion-icon>
-            <div class="operation-text">
-              <div class="operation-title">{{ op.title }}</div>
-              <div class="operation-subtitle">{{ op.subtitle }}</div>
-            </div>
-          </div>
-        </ion-card>
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Operations</h1>
+      <p class="page-subtitle">Choose an area to manage</p>
+    </div>
+  </div>
+
+  <div class="operations-stack">
+    <ion-card button *ngFor="let op of operations" class="op-card" (click)="navigateTo(op.title)">
+      <div class="operation-row">
+        <ion-icon [name]="op.icon"></ion-icon>
+        <div class="operation-text">
+          <div class="operation-title">{{ op.title }}</div>
+          <div class="operation-subtitle">{{ op.subtitle }}</div>
+        </div>
       </div>
-    </ion-card-content>
-  </ion-card>
+    </ion-card>
+  </div>
 </ion-content>

@@ -16,14 +16,34 @@
     grid-template-columns: 1fr;
   }
 }
-ion-header {
-  ion-toolbar {
-    --background: var(--ion-color-light);
-    --border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
+.sticky-stack {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  background: var(--ion-background-color);
+  padding-bottom: 8px;
+}
 
-  ion-title {
-    font-weight: 600;
-    font-size: 18px;
-  }
+.action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 6px 12px 4px 12px;
+}
+
+.action-row ion-button {
+  --color: var(--ion-color-dark);
+  --background: transparent;
+  --background-focused: transparent;
+  --background-activated: transparent;
+  --box-shadow: none;
+}
+
+.action-row ion-icon {
+  font-size: 20px;
+}
+
+.sticky-stack .search-card {
+  position: static;
+  margin-top: 8px;
 }

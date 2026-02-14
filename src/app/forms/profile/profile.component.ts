@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { LoginService, ProfileResponse } from 'src/app/services/login.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+import { FooterComponent } from 'src/app/components/footer/footer.component';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, HeaderComponent, FooterComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ProfileComponent implements OnInit {
@@ -28,6 +30,10 @@ export class ProfileComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/tabs']).catch(() => this.router.navigate(['/']));
+  }
+
+  goToChangePassword() {
+    this.router.navigate(['/change-password']).catch(() => this.router.navigate(['/']));
   }
 
   async loadProfile() {

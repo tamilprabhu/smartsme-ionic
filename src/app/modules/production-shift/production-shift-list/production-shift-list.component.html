@@ -1,64 +1,63 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="primary" (click)="onBackClick()">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Production Shifts</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="toggleSearch()">
-        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
-      </ion-button>
-      <ion-button (click)="toggleSortOptions()">
-        <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
-      </ion-button>
-      <ion-button (click)="createShift()">
-        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header 
+  title="Production Shifts"
+  backAction="back"
+  [showBackButton]="true"
+  rightIconColor="primary">
+</app-header>
 
 <ion-content>
-  <ion-card class="search-card" *ngIf="showSearch">
-    <ion-searchbar
-      #searchInput
-      placeholder="Search by shift ID, order, or machine..."
-      [value]="searchQuery"
-      (ionInput)="onSearchInput($event)"
-      (ionClear)="clearSearch()">
-    </ion-searchbar>
-  </ion-card>
-
-  <ion-card class="search-card" *ngIf="showSortOptions">
-    <div class="filter-row">
-      <ion-item fill="outline" class="filter-item">
-        <ion-select
-          label="Sort By"
-          labelPlacement="floating"
-          interface="popover"
-          [(ngModel)]="sortBy"
-          (ionChange)="onSortChange()">
-          <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">
-            {{ option.label }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item fill="outline" class="filter-item">
-        <ion-select
-          label="Sort Order"
-          labelPlacement="floating"
-          interface="popover"
-          [(ngModel)]="sortOrder"
-          (ionChange)="onSortChange()">
-          <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">
-            {{ option.label }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
+  <div class="sticky-stack">
+    <div class="action-row">
+      <ion-button fill="clear" (click)="toggleSearch()">
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="toggleSortOptions()">
+        <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="createShift()">
+        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+      </ion-button>
     </div>
-  </ion-card>
+
+    <ion-card class="search-card" *ngIf="showSearch">
+      <ion-searchbar
+        #searchInput
+        placeholder="Search by shift ID, order, or machine..."
+        [value]="searchQuery"
+        (ionInput)="onSearchInput($event)"
+        (ionClear)="clearSearch()">
+      </ion-searchbar>
+    </ion-card>
+
+    <ion-card class="search-card" *ngIf="showSortOptions">
+      <div class="filter-row">
+        <ion-item fill="outline" class="filter-item">
+          <ion-select
+            label="Sort By"
+            labelPlacement="floating"
+            interface="popover"
+            [(ngModel)]="sortBy"
+            (ionChange)="onSortChange()">
+            <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">
+              {{ option.label }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item fill="outline" class="filter-item">
+          <ion-select
+            label="Sort Order"
+            labelPlacement="floating"
+            interface="popover"
+            [(ngModel)]="sortOrder"
+            (ionChange)="onSortChange()">
+            <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">
+              {{ option.label }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+    </ion-card>
+  </div>
 
   <ion-item *ngIf="searchQuery" class="results-info">
     <ion-label>

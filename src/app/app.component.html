@@ -2,17 +2,15 @@
   <ion-menu *ngIf="isLoggedIn" side="end" menuId="rightMenu" contentId="main-content">
     <ion-header>
       <ion-toolbar>
-          <ion-item lines="none" class="profile-item">
+        <ion-item button detail="false" lines="none" class="profile-item" (click)="navigateTo('profile')">
           <ion-avatar>
             <img [src]="user?.photoUrl || 'assets/images/default-avatar.jpg'" alt="Profile" />
           </ion-avatar>
           <ion-label>
             <h3>{{user?.name || 'User'}}</h3>
             <p class="ion-text-wrap">{{user?.username || 'N/A'}}</p>
-            <ion-button fill="clear" size="small" class="profile-view-btn" (click)="navigateTo('profile')">
-              View Profile
-            </ion-button>
           </ion-label>
+          <ion-icon slot="end" name="chevron-forward-outline" class="profile-chevron"></ion-icon>
         </ion-item>
       </ion-toolbar>
     </ion-header>
@@ -47,10 +45,6 @@
           <ion-item button class="menu-item" (click)="navigateTo('products')">
             <i slot="start" class="fa fa-product-hunt menu-icon" aria-hidden="true"></i>
             <span class="menu-label">Products</span>
-          </ion-item>
-          <ion-item button class="menu-item" (click)="navigateTo('change-password')">
-            <i slot="start" class="fa fa-lock menu-icon" aria-hidden="true"></i>
-            <span class="menu-label">Change Password</span>
           </ion-item>
         </ion-list>
         <div class="menu-spacer"></div>
