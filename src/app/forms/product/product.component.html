@@ -66,6 +66,62 @@
           </ion-col>
         </ion-row>
 
+        <!-- Sales Type -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-select formControlName="salesType" label="Sales Type *" label-placement="floating" [disabled]="mode === 'read'">
+                <ion-select-option *ngFor="let type of salesTypeOptions" [value]="type">{{ type }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['salesType'].invalid && (f['salesType'].dirty || f['salesType'].touched) && mode !== 'read'">
+              <small *ngIf="f['salesType'].errors?.['required']">Sales Type is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('salesType') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('salesType')">{{ message }}</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
+        <!-- Sales Code -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input
+                type="text"
+                formControlName="salesCode"
+                label="Sales / HSN Code *"
+                label-placement="floating"
+                [readonly]="mode === 'read'">
+              </ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['salesCode'].invalid && (f['salesCode'].dirty || f['salesCode'].touched) && mode !== 'read'">
+              <small *ngIf="f['salesCode'].errors?.['required']">Sales Code is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('salesCode') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('salesCode')">{{ message }}</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
+        <!-- Sales Percentage -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-input type="number" step="any" formControlName="salesPercentage" label="Sales % *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="f['salesPercentage'].invalid && (f['salesPercentage'].dirty || f['salesPercentage'].touched) && mode !== 'read'">
+              <small *ngIf="f['salesPercentage'].errors?.['required']">Sales % is required.</small>
+              <small *ngIf="f['salesPercentage'].errors?.['min']">Sales % must be >= 0.</small>
+              <small *ngIf="f['salesPercentage'].errors?.['max']">Sales % must be <= 100.</small>
+              <small *ngIf="f['salesPercentage'].errors?.['pattern']">Sales % must be a valid number.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('salesPercentage') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('salesPercentage')">{{ message }}</small>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+
         <!-- Weight -->
         <ion-row>
           <ion-col size="12">

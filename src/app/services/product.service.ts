@@ -56,25 +56,16 @@ export class ProductService {
     );
   }
 
-  createProduct(product: Omit<Product, 'prodIdSeq' | 'createDate' | 'updateDate'>): Observable<Product> {
-    const productData = {
-      ...product,
-      createDate: new Date().toISOString(),
-      updateDate: new Date().toISOString()
-    };
-    return this.http.post<Product>(this.API_URL, productData, {
+  createProduct(product: Omit<Product, 'prodSequence' | 'create_date' | 'update_date'>): Observable<Product> {
+    return this.http.post<Product>(this.API_URL, product, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  updateProduct(id: number, product: Partial<Omit<Product, 'prodIdSeq' | 'createDate'>>): Observable<Product> {
-    const updateData = {
-      ...product,
-      updateDate: new Date().toISOString()
-    };
-    return this.http.put<Product>(`${this.API_URL}/${id}`, updateData, {
+  updateProduct(id: number, product: Partial<Omit<Product, 'prodSequence' | 'create_date'>>): Observable<Product> {
+    return this.http.put<Product>(`${this.API_URL}/${id}`, product, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

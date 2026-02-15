@@ -47,7 +47,7 @@
   <ion-list *ngIf="products.length > 0">
     <ion-item *ngFor="let product of products" class="sme-list-item">
       <ion-label (click)="openReadForm(product)">
-        <h2>{{ product.prodName }} <ion-badge color="primary">#{{ product.prodId }}</ion-badge></h2>
+        <h2>{{ product.productName }} <ion-badge color="primary">#{{ product.productId }}</ion-badge></h2>
         <p class="material">Raw Material: <strong>{{ product.rawMaterial }}</strong></p>
         <p class="specs">Weight: {{ product.weight }}kg | Cavity: {{ product.cavity }}</p>
       </ion-label>

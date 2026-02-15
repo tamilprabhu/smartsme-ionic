@@ -344,11 +344,11 @@ export class ProductionShiftFormComponent implements OnInit, OnChanges, OnDestro
     }
     this.productService.getProducts(1, 10, searchValue).subscribe({
       next: (response) => {
-        const match = response.items.find(item => item.prodId === value);
+        const match = response.items.find(item => item.productId === value);
         if (match) {
           this.setLookupSelection(field, {
-            value: match.prodId,
-            label: `${match.prodName} (${match.prodId})`
+            value: match.productId,
+            label: `${match.productName} (${match.productId})`
           });
         }
       },

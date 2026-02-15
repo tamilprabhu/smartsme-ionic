@@ -108,7 +108,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   openReadForm(product: Product) {
-    this.productService.getProduct(product.prodIdSeq).subscribe({
+    this.productService.getProduct(product.prodSequence).subscribe({
       next: (productDetails) => {
         this.selectedProduct = productDetails;
         this.formMode = 'read';
@@ -122,7 +122,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(product: Product) {
-    this.productService.getProduct(product.prodIdSeq).subscribe({
+    this.productService.getProduct(product.prodSequence).subscribe({
       next: (productDetails) => {
         this.selectedProduct = productDetails;
         this.formMode = 'update';
@@ -138,7 +138,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   async confirmDelete(product: Product) {
     const alert = await this.alertController.create({
       header: 'Confirm Delete',
-      message: `Are you sure you want to delete product "${product.prodName}"?`,
+      message: `Are you sure you want to delete product "${product.productName}"?`,
       buttons: [
         {
           text: 'Cancel',
@@ -156,9 +156,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteProduct(product: Product) {
-    this.productService.deleteProduct(product.prodIdSeq).subscribe({
+    this.productService.deleteProduct(product.prodSequence).subscribe({
       next: () => {
-        this.products = this.products.filter(p => p.prodIdSeq !== product.prodIdSeq);
+        this.products = this.products.filter(p => p.prodSequence !== product.prodSequence);
         console.log('Product deleted successfully');
       },
       error: (error) => {
@@ -183,9 +183,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.formMode === 'update' && this.selectedProduct) {
-      this.productService.updateProduct(this.selectedProduct.prodIdSeq, formData).subscribe({
+      this.productService.updateProduct(this.selectedProduct.prodSequence, formData).subscribe({
         next: (updatedProduct) => {
-          const index = this.products.findIndex(p => p.prodIdSeq === this.selectedProduct?.prodIdSeq);
+          const index = this.products.findIndex(p => p.prodSequence === this.selectedProduct?.prodSequence);
           if (index > -1) {
             this.products[index] = updatedProduct;
           }
