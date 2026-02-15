@@ -3,7 +3,7 @@ import { EntryType } from '../enums/entry-type.enum';
 import { ShiftHours } from '../enums/shift-hours.enum';
 
 export interface ProductionShift {
-  shiftIdSeq: number;
+  shiftSequence: number;
   orderId: string;
   companyId: string;
   shiftId: string;

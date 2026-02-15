@@ -109,7 +109,7 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   }
 
   openReadForm(dispatch: Dispatch) {
-    this.dispatchService.getDispatch(dispatch.dispatchIdSeq).subscribe({
+    this.dispatchService.getDispatch(dispatch.dispatchSequence).subscribe({
       next: (dispatchDetails) => {
         this.selectedDispatch = dispatchDetails;
         this.formMode = 'read';
@@ -123,7 +123,7 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(dispatch: Dispatch) {
-    this.dispatchService.getDispatch(dispatch.dispatchIdSeq).subscribe({
+    this.dispatchService.getDispatch(dispatch.dispatchSequence).subscribe({
       next: (dispatchDetails) => {
         this.selectedDispatch = dispatchDetails;
         this.formMode = 'update';
@@ -157,9 +157,9 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteDispatch(dispatch: Dispatch) {
-    this.dispatchService.deleteDispatch(dispatch.dispatchIdSeq).subscribe({
+    this.dispatchService.deleteDispatch(dispatch.dispatchSequence).subscribe({
       next: () => {
-        this.dispatches = this.dispatches.filter(d => d.dispatchIdSeq !== dispatch.dispatchIdSeq);
+        this.dispatches = this.dispatches.filter(d => d.dispatchSequence !== dispatch.dispatchSequence);
         console.log('Dispatch deleted successfully');
       },
       error: (error) => {
@@ -184,9 +184,9 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.formMode === 'update' && this.selectedDispatch) {
-      this.dispatchService.updateDispatch(this.selectedDispatch.dispatchIdSeq, formData).subscribe({
+      this.dispatchService.updateDispatch(this.selectedDispatch.dispatchSequence, formData).subscribe({
         next: (updatedDispatch) => {
-          const index = this.dispatches.findIndex(d => d.dispatchIdSeq === this.selectedDispatch?.dispatchIdSeq);
+          const index = this.dispatches.findIndex(d => d.dispatchSequence === this.selectedDispatch?.dispatchSequence);
           if (index > -1) {
             this.dispatches[index] = updatedDispatch;
           }

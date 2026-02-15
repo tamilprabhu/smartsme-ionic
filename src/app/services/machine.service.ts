@@ -56,7 +56,7 @@ export class MachineService {
     );
   }
 
-  createMachine(machine: Omit<Machine, 'machineIdSeq' | 'createDate' | 'updateDate'>): Observable<Machine> {
+  createMachine(machine: Omit<Machine, 'machineSequence' | 'createDate' | 'updateDate'>): Observable<Machine> {
     return this.http.post<Machine>(this.API_URL, machine, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class MachineService {
     );
   }
 
-  updateMachine(id: number, machine: Partial<Omit<Machine, 'machineIdSeq' | 'createDate'>>): Observable<Machine> {
+  updateMachine(id: number, machine: Partial<Omit<Machine, 'machineSequence' | 'createDate'>>): Observable<Machine> {
     return this.http.put<Machine>(`${this.API_URL}/${id}`, machine, {
       headers: this.getHeaders()
     }).pipe(

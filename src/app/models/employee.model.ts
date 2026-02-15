@@ -1,5 +1,5 @@
 export interface Employee {
-  employeeIdSeq: number;
+  employeeSequence: number;
   userId: number;
   companyId: string;
   salary: number;

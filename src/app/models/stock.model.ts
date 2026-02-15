@@ -1,5 +1,5 @@
 export interface Stock {
-  stockIdSeq: number;
+  stockSequence: number;
   companyId: string;
   sellerId: string;
   stockId: string;

@@ -56,7 +56,7 @@ export class BuyerService {
     );
   }
 
-  createBuyer(buyer: Omit<Buyer, 'buyerIdSeq' | 'createDate' | 'updateDate'>): Observable<Buyer> {
+  createBuyer(buyer: Omit<Buyer, 'buyerSequence' | 'createDate' | 'updateDate'>): Observable<Buyer> {
     return this.http.post<Buyer>(this.API_URL, buyer, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class BuyerService {
     );
   }
 
-  updateBuyer(id: number, buyer: Partial<Omit<Buyer, 'buyerIdSeq' | 'createDate'>>): Observable<Buyer> {
+  updateBuyer(id: number, buyer: Partial<Omit<Buyer, 'buyerSequence' | 'createDate'>>): Observable<Buyer> {
     return this.http.put<Buyer>(`${this.API_URL}/${id}`, buyer, {
       headers: this.getHeaders()
     }).pipe(

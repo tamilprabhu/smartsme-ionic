@@ -87,7 +87,7 @@ export class EmployeeService {
     );
   }
 
-  createEmployee(employee: Omit<Employee, 'employeeIdSeq' | 'createDate' | 'updateDate'>): Observable<Employee> {
+  createEmployee(employee: Omit<Employee, 'employeeSequence' | 'createDate' | 'updateDate'>): Observable<Employee> {
     return this.http.post<Employee>(this.API_URL, employee, {
       headers: this.getHeaders()
     }).pipe(
@@ -95,7 +95,7 @@ export class EmployeeService {
     );
   }
 
-  updateEmployee(id: number, employee: Partial<Omit<Employee, 'employeeIdSeq' | 'createDate'>>): Observable<Employee> {
+  updateEmployee(id: number, employee: Partial<Omit<Employee, 'employeeSequence' | 'createDate'>>): Observable<Employee> {
     return this.http.put<Employee>(`${this.API_URL}/${id}`, employee, {
       headers: this.getHeaders()
     }).pipe(

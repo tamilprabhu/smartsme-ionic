@@ -108,7 +108,7 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
   }
 
   openReadForm(machine: Machine) {
-    this.machineService.getMachine(machine.machineIdSeq).subscribe({
+    this.machineService.getMachine(machine.machineSequence).subscribe({
       next: (machineDetails) => {
         this.selectedMachine = machineDetails;
         this.formMode = 'read';
@@ -122,7 +122,7 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(machine: Machine) {
-    this.machineService.getMachine(machine.machineIdSeq).subscribe({
+    this.machineService.getMachine(machine.machineSequence).subscribe({
       next: (machineDetails) => {
         this.selectedMachine = machineDetails;
         this.formMode = 'update';
@@ -156,9 +156,9 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteMachine(machine: Machine) {
-    this.machineService.deleteMachine(machine.machineIdSeq).subscribe({
+    this.machineService.deleteMachine(machine.machineSequence).subscribe({
       next: () => {
-        this.machines = this.machines.filter(m => m.machineIdSeq !== machine.machineIdSeq);
+        this.machines = this.machines.filter(m => m.machineSequence !== machine.machineSequence);
         console.log('Machine deleted successfully');
       },
       error: (error) => {
@@ -183,9 +183,9 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.formMode === 'update' && this.selectedMachine) {
-      this.machineService.updateMachine(this.selectedMachine.machineIdSeq, formData).subscribe({
+      this.machineService.updateMachine(this.selectedMachine.machineSequence, formData).subscribe({
         next: (updatedMachine) => {
-          const index = this.machines.findIndex(m => m.machineIdSeq === this.selectedMachine?.machineIdSeq);
+          const index = this.machines.findIndex(m => m.machineSequence === this.selectedMachine?.machineSequence);
           if (index > -1) {
             this.machines[index] = updatedMachine;
           }

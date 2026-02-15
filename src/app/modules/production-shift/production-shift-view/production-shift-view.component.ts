@@ -115,7 +115,7 @@ export class ProductionShiftViewComponent implements OnInit {
   }
 
   editShift() {
-    this.router.navigate(['/tabs/production-shift', this.shift?.shiftIdSeq, 'edit']);
+    this.router.navigate(['/tabs/production-shift', this.shift?.shiftSequence, 'edit']);
   }
 
   getShiftTypeLabel(shiftType: string): string {

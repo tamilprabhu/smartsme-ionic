@@ -146,7 +146,7 @@ export class StockComponent implements OnInit, OnChanges, OnDestroy {
 
     const formValue = this.stockForm.getRawValue();
     const apiData: Stock = {
-      stockIdSeq: this.formData?.stockIdSeq || 0,
+      stockSequence: this.formData?.stockSequence || 0,
       stockId: this.formData?.stockId || '',
       companyId: this.formData?.companyId || 'FINO001',
       sellerId: formValue.sellerId,

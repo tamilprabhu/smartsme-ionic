@@ -1,5 +1,5 @@
 export interface Dispatch {
-  dispatchIdSeq: number;
+  dispatchSequence: number;
   prodId: string;
   companyId: string;
   orderId: string;

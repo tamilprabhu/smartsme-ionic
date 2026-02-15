@@ -1,5 +1,5 @@
 export interface Order {
-  orderIdSeq: number;
+  orderSequence: number;
   orderId: string;
   orderName: string;
   companyId: string;

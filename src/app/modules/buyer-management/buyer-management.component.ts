@@ -108,7 +108,7 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
   }
 
   openReadForm(buyer: Buyer) {
-    this.buyerService.getBuyer(buyer.buyerIdSeq).subscribe({
+    this.buyerService.getBuyer(buyer.buyerSequence).subscribe({
       next: (buyerDetails) => {
         this.selectedBuyer = buyerDetails;
         this.formMode = 'read';
@@ -122,7 +122,7 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(buyer: Buyer) {
-    this.buyerService.getBuyer(buyer.buyerIdSeq).subscribe({
+    this.buyerService.getBuyer(buyer.buyerSequence).subscribe({
       next: (buyerDetails) => {
         this.selectedBuyer = buyerDetails;
         this.formMode = 'update';
@@ -156,9 +156,9 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteBuyer(buyer: Buyer) {
-    this.buyerService.deleteBuyer(buyer.buyerIdSeq).subscribe({
+    this.buyerService.deleteBuyer(buyer.buyerSequence).subscribe({
       next: () => {
-        this.buyers = this.buyers.filter(b => b.buyerIdSeq !== buyer.buyerIdSeq);
+        this.buyers = this.buyers.filter(b => b.buyerSequence !== buyer.buyerSequence);
         console.log('Buyer deleted successfully');
       },
       error: (error) => {
@@ -183,9 +183,9 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.formMode === 'update' && this.selectedBuyer) {
-      this.buyerService.updateBuyer(this.selectedBuyer.buyerIdSeq, formData).subscribe({
+      this.buyerService.updateBuyer(this.selectedBuyer.buyerSequence, formData).subscribe({
         next: (updatedBuyer) => {
-          const index = this.buyers.findIndex(b => b.buyerIdSeq === this.selectedBuyer?.buyerIdSeq);
+          const index = this.buyers.findIndex(b => b.buyerSequence === this.selectedBuyer?.buyerSequence);
           if (index > -1) {
             this.buyers[index] = updatedBuyer;
           }

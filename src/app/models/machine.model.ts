@@ -1,5 +1,5 @@
 export interface Machine {
-  machineIdSeq: number;
+  machineSequence: number;
   machineId: string;
   companyId: string;
   machineName: string;

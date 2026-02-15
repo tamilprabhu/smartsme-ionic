@@ -108,7 +108,7 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
   }
 
   openReadForm(company: Company) {
-    this.companyService.getCompany(company.companyIdSeq!).subscribe({
+    this.companyService.getCompany(company.companySequence!).subscribe({
       next: (companyDetails) => {
         this.selectedCompany = companyDetails;
         this.formMode = 'read';
@@ -122,7 +122,7 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(company: Company) {
-    this.companyService.getCompany(company.companyIdSeq!).subscribe({
+    this.companyService.getCompany(company.companySequence!).subscribe({
       next: (companyDetails) => {
         this.selectedCompany = companyDetails;
         this.formMode = 'update';
@@ -156,9 +156,9 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteCompany(company: Company) {
-    this.companyService.deleteCompany(company.companyIdSeq!).subscribe({
+    this.companyService.deleteCompany(company.companySequence!).subscribe({
       next: () => {
-        this.companies = this.companies.filter(c => c.companyIdSeq !== company.companyIdSeq);
+        this.companies = this.companies.filter(c => c.companySequence !== company.companySequence);
         console.log('Company deleted successfully');
       },
       error: (error) => {
@@ -183,9 +183,9 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.formMode === 'update' && this.selectedCompany) {
-      this.companyService.updateCompany(this.selectedCompany.companyIdSeq!, formData).subscribe({
+      this.companyService.updateCompany(this.selectedCompany.companySequence!, formData).subscribe({
         next: (updatedCompany) => {
-          const index = this.companies.findIndex(c => c.companyIdSeq === this.selectedCompany?.companyIdSeq);
+          const index = this.companies.findIndex(c => c.companySequence === this.selectedCompany?.companySequence);
           if (index > -1) {
             this.companies[index] = updatedCompany;
           }

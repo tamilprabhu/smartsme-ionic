@@ -222,9 +222,9 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
   }
 
   deleteShift(shift: ProductionShift) {
-    this.shiftService.deleteProductionShift(shift.shiftIdSeq).subscribe({
+    this.shiftService.deleteProductionShift(shift.shiftSequence).subscribe({
       next: () => {
-        this.shifts = this.shifts.filter(s => s.shiftIdSeq !== shift.shiftIdSeq);
+        this.shifts = this.shifts.filter(s => s.shiftSequence !== shift.shiftSequence);
         this.showToast('Shift deleted successfully', 'success');
       },
       error: () => this.showToast('Failed to delete shift', 'danger')

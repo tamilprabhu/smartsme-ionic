@@ -109,7 +109,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
   }
 
   openReadForm(stock: Stock) {
-    this.stockService.getStock(stock.stockIdSeq).subscribe({
+    this.stockService.getStock(stock.stockSequence).subscribe({
       next: (stockDetails) => {
         this.selectedStock = stockDetails;
         this.formMode = 'read';
@@ -123,7 +123,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(stock: Stock) {
-    this.stockService.getStock(stock.stockIdSeq).subscribe({
+    this.stockService.getStock(stock.stockSequence).subscribe({
       next: (stockDetails) => {
         this.selectedStock = stockDetails;
         this.formMode = 'update';
@@ -157,9 +157,9 @@ export class StockManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteStock(stock: Stock) {
-    this.stockService.deleteStock(stock.stockIdSeq).subscribe({
+    this.stockService.deleteStock(stock.stockSequence).subscribe({
       next: () => {
-        this.stocks = this.stocks.filter(s => s.stockIdSeq !== stock.stockIdSeq);
+        this.stocks = this.stocks.filter(s => s.stockSequence !== stock.stockSequence);
         console.log('Stock deleted successfully');
       },
       error: (error) => {
@@ -184,9 +184,9 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.formMode === 'update' && this.selectedStock) {
-      this.stockService.updateStock(this.selectedStock.stockIdSeq, formData).subscribe({
+      this.stockService.updateStock(this.selectedStock.stockSequence, formData).subscribe({
         next: (updatedStock) => {
-          const index = this.stocks.findIndex(s => s.stockIdSeq === this.selectedStock?.stockIdSeq);
+          const index = this.stocks.findIndex(s => s.stockSequence === this.selectedStock?.stockSequence);
           if (index > -1) {
             this.stocks[index] = updatedStock;
           }

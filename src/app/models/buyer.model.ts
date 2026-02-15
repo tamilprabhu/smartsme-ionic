@@ -1,5 +1,5 @@
 export interface Buyer {
-  buyerIdSeq: number;
+  buyerSequence: number;
   buyerId: string;
   companyId: string;
   buyerName: string;

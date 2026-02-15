@@ -56,7 +56,7 @@ export class DispatchService {
     );
   }
 
-  createDispatch(dispatch: Omit<Dispatch, 'dispatchIdSeq' | 'createDate' | 'updateDate'>): Observable<Dispatch> {
+  createDispatch(dispatch: Omit<Dispatch, 'dispatchSequence' | 'createDate' | 'updateDate'>): Observable<Dispatch> {
     return this.http.post<Dispatch>(this.API_URL, dispatch, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class DispatchService {
     );
   }
 
-  updateDispatch(id: number, dispatch: Partial<Omit<Dispatch, 'dispatchIdSeq' | 'createDate'>>): Observable<Dispatch> {
+  updateDispatch(id: number, dispatch: Partial<Omit<Dispatch, 'dispatchSequence' | 'createDate'>>): Observable<Dispatch> {
     return this.http.put<Dispatch>(`${this.API_URL}/${id}`, dispatch, {
       headers: this.getHeaders()
     }).pipe(

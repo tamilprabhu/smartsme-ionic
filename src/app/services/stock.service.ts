@@ -56,7 +56,7 @@ export class StockService {
     );
   }
 
-  createStock(stock: Omit<Stock, 'stockIdSeq' | 'createDate' | 'updateDate'>): Observable<Stock> {
+  createStock(stock: Omit<Stock, 'stockSequence' | 'createDate' | 'updateDate'>): Observable<Stock> {
     return this.http.post<Stock>(this.API_URL, stock, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class StockService {
     );
   }
 
-  updateStock(id: number, stock: Partial<Omit<Stock, 'stockIdSeq' | 'createDate'>>): Observable<Stock> {
+  updateStock(id: number, stock: Partial<Omit<Stock, 'stockSequence' | 'createDate'>>): Observable<Stock> {
     return this.http.put<Stock>(`${this.API_URL}/${id}`, stock, {
       headers: this.getHeaders()
     }).pipe(

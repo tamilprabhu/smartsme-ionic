@@ -1,5 +1,5 @@
 export interface Company {
-  companyIdSeq?: number;
+  companySequence?: number;
   companyId: string;
   companyName: string;
   businessCons: string;

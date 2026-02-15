@@ -106,7 +106,7 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
   }
 
   openReadForm(order: Order) {
-    this.orderService.getOrder(order.orderIdSeq).subscribe({
+    this.orderService.getOrder(order.orderSequence).subscribe({
       next: (orderDetails) => {
         this.selectedOrder = orderDetails;
         this.formMode = 'read';
@@ -119,7 +119,7 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(order: Order) {
-    this.orderService.getOrder(order.orderIdSeq).subscribe({
+    this.orderService.getOrder(order.orderSequence).subscribe({
       next: (orderDetails) => {
         this.selectedOrder = orderDetails;
         this.formMode = 'update';
@@ -152,9 +152,9 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteOrder(order: Order) {
-    this.orderService.deleteOrder(order.orderIdSeq).subscribe({
+    this.orderService.deleteOrder(order.orderSequence).subscribe({
       next: () => {
-        this.orders = this.orders.filter(o => o.orderIdSeq !== order.orderIdSeq);
+        this.orders = this.orders.filter(o => o.orderSequence !== order.orderSequence);
         console.log('Order deleted successfully');
       },
       error: (error) => {
@@ -176,9 +176,9 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.formMode === 'update' && this.selectedOrder) {
-      this.orderService.updateOrder(this.selectedOrder.orderIdSeq, formData).subscribe({
+      this.orderService.updateOrder(this.selectedOrder.orderSequence, formData).subscribe({
         next: (updatedOrder) => {
-          const index = this.orders.findIndex(o => o.orderIdSeq === this.selectedOrder?.orderIdSeq);
+          const index = this.orders.findIndex(o => o.orderSequence === this.selectedOrder?.orderSequence);
           if (index > -1) {
             this.orders[index] = updatedOrder;
           }

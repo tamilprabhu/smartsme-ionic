@@ -66,7 +66,7 @@
   </ion-item>
 
   <ion-list *ngIf="shifts.length > 0">
-    <ion-item *ngFor="let shift of shifts" class="sme-list-item" button (click)="viewShift(shift.shiftIdSeq)">
+    <ion-item *ngFor="let shift of shifts" class="sme-list-item" button (click)="viewShift(shift.shiftSequence)">
       <ion-label>
         <h2>
           {{ shift.shiftId }} 
@@ -77,7 +77,7 @@
         <p>Production: {{ shift.production }} | Net: {{ shift.netProduction }} | Rejection: {{ shift.rejection }}</p>
       </ion-label>
       <ion-buttons slot="end">
-        <ion-button color="secondary" (click)="editShift(shift.shiftIdSeq, $event)">
+        <ion-button color="secondary" (click)="editShift(shift.shiftSequence, $event)">
           <ion-icon slot="icon-only" name="create-outline"></ion-icon>
         </ion-button>
         <ion-button color="danger" (click)="confirmDelete(shift, $event)">
