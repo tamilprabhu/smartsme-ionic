@@ -7,6 +7,18 @@
 </ion-header>
 
 <ion-content>
+  <ion-card class="chart-card">
+    <ion-card-header>
+      <ion-card-title>Production Overview</ion-card-title>
+      <ion-card-subtitle>Snapshot for the last 6 periods</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="chart-container">
+        <canvas #reportChart></canvas>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
   <ion-accordion-group (ionChange)="handleAccordionChange($event)">
     <ion-accordion *ngFor="let report of reports" [value]="report.id">
       <ion-item slot="header">

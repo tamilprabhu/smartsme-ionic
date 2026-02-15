@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { IonAccordionGroup } from '@ionic/angular';
+import { Chart, ChartConfiguration } from 'chart.js/auto';
 
 @Component({
   selector: 'app-reports',
@@ -7,7 +8,9 @@ import { IonAccordionGroup } from '@ionic/angular';
   styleUrls: ['reports.page.scss'],
   standalone: false,
 })
-export class ReportsPage {
+export class ReportsPage implements AfterViewInit, OnDestroy {
+  @ViewChild('reportChart') reportChartRef!: ElementRef<HTMLCanvasElement>;
+  private chart?: Chart;
 
   reports = [
     {
@@ -60,6 +63,16 @@ export class ReportsPage {
     }
   ];
 
+  ngAfterViewInit() {
+    this.renderChart();
+  }
+
+  ngOnDestroy() {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+  }
+
   // Load report preview when accordion opens
   async handleAccordionChange(ev: any) {
     const opened = ev.detail.value;
@@ -103,6 +116,54 @@ export class ReportsPage {
       : new Date(value);
     if (Number.isNaN(date.getTime())) return value;
     return date.toLocaleDateString();
+  }
+
+  private renderChart() {
+    if (!this.reportChartRef?.nativeElement) {
+      return;
+    }
+    if (this.chart) {
+      this.chart.destroy();
+    }
+    const config: ChartConfiguration<'bar'> = {
+      type: 'bar',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [
+          {
+            label: 'Production Summary',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    };
+    this.chart = new Chart(this.reportChartRef.nativeElement, config);
   }
 
 }

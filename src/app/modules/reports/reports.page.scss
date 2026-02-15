@@ -5,6 +5,16 @@ ion-item {
   margin-top: 8px;
 }
 
+.chart-card {
+  margin: 16px;
+}
+
+.chart-container {
+  position: relative;
+  height: 240px;
+  width: 100%;
+}
+
 [slot='content'] {
   padding: 10px 16px;
   background: #fafafa;
@@ -25,4 +35,3 @@ ion-modal.report-datetime-modal {
     flex-direction: column;
   }
 }
-
