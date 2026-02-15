@@ -2,7 +2,7 @@
   <ion-menu *ngIf="isLoggedIn" side="end" menuId="rightMenu" contentId="main-content">
     <ion-header>
       <ion-toolbar>
-        <ion-item button detail="false" lines="none" class="profile-item" (click)="navigateTo('profile')">
+        <ion-item button detail="false" lines="none" class="profile-item" (click)="navigateTo('/tabs/profile-masters')">
           <ion-avatar>
             <img [src]="user?.photoUrl || 'assets/images/default-avatar.jpg'" alt="Profile" />
           </ion-avatar>
@@ -18,33 +18,9 @@
     <ion-content>
       <div class="menu-container">
         <ion-list class="menu-list">
-          <ion-item button class="menu-item" (click)="navigateTo('company')">
-            <i slot="start" class="fa fa-sitemap menu-icon" aria-hidden="true"></i>
-            <span class="menu-label">Company</span>
-          </ion-item>
-          <ion-item button class="menu-item" (click)="navigateTo('machine-process')">
-            <i slot="start" class="fa fa-cogs menu-icon" aria-hidden="true"></i>
-            <span class="menu-label">Machine Process</span>
-          </ion-item>
-          <ion-item button class="menu-item" (click)="navigateTo('users')">
-            <i slot="start" class="fa fa-user menu-icon" aria-hidden="true"></i>
-            <span class="menu-label">Users</span>
-          </ion-item>
-          <!-- <ion-item button (click)="navigateTo('employees')">
-          <i slot="start" class="fa fa-black-tie" aria-hidden="true"></i>
-          <span>Employees</span>
-          </ion-item> -->
-          <ion-item button class="menu-item" (click)="navigateTo('sellers')">
-            <i slot="start" class="fa fa-sellsy menu-icon" aria-hidden="true"></i>
-            <span class="menu-label">Sellers</span>
-          </ion-item>
-          <ion-item button class="menu-item" (click)="navigateTo('buyers')">
-            <i slot="start" class="fa fa-buysellads menu-icon" aria-hidden="true"></i>
-            <span class="menu-label">Buyers</span>
-          </ion-item>
-          <ion-item button class="menu-item" (click)="navigateTo('products')">
-            <i slot="start" class="fa fa-product-hunt menu-icon" aria-hidden="true"></i>
-            <span class="menu-label">Products</span>
+          <ion-item button class="menu-item" (click)="navigateTo('/tabs/profile-masters')">
+            <i slot="start" class="fa fa-th-large menu-icon" aria-hidden="true"></i>
+            <span class="menu-label">Profile & Masters</span>
           </ion-item>
         </ion-list>
         <div class="menu-spacer"></div>

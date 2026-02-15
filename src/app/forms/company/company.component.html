@@ -16,6 +16,11 @@
     </ion-card-header>
     <ion-card-content>
       <form #companyForm="ngForm" (ngSubmit)="onSubmit(companyForm)">
+        <ion-item lines="none" color="danger" *ngIf="formLevelErrors.length > 0 && mode !== 'read'">
+          <ion-label>
+            <p *ngFor="let message of formLevelErrors">{{ message }}</p>
+          </ion-label>
+        </ion-item>
         <ion-grid>
           <!-- Company ID -->
           <ion-row>
@@ -26,10 +31,14 @@
                   label="Company ID * (e.g., COMP001)"
                   name="companyId"
                   [(ngModel)]="model.companyId"
+                  (ngModelChange)="clearServerError('companyId')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('companyId') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('companyId')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -42,10 +51,14 @@
                   label="Company Name *"
                   name="companyName"
                   [(ngModel)]="model.companyName"
+                  (ngModelChange)="clearServerError('companyName')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('companyName') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('companyName')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -58,6 +71,7 @@
                   label="Business Constitution *"
                   name="businessCons"
                   [(ngModel)]="model.businessCons"
+                  (ngModelChange)="clearServerError('businessCons')"
                   [disabled]="mode === 'read'"
                   required>
                   <ion-select-option value="corporation">Corporation</ion-select-option>
@@ -66,6 +80,9 @@
                   <ion-select-option value="llp">LLP</ion-select-option>
                 </ion-select>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('businessCons') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('businessCons')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -78,6 +95,7 @@
                   label="Company Type *"
                   name="companyType"
                   [(ngModel)]="model.companyType"
+                  (ngModelChange)="clearServerError('companyType')"
                   [disabled]="mode === 'read'"
                   required>
                   <ion-select-option value="large scale">Large Scale</ion-select-option>
@@ -85,6 +103,9 @@
                   <ion-select-option value="small scale">Small Scale</ion-select-option>
                 </ion-select>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('companyType') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('companyType')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -97,6 +118,7 @@
                   label="Nature of Business *"
                   name="natureOfBusiness"
                   [(ngModel)]="model.natureOfBusiness"
+                  (ngModelChange)="clearServerError('natureOfBusiness')"
                   [disabled]="mode === 'read'"
                   required>
                   <ion-select-option value="manufacturing">Manufacturing</ion-select-option>
@@ -104,6 +126,9 @@
                   <ion-select-option value="service">Service</ion-select-option>
                 </ion-select>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('natureOfBusiness') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('natureOfBusiness')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -116,11 +141,15 @@
                   label="Address *"
                   name="address"
                   [(ngModel)]="model.address"
+                  (ngModelChange)="clearServerError('address')"
                   [readonly]="mode === 'read'"
                   rows="3"
                   required>
                 </ion-textarea>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('address') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('address')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -134,10 +163,14 @@
                   name="pincode"
                   type="number"
                   [(ngModel)]="model.pincode"
+                  (ngModelChange)="clearServerError('pincode')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('pincode') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('pincode')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -150,10 +183,14 @@
                   label="Owner Name *"
                   name="propName"
                   [(ngModel)]="model.propName"
+                  (ngModelChange)="clearServerError('propName')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('propName') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('propName')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -167,10 +204,14 @@
                   placeholder="Enter authorized person name"
                   name="authPerson"
                   [(ngModel)]="model.authPerson"
+                  (ngModelChange)="clearServerError('authPerson')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('authPerson') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('authPerson')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -184,10 +225,14 @@
                   name="directPhone"
                   type="tel"
                   [(ngModel)]="model.directPhone"
+                  (ngModelChange)="clearServerError('directPhone')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('directPhone') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('directPhone')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -202,10 +247,14 @@
                   name="mobileNo"
                   type="tel"
                   [(ngModel)]="model.mobileNo"
+                  (ngModelChange)="clearServerError('mobileNo')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('mobileNo') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('mobileNo')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -219,10 +268,14 @@
                   name="officePhone"
                   type="tel"
                   [(ngModel)]="model.officePhone"
+                  (ngModelChange)="clearServerError('officePhone')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('officePhone') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('officePhone')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -236,9 +289,13 @@
                   name="mgmtPhone"
                   type="tel"
                   [(ngModel)]="model.mgmtPhone"
+                  (ngModelChange)="clearServerError('mgmtPhone')"
                   [readonly]="mode === 'read'">
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('mgmtPhone') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('mgmtPhone')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -252,10 +309,14 @@
                   name="mailId"
                   type="email"
                   [(ngModel)]="model.mailId"
+                  (ngModelChange)="clearServerError('mailId')"
                   [readonly]="mode === 'read'"
                   required>
                 </ion-input>
               </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('mailId') && mode !== 'read'">
+                <small *ngFor="let message of getServerErrorMessages('mailId')">{{ message }}</small>
+              </ion-text>
             </ion-col>
           </ion-row>
 
@@ -267,16 +328,9 @@
                     expand="block"
                     type="submit"
                     color="primary"
-                    [disabled]="!companyForm.valid || isLoading">
-                    <ion-icon
-                        [name]="isLoading ? 'hourglass-outline' : 'checkmark-circle-outline'"
-                        slot="start">
-                    </ion-icon>
-                    {{
-                        isLoading
-                        ? (mode === 'create' ? 'Creating...' : 'Updating...')
-                        : (mode === 'create' ? 'Submit' : 'Update')
-                    }}
+                    [disabled]="!companyForm.valid">
+                    <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                    {{ mode === 'create' ? 'Submit' : 'Update' }}
                     </ion-button>
                 </ion-col>
 

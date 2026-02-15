@@ -6,6 +6,7 @@ import { ProductionShift } from 'src/app/models/production-shift.model';
 import { ProductionShiftService } from 'src/app/services/production-shift.service';
 import { ProductionShiftFormComponent } from '../components/production-shift-form/production-shift-form.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-production-shift-update',
@@ -18,6 +19,7 @@ export class ProductionShiftUpdateComponent implements OnInit {
   shift: ProductionShift | null = null;
   loading = true;
   shiftId!: number;
+  serverValidationErrors: ServerValidationErrors = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -45,12 +47,19 @@ export class ProductionShiftUpdateComponent implements OnInit {
   }
 
   onSubmit(formData: Partial<ProductionShift>) {
+    this.serverValidationErrors = {};
+
     this.shiftService.updateProductionShift(this.shiftId, formData).subscribe({
       next: () => {
         this.showToast('Shift updated successfully', 'success');
         this.router.navigate(['/tabs/production-shift', this.shiftId]);
       },
-      error: () => this.showToast('Failed to update shift', 'danger')
+      error: (error) => {
+        this.serverValidationErrors = extractServerValidationErrors(error);
+        if (Object.keys(this.serverValidationErrors).length === 0) {
+          this.showToast('Failed to update shift', 'danger');
+        }
+      }
     });
   }
 

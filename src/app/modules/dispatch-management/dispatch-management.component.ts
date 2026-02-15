@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Dispatch } from '../../models/dispatch.model';
 import { DispatchService } from '../../services/dispatch.service';
 import { OperationsService } from 'src/app/services/operations.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-dispatch-management',
@@ -23,6 +24,7 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -102,6 +104,7 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedDispatch = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
@@ -110,6 +113,7 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
       next: (dispatchDetails) => {
         this.selectedDispatch = dispatchDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -123,6 +127,7 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
       next: (dispatchDetails) => {
         this.selectedDispatch = dispatchDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -164,6 +169,8 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: Dispatch) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.dispatchService.createDispatch(formData).subscribe({
         next: (newDispatch) => {
@@ -172,6 +179,7 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
           console.log('Dispatch created successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error creating dispatch:', error);
         }
       });
@@ -186,17 +194,18 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
           console.log('Dispatch updated successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error updating dispatch:', error);
         }
       });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedDispatch = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {

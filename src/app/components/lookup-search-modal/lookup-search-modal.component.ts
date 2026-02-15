@@ -154,8 +154,8 @@ export class LookupSearchModalComponent implements OnInit {
     this.productService.getProducts(page, ItemsPerPage.TEN, this.searchTerm).subscribe({
       next: (response) => {
         const items = response.items.map(item => ({
-          value: item.prodId,
-          label: `${item.prodName} (${item.prodId})`
+          value: item.productId,
+          label: `${item.productName} (${item.productId})`
         }));
         onSuccess(items, response.paging.totalPages, response.paging.currentPage);
       },

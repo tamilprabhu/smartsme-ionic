@@ -1,8 +1,8 @@
 export interface Product {
-  prodIdSeq: number;
-  prodId: string;
+  prodSequence: number;
+  productId: string;
   companyId: string;
-  prodName: string;
+  productName: string;
   rawMaterial: string;
   weight: string;
   wastage: number;
@@ -11,7 +11,14 @@ export interface Product {
   cavity: number;
   shotRate: string;
   perItemRate: string;
+  salesType?: string;
+  salesCode?: string;
+  salesPercent?: string;
   incentiveLimit: number;
-  createDate: string;
-  updateDate: string;
+  isActive?: number;
+  isDeleted?: number;
+  createdBy?: number | null;
+  updatedBy?: number | null;
+  create_date: string;
+  update_date: string;
 }

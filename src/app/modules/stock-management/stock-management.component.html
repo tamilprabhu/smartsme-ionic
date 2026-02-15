@@ -87,6 +87,7 @@
         <app-stock
           [mode]="formMode"
           [formData]="selectedStock"
+          [serverValidationErrors]="serverValidationErrors"
           (formSubmit)="handleFormSubmit($event)"
           (formClosed)="closeForm()">
         </app-stock>

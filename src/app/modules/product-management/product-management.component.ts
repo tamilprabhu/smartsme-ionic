@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { AlertController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-product-management',
@@ -22,13 +24,14 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   constructor(
     private alertController: AlertController,
-    private navCtrl: NavController,
+    private router: Router,
     private productService: ProductService
   ) {
     this.searchSubject.pipe(
@@ -100,14 +103,16 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedProduct = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
   openReadForm(product: Product) {
-    this.productService.getProduct(product.prodIdSeq).subscribe({
+    this.productService.getProduct(product.prodSequence).subscribe({
       next: (productDetails) => {
         this.selectedProduct = productDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -117,10 +122,11 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(product: Product) {
-    this.productService.getProduct(product.prodIdSeq).subscribe({
+    this.productService.getProduct(product.prodSequence).subscribe({
       next: (productDetails) => {
         this.selectedProduct = productDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -132,7 +138,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   async confirmDelete(product: Product) {
     const alert = await this.alertController.create({
       header: 'Confirm Delete',
-      message: `Are you sure you want to delete product "${product.prodName}"?`,
+      message: `Are you sure you want to delete product "${product.productName}"?`,
       buttons: [
         {
           text: 'Cancel',
@@ -150,9 +156,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteProduct(product: Product) {
-    this.productService.deleteProduct(product.prodIdSeq).subscribe({
+    this.productService.deleteProduct(product.prodSequence).subscribe({
       next: () => {
-        this.products = this.products.filter(p => p.prodIdSeq !== product.prodIdSeq);
+        this.products = this.products.filter(p => p.prodSequence !== product.prodSequence);
         console.log('Product deleted successfully');
       },
       error: (error) => {
@@ -162,6 +168,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: Product) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.productService.createProduct(formData).subscribe({
         next: (newProduct) => {
@@ -170,13 +178,14 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
           console.log('Product created successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error creating product:', error);
         }
       });
     } else if (this.formMode === 'update' && this.selectedProduct) {
-      this.productService.updateProduct(this.selectedProduct.prodIdSeq, formData).subscribe({
+      this.productService.updateProduct(this.selectedProduct.prodSequence, formData).subscribe({
         next: (updatedProduct) => {
-          const index = this.products.findIndex(p => p.prodIdSeq === this.selectedProduct?.prodIdSeq);
+          const index = this.products.findIndex(p => p.prodSequence === this.selectedProduct?.prodSequence);
           if (index > -1) {
             this.products[index] = updatedProduct;
           }
@@ -184,21 +193,22 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
           console.log('Product updated successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error updating product:', error);
         }
       });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedProduct = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {
     console.log('Header back button clicked - navigating back');
-    this.navCtrl.back();
+    this.router.navigate(['/tabs/profile-masters']);
   }
 }

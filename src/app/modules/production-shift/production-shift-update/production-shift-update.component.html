@@ -9,6 +9,7 @@
     <ion-card-content>
       <app-production-shift-form
         [initialData]="shift"
+        [serverValidationErrors]="serverValidationErrors"
         (formSubmit)="onSubmit($event)"
         (formCancel)="onCancel()">
       </app-production-shift-form>

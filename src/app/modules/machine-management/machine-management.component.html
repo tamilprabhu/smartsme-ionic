@@ -85,6 +85,7 @@
         <app-machine-process
           [mode]="formMode"
           [formData]="selectedMachine"
+          [serverValidationErrors]="serverValidationErrors"
           (formSubmit)="handleFormSubmit($event)">
         </app-machine-process>
       </ion-content>

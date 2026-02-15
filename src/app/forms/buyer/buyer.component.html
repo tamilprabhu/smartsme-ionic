@@ -15,6 +15,11 @@
 
     <ion-card-content>
       <form [formGroup]="buyerForm" (ngSubmit)="onSubmit()">
+        <ion-item lines="none" color="danger" *ngIf="formLevelErrors.length > 0 && mode !== 'read'">
+          <ion-label>
+            <p *ngFor="let message of formLevelErrors">{{ message }}</p>
+          </ion-label>
+        </ion-item>
         <ion-grid>
 
         <!-- Buyer ID -->
@@ -31,6 +36,9 @@
             </ion-item>
             <ion-text color="danger" *ngIf="f['buyerId'].invalid && (f['buyerId'].dirty || f['buyerId'].touched) && mode !== 'read'">
               <small *ngIf="f['buyerId'].errors?.['required']">Buyer ID is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('buyerId') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('buyerId')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -50,6 +58,9 @@
             <ion-text color="danger" *ngIf="f['buyerName'].invalid && (f['buyerName'].dirty || f['buyerName'].touched) && mode !== 'read'">
               <small *ngIf="f['buyerName'].errors?.['required']">Buyer Name is required.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('buyerName') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('buyerName')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -68,6 +79,9 @@
             <ion-text color="danger" *ngIf="f['address'].invalid && (f['address'].dirty || f['address'].touched) && mode !== 'read'">
               <small *ngIf="f['address'].errors?.['required']">Address is required.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('address') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('address')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -85,6 +99,9 @@
             </ion-item>
             <ion-text color="danger" *ngIf="f['phone'].invalid && (f['phone'].dirty || f['phone'].touched) && mode !== 'read'">
               <small *ngIf="f['phone'].errors?.['required']">Phone is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('phone') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('phone')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -105,6 +122,9 @@
               <small *ngIf="f['email'].errors?.['required']">Email is required.</small>
               <small *ngIf="f['email'].errors?.['email']">Enter a valid email.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('email') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('email')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -120,6 +140,9 @@
                 [readonly]="mode === 'read'">
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('gstin') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('gstin')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 

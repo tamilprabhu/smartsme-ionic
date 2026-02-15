@@ -1,0 +1,41 @@
+<app-header
+  title="Profile & Masters"
+  backAction="back"
+  [showBackButton]="true">
+</app-header>
+
+<ion-content class="profile-masters-content">
+  <div class="profile-masters-shell">
+    <div class="page-intro">
+      <h1>Control Center</h1>
+      <p>Access profile settings, master setup, and supporting modules.</p>
+    </div>
+
+    <section class="section-block">
+      <h2>Profile</h2>
+      <ion-list lines="none" class="section-list">
+        <ion-item button detail="true" class="nav-item" *ngFor="let item of profileItems" (click)="navigateTo(item.route)">
+          <ion-icon slot="start" [name]="item.icon"></ion-icon>
+          <ion-label>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.subtitle }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </section>
+
+    <section class="section-block">
+      <h2>Masters</h2>
+      <ion-list lines="none" class="section-list">
+        <ion-item button detail="true" class="nav-item" *ngFor="let item of masterItems" (click)="navigateTo(item.route)">
+          <ion-icon slot="start" [name]="item.icon"></ion-icon>
+          <ion-label>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.subtitle }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </section>
+
+  </div>
+</ion-content>

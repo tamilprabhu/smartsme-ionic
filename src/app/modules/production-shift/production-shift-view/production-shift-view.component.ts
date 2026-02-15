@@ -81,8 +81,8 @@ export class ProductionShiftViewComponent implements OnInit {
           this.orderName = 'No Order';
         }
 
-        const product = products.items.find(p => p.prodId === productId);
-        this.productName = product ? product.prodName : productId;
+        const product = products.items.find(p => p.productId === productId);
+        this.productName = product ? product.productName : productId;
       },
       error: () => {
         this.machineName = machineId;

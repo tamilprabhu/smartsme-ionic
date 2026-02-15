@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Stock } from '../../models/stock.model';
 import { StockService } from '../../services/stock.service';
 import { OperationsService } from 'src/app/services/operations.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-stock-management',
@@ -23,6 +24,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -102,6 +104,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedStock = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
@@ -110,6 +113,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
       next: (stockDetails) => {
         this.selectedStock = stockDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -123,6 +127,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
       next: (stockDetails) => {
         this.selectedStock = stockDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -164,6 +169,8 @@ export class StockManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: Stock) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.stockService.createStock(formData).subscribe({
         next: (newStock) => {
@@ -172,6 +179,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
           console.log('Stock created successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error creating stock:', error);
         }
       });
@@ -186,17 +194,18 @@ export class StockManagementComponent implements OnInit, OnDestroy {
           console.log('Stock updated successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error updating stock:', error);
         }
       });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedStock = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {

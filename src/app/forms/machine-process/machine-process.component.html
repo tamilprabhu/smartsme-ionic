@@ -14,6 +14,11 @@
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="processForm" (ngSubmit)="submit()">
+        <ion-item lines="none" color="danger" *ngIf="formLevelErrors.length > 0 && mode !== 'read'">
+          <ion-label>
+            <p *ngFor="let message of formLevelErrors">{{ message }}</p>
+          </ion-label>
+        </ion-item>
         <ion-grid>
         <ion-row>
           <ion-col size="12">
@@ -28,6 +33,9 @@
             </ion-item>
             <ion-text color="danger" *ngIf="processForm.get('machineId')?.invalid && (processForm.get('machineId')?.touched || processForm.get('machineId')?.dirty) && mode !== 'read'">
               <small>Machine ID is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('machineId') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('machineId')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -46,6 +54,9 @@
             <ion-text color="danger" *ngIf="processForm.get('machineName')?.invalid && (processForm.get('machineName')?.touched || processForm.get('machineName')?.dirty) && mode !== 'read'">
               <small>Machine Name is required.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('machineName') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('machineName')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -63,6 +74,9 @@
             <ion-text color="danger" *ngIf="processForm.get('workType')?.invalid && (processForm.get('workType')?.touched || processForm.get('workType')?.dirty) && mode !== 'read'">
               <small>Work Type is required.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('workType') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('workType')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -77,6 +91,9 @@
                 [readonly]="mode === 'read'">
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('shortName') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('shortName')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -91,6 +108,9 @@
                 [readonly]="mode === 'read'">
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('process') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('process')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 

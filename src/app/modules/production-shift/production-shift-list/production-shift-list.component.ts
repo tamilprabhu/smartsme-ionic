@@ -109,7 +109,7 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
     this.productService.getProducts(1, 1000).subscribe({
       next: (response) => {
         this.products = response.items;
-        this.products.forEach(p => this.productMap.set(p.prodId, p.prodName));
+        this.products.forEach(p => this.productMap.set(p.productId, p.productName));
       }
     });
   }

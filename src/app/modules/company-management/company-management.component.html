@@ -85,6 +85,7 @@
         <app-company
           [mode]="formMode!"
           [formData]="selectedCompany"
+          [serverValidationErrors]="serverValidationErrors"
           (formSubmit)="handleFormSubmit($event)"
           (formClosed)="closeForm()">
         </app-company>

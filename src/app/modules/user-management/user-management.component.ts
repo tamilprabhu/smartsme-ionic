@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { AlertController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-user-management',
@@ -22,13 +24,14 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   constructor(
     private alertController: AlertController,
-    private navCtrl: NavController,
+    private router: Router,
     private userService: UserService
   ) {
     this.searchSubject.pipe(
@@ -95,6 +98,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedUser = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
@@ -103,6 +107,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       next: (userDetails) => {
         this.selectedUser = userDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       }
     });
@@ -113,6 +118,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       next: (userDetails) => {
         this.selectedUser = userDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       }
     });
@@ -139,11 +145,17 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: User) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.userService.createUser(formData).subscribe({
         next: (newUser) => {
           this.users.unshift(newUser);
           this.closeForm();
+        },
+        error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
+          console.error('Error creating user:', error);
         }
       });
     } else if (this.formMode === 'update' && this.selectedUser) {
@@ -152,6 +164,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
           const index = this.users.findIndex(u => u.id === this.selectedUser?.id);
           if (index > -1) this.users[index] = updatedUser;
           this.closeForm();
+        },
+        error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
+          console.error('Error updating user:', error);
         }
       });
     }
@@ -161,9 +177,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     this.showForm = false;
     this.selectedUser = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {
-    this.navCtrl.back();
+    this.router.navigate(['/tabs/profile-masters']);
   }
 }

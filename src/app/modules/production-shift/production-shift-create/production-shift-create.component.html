@@ -8,6 +8,7 @@
   <ion-card class="sme-form-card shift-form-card ion-no-margin">
     <ion-card-content>
       <app-production-shift-form
+        [serverValidationErrors]="serverValidationErrors"
         (formSubmit)="onSubmit($event)"
         (formCancel)="onCancel()">
       </app-production-shift-form>
