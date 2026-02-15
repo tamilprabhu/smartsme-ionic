@@ -1,9 +1,10 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
-import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { CommonModule, Location } from '@angular/common';
 import { Company } from 'src/app/models/company.model';
+import { ServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-company',
@@ -14,6 +15,7 @@ import { Company } from 'src/app/models/company.model';
 export class CompanyComponent implements OnInit, OnChanges {
   @Input() mode: 'create' | 'read' | 'update' = 'create';
   @Input() formData: Partial<Company> | null = null;
+  @Input() serverValidationErrors: ServerValidationErrors = {};
   @Output() formSubmit = new EventEmitter<Company>();
   @Output() formClosed = new EventEmitter<void>();
 
@@ -35,13 +37,10 @@ export class CompanyComponent implements OnInit, OnChanges {
     mobileNo: ''
   };
 
-  isLoading = false;
+  fieldServerErrors: ServerValidationErrors = {};
+  formLevelErrors: string[] = [];
 
-  constructor(
-    private location: Location,
-    private toastCtrl: ToastController,
-    private loadingCtrl: LoadingController
-  ) {}
+  constructor(private location: Location) {}
 
   ngOnInit() {
     if (this.formData) {
@@ -56,6 +55,13 @@ export class CompanyComponent implements OnInit, OnChanges {
     }
     if (changes['mode'] && this.mode === 'create') {
       this.resetModel();
+    }
+    if (changes['formData'] || changes['mode']) {
+      this.fieldServerErrors = {};
+      this.formLevelErrors = [];
+    }
+    if (changes['serverValidationErrors']) {
+      this.applyServerValidationErrors();
     }
   }
 
@@ -93,34 +99,46 @@ export class CompanyComponent implements OnInit, OnChanges {
 
   async onSubmit(form: NgForm) {
     if (this.mode === 'read') return;
+    this.fieldServerErrors = {};
+    this.formLevelErrors = [];
+
     if (!form.valid) {
-      await this.showToast('Please fill all required fields', 'warning');
       return;
     }
 
-    this.isLoading = true;
-    // Simulate async processing or optionally replace with real service call
-    setTimeout(async () => {
-      this.isLoading = false;
-      await this.showToast(
-        this.mode === 'create'
-          ? 'Company created successfully!'
-          : 'Company updated successfully!',
-        'success'
-      );
-      this.formSubmit.emit({ ...this.model } as Company);
-      form.resetForm();
-      this.resetModel();
-    }, 700);
+    this.formSubmit.emit({ ...this.model } as Company);
   }
 
-  private async showToast(message: string, color: string) {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2000,
-      color,
-      position: 'top'
+  hasServerError(field: string): boolean {
+    return (this.fieldServerErrors[field] ?? []).length > 0;
+  }
+
+  getServerErrorMessages(field: string): string[] {
+    return this.fieldServerErrors[field] ?? [];
+  }
+
+  clearServerError(field: string): void {
+    if (!this.hasServerError(field)) {
+      return;
+    }
+
+    const { [field]: _, ...rest } = this.fieldServerErrors;
+    this.fieldServerErrors = rest;
+  }
+
+  private applyServerValidationErrors(): void {
+    const mappedErrors: ServerValidationErrors = {};
+    const unmappedErrors: string[] = [];
+
+    Object.entries(this.serverValidationErrors ?? {}).forEach(([field, messages]) => {
+      if (this.model.hasOwnProperty(field)) {
+        mappedErrors[field] = messages;
+      } else {
+        unmappedErrors.push(...messages);
+      }
     });
-    await toast.present();
+
+    this.fieldServerErrors = mappedErrors;
+    this.formLevelErrors = unmappedErrors;
   }
 }

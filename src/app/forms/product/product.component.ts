@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Product } from 'src/app/models/product.model';
+import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-product',
@@ -12,13 +14,16 @@ import { Product } from 'src/app/models/product.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
-export class ProductComponent implements OnInit, OnChanges {
+export class ProductComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Product | null = null;
+  @Input() serverValidationErrors: ServerValidationErrors = {};
   @Output() formSubmit = new EventEmitter<Product>();
   @Output() formClosed = new EventEmitter<void>();
 
   productForm: FormGroup;
+  formLevelErrors: string[] = [];
+  private readonly destroy$ = new Subject<void>();
 
   rawMaterials = ['Steel', 'Aluminum', 'Plastic', 'Copper']; // example options
 
@@ -40,11 +45,21 @@ export class ProductComponent implements OnInit, OnChanges {
     });
 
     // Watch weight and wastage to calculate totalWeight real-time
-    this.productForm.get('weight')?.valueChanges.subscribe(() => this.updateTotalWeight());
-    this.productForm.get('wastage')?.valueChanges.subscribe(() => this.updateTotalWeight());
+    this.productForm.get('weight')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateTotalWeight());
+    this.productForm.get('wastage')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateTotalWeight());
   }
 
   ngOnInit() {
+    Object.keys(this.productForm.controls).forEach((controlName) => {
+      this.productForm.get(controlName)?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => this.clearServerErrorForControl(controlName));
+    });
+
     if (this.formData) {
       this.patchForm(this.formData);
     }
@@ -63,6 +78,33 @@ export class ProductComponent implements OnInit, OnChanges {
       this.resetForm();
       this.productForm.enable();
     }
+
+    if (changes['formData'] || changes['mode']) {
+      clearServerValidationErrors(this.productForm);
+      this.formLevelErrors = [];
+    }
+
+    if (changes['serverValidationErrors']) {
+      clearServerValidationErrors(this.productForm);
+      this.formLevelErrors = [];
+
+      if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
+        const applyResult = applyServerValidationErrors(this.productForm, this.serverValidationErrors, {
+          prodId: 'productId',
+          prodName: 'productName',
+          perItemRate: 'rate'
+        });
+        this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
+          (allMessages, messages) => [...allMessages, ...messages],
+          []
+        );
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get f() {
@@ -104,6 +146,10 @@ export class ProductComponent implements OnInit, OnChanges {
 
   onSubmit() {
     if (this.mode === 'read') return;
+
+    clearServerValidationErrors(this.productForm);
+    this.formLevelErrors = [];
+
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
       return;
@@ -130,5 +176,27 @@ export class ProductComponent implements OnInit, OnChanges {
     };
     
     this.formSubmit.emit(apiData);
+  }
+
+  hasServerError(controlName: string): boolean {
+    const serverErrors = this.productForm.get(controlName)?.errors?.['server'];
+    return Array.isArray(serverErrors) && serverErrors.length > 0;
+  }
+
+  getServerErrorMessages(controlName: string): string[] {
+    const serverErrors = this.productForm.get(controlName)?.errors?.['server'];
+    return Array.isArray(serverErrors) ? serverErrors : [];
+  }
+
+  private clearServerErrorForControl(controlName: string): void {
+    const control = this.productForm.get(controlName);
+    const existingErrors = control?.errors;
+
+    if (!control || !existingErrors || !Object.prototype.hasOwnProperty.call(existingErrors, 'server')) {
+      return;
+    }
+
+    const { server, ...remainingErrors } = existingErrors;
+    control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
   }
 }

@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Machine } from '../../models/machine.model';
 import { MachineService } from '../../services/machine.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-machine-management',
@@ -22,6 +23,7 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -100,6 +102,7 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedMachine = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
@@ -108,6 +111,7 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
       next: (machineDetails) => {
         this.selectedMachine = machineDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -121,6 +125,7 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
       next: (machineDetails) => {
         this.selectedMachine = machineDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -162,6 +167,8 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: Machine) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.machineService.createMachine(formData).subscribe({
         next: (newMachine) => {
@@ -170,6 +177,7 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
           console.log('Machine created successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error creating machine:', error);
         }
       });
@@ -184,17 +192,18 @@ export class MachineManagementComponent implements OnInit, OnDestroy {
           console.log('Machine updated successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error updating machine:', error);
         }
       });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedMachine = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {

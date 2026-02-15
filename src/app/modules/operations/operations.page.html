@@ -4,23 +4,23 @@
   [showBackButton]="true">
 </app-header>
 
-<ion-content>
-  <div class="page-header">
-    <div class="page-title-container">
-      <h1 class="page-title">Operations</h1>
-      <p class="page-subtitle">Choose an area to manage</p>
+<ion-content class="operations-content">
+  <div class="operations-shell">
+    <div class="page-header">
+      <p class="page-intro">Control Center: Choose an area to manage.</p>
     </div>
-  </div>
 
-  <div class="operations-stack">
-    <ion-card button *ngFor="let op of operations" class="op-card" (click)="navigateTo(op.title)">
-      <div class="operation-row">
-        <ion-icon [name]="op.icon"></ion-icon>
-        <div class="operation-text">
-          <div class="operation-title">{{ op.title }}</div>
-          <div class="operation-subtitle">{{ op.subtitle }}</div>
+    <div class="operations-stack">
+      <ion-card button *ngFor="let op of operations" class="op-card ion-no-margin" (click)="navigateTo(op.title)">
+        <div class="operation-row">
+          <ion-icon [name]="op.icon"></ion-icon>
+          <div class="operation-text">
+            <div class="operation-title">{{ op.title }}</div>
+            <div class="operation-subtitle">{{ op.subtitle }}</div>
+            <div class="operation-summary">{{ op.summary }}</div>
+          </div>
         </div>
-      </div>
-    </ion-card>
+      </ion-card>
+    </div>
   </div>
 </ion-content>

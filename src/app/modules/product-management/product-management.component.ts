@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-product-management',
@@ -22,6 +23,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -100,6 +102,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedProduct = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
@@ -108,6 +111,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       next: (productDetails) => {
         this.selectedProduct = productDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -121,6 +125,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       next: (productDetails) => {
         this.selectedProduct = productDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -162,6 +167,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: Product) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.productService.createProduct(formData).subscribe({
         next: (newProduct) => {
@@ -170,6 +177,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
           console.log('Product created successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error creating product:', error);
         }
       });
@@ -184,17 +192,18 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
           console.log('Product updated successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error updating product:', error);
         }
       });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedProduct = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {

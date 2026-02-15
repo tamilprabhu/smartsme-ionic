@@ -17,6 +17,11 @@
 
     <ion-card-content>
       <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)">
+        <ion-item lines="none" color="danger" *ngIf="formLevelErrors.length > 0 && mode !== 'read'">
+          <ion-label>
+            <p *ngFor="let message of formLevelErrors">{{ message }}</p>
+          </ion-label>
+        </ion-item>
         <ion-grid>
         <!-- Username -->
         <ion-row>
@@ -27,10 +32,14 @@
                 label="Username *"
                 name="username"
                 [(ngModel)]="model.username"
+                (ngModelChange)="clearServerError('username')"
                 [readonly]="mode === 'read'"
                 required>
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('username') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('username')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -44,9 +53,13 @@
                 name="password"
                 type="password"
                 [(ngModel)]="model.password"
+                (ngModelChange)="clearServerError('password')"
                 required>
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('password')">
+              <small *ngFor="let message of getServerErrorMessages('password')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -59,10 +72,14 @@
                 label="Full Name *"
                 name="name"
                 [(ngModel)]="model.name"
+                (ngModelChange)="clearServerError('name')"
                 [readonly]="mode === 'read'"
                 required>
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('name') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('name')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -75,10 +92,14 @@
                 label="First Name *"
                 name="firstName"
                 [(ngModel)]="model.firstName"
+                (ngModelChange)="clearServerError('firstName')"
                 [readonly]="mode === 'read'"
                 required>
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('firstName') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('firstName')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -91,10 +112,14 @@
                 label="Last Name *"
                 name="lastName"
                 [(ngModel)]="model.lastName"
+                (ngModelChange)="clearServerError('lastName')"
                 [readonly]="mode === 'read'"
                 required>
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('lastName') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('lastName')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -108,10 +133,14 @@
                 name="email"
                 type="email"
                 [(ngModel)]="model.email"
+                (ngModelChange)="clearServerError('email')"
                 [readonly]="mode === 'read'"
                 required>
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('email') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('email')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -125,10 +154,14 @@
                 name="mobile"
                 type="tel"
                 [(ngModel)]="model.mobile"
+                (ngModelChange)="clearServerError('mobile')"
                 [readonly]="mode === 'read'"
                 required>
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('mobile') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('mobile')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -141,11 +174,15 @@
                 label="Address *"
                 name="address"
                 [(ngModel)]="model.address"
+                (ngModelChange)="clearServerError('address')"
                 [readonly]="mode === 'read'"
                 rows="3"
                 required>
               </ion-textarea>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('address') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('address')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 

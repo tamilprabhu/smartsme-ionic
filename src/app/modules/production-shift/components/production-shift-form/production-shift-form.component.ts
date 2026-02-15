@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ModalController } from '@ionic/angular';
+import { Subject, takeUntil } from 'rxjs';
 import { ProductionShift } from 'src/app/models/production-shift.model';
 import { MachineService } from 'src/app/services/machine.service';
 import { OrderService } from 'src/app/services/order.service';
@@ -11,21 +12,26 @@ import { LookupItem, LookupSearchModalComponent } from 'src/app/components/looku
 import { EntryType } from 'src/app/enums/entry-type.enum';
 import { ShiftType } from 'src/app/enums/shift-type.enum';
 import { ShiftHours } from 'src/app/enums/shift-hours.enum';
+import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { DateFieldComponent } from 'src/app/components/date-field/date-field.component';
 
 @Component({
   selector: 'app-production-shift-form',
   templateUrl: './production-shift-form.component.html',
   styleUrls: ['./production-shift-form.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule, DateFieldComponent]
 })
-export class ProductionShiftFormComponent implements OnInit {
+export class ProductionShiftFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() initialData: ProductionShift | null = null;
   @Input() readonly = false;
+  @Input() serverValidationErrors: ServerValidationErrors = {};
   @Output() formSubmit = new EventEmitter<Partial<ProductionShift>>();
   @Output() formCancel = new EventEmitter<void>();
 
   form!: FormGroup;
+  formLevelErrors: string[] = [];
+  private readonly destroy$ = new Subject<void>();
   orderSelection: LookupItem | null = null;
   productSelection: LookupItem | null = null;
   machineSelection: LookupItem | null = null;
@@ -63,13 +69,41 @@ export class ProductionShiftFormComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     if (this.initialData) {
-      this.form.patchValue(this.initialData);
+      this.patchInitialData(this.initialData);
     }
     this.hydrateLookups();
     this.hydrateSelections();
     if (this.readonly) {
       this.form.disable();
     }
+
+    Object.keys(this.form.controls).forEach((controlName) => {
+      this.form.get(controlName)?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => this.clearServerErrorForControl(controlName));
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!this.form || !changes['serverValidationErrors']) {
+      return;
+    }
+
+    clearServerValidationErrors(this.form);
+    this.formLevelErrors = [];
+
+    if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
+      const applyResult = applyServerValidationErrors(this.form, this.serverValidationErrors);
+      this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
+        (allMessages, messages) => [...allMessages, ...messages],
+        []
+      );
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private hydrateSelections() {
@@ -108,9 +142,15 @@ export class ProductionShiftFormComponent implements OnInit {
       less80Reason: ['']
     });
 
-    this.form.get('entryType')?.valueChanges.subscribe(() => this.onEntryTypeChange());
-    this.form.get('production')?.valueChanges.subscribe(() => this.calculateNetProduction());
-    this.form.get('rejection')?.valueChanges.subscribe(() => this.calculateNetProduction());
+    this.form.get('entryType')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onEntryTypeChange());
+    this.form.get('production')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.calculateNetProduction());
+    this.form.get('rejection')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.calculateNetProduction());
   }
 
   onEntryTypeChange() {
@@ -203,9 +243,20 @@ export class ProductionShiftFormComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.form.valid) {
-      this.formSubmit.emit(this.form.getRawValue());
+    clearServerValidationErrors(this.form);
+    this.formLevelErrors = [];
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
     }
+
+    const payload = this.form.getRawValue();
+    this.formSubmit.emit({
+      ...payload,
+      shiftStartDate: this.toLocalDateTimeValue(payload.shiftStartDate),
+      shiftEndDate: this.toLocalDateTimeValue(payload.shiftEndDate)
+    });
   }
 
   onCancel() {
@@ -343,5 +394,56 @@ export class ProductionShiftFormComponent implements OnInit {
       return this.operator3Selection;
     }
     return this.supervisorSelection;
+  }
+
+  private patchInitialData(data: ProductionShift): void {
+    this.form.patchValue({
+      ...data,
+      shiftStartDate: this.toLocalDateTimeValue(data.shiftStartDate),
+      shiftEndDate: this.toLocalDateTimeValue(data.shiftEndDate)
+    });
+  }
+
+  private toLocalDateTimeValue(value: string | null | undefined): string {
+    if (!value) {
+      return '';
+    }
+
+    const trimmed = String(value).trim();
+    const normalizedInput = trimmed.includes(' ') ? trimmed.replace(' ', 'T') : trimmed;
+    const parsedDate = new Date(normalizedInput);
+
+    if (!Number.isNaN(parsedDate.getTime())) {
+      const year = parsedDate.getFullYear();
+      const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+      const day = String(parsedDate.getDate()).padStart(2, '0');
+      const hours = String(parsedDate.getHours()).padStart(2, '0');
+      const minutes = String(parsedDate.getMinutes()).padStart(2, '0');
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    return normalizedInput.length >= 16 ? normalizedInput.slice(0, 16) : normalizedInput;
+  }
+
+  hasServerError(controlName: string): boolean {
+    const serverErrors = this.form.get(controlName)?.errors?.['server'];
+    return Array.isArray(serverErrors) && serverErrors.length > 0;
+  }
+
+  getServerErrorMessages(controlName: string): string[] {
+    const serverErrors = this.form.get(controlName)?.errors?.['server'];
+    return Array.isArray(serverErrors) ? serverErrors : [];
+  }
+
+  private clearServerErrorForControl(controlName: string): void {
+    const control = this.form.get(controlName);
+    const existingErrors = control?.errors;
+
+    if (!control || !existingErrors || !Object.prototype.hasOwnProperty.call(existingErrors, 'server')) {
+      return;
+    }
+
+    const { server, ...remainingErrors } = existingErrors;
+    control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
   }
 }

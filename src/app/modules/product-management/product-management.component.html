@@ -93,6 +93,7 @@
         <app-product
           [mode]="formMode"
           [formData]="selectedProduct"
+          [serverValidationErrors]="serverValidationErrors"
           (formSubmit)="handleFormSubmit($event)"
           (formClosed)="closeForm()">
         </app-product>

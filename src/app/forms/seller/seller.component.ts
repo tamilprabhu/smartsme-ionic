@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { Location, CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Seller } from 'src/app/models/seller.model';
+import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-sellers',
@@ -12,14 +14,17 @@ import { Seller } from 'src/app/models/seller.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
 })
-export class SellerComponent implements OnInit, OnChanges {
+export class SellerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Seller | null = null;
+  @Input() serverValidationErrors: ServerValidationErrors = {};
 
   @Output() formSubmit = new EventEmitter<Seller>();
   @Output() formClosed = new EventEmitter<void>();
 
   sellerForm: FormGroup;
+  formLevelErrors: string[] = [];
+  private readonly destroy$ = new Subject<void>();
   isEdit = false;
 
   constructor(private location: Location, private fb: FormBuilder) {
@@ -34,6 +39,12 @@ export class SellerComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    Object.keys(this.sellerForm.controls).forEach((controlName) => {
+      this.sellerForm.get(controlName)?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => this.clearServerErrorForControl(controlName));
+    });
+
     if (this.formData) {
       this.patchForm(this.formData);
     }
@@ -53,6 +64,33 @@ export class SellerComponent implements OnInit, OnChanges {
       this.resetForm();
       this.sellerForm.enable();
     }
+
+    if (changes['formData'] || changes['mode']) {
+      clearServerValidationErrors(this.sellerForm);
+      this.formLevelErrors = [];
+    }
+
+    if (changes['serverValidationErrors']) {
+      clearServerValidationErrors(this.sellerForm);
+      this.formLevelErrors = [];
+
+      if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
+        const applyResult = applyServerValidationErrors(this.sellerForm, this.serverValidationErrors, {
+          sellerAddress: 'address',
+          sellerPhone: 'phone',
+          sellerEmail: 'email'
+        });
+        this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
+          (allMessages, messages) => [...allMessages, ...messages],
+          []
+        );
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get f() {
@@ -77,11 +115,36 @@ export class SellerComponent implements OnInit, OnChanges {
       return; // prevent submit in read mode
     }
 
+    clearServerValidationErrors(this.sellerForm);
+    this.formLevelErrors = [];
+
     if (this.sellerForm.invalid) {
       this.sellerForm.markAllAsTouched();
       return;
     }
 
     this.formSubmit.emit(this.sellerForm.value);
+  }
+
+  hasServerError(controlName: string): boolean {
+    const serverErrors = this.sellerForm.get(controlName)?.errors?.['server'];
+    return Array.isArray(serverErrors) && serverErrors.length > 0;
+  }
+
+  getServerErrorMessages(controlName: string): string[] {
+    const serverErrors = this.sellerForm.get(controlName)?.errors?.['server'];
+    return Array.isArray(serverErrors) ? serverErrors : [];
+  }
+
+  private clearServerErrorForControl(controlName: string): void {
+    const control = this.sellerForm.get(controlName);
+    const existingErrors = control?.errors;
+
+    if (!control || !existingErrors || !Object.prototype.hasOwnProperty.call(existingErrors, 'server')) {
+      return;
+    }
+
+    const { server, ...remainingErrors } = existingErrors;
+    control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
   }
 }

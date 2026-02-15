@@ -1,12 +1,14 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { Subject, takeUntil } from 'rxjs';
 import { Stock } from 'src/app/models/stock.model';
 import { Seller } from 'src/app/models/seller.model';
 import { SellerService } from 'src/app/services/seller.service';
 import { DateFieldComponent } from 'src/app/components/date-field/date-field.component';
 import { FooterComponent } from 'src/app/components/footer/footer.component';
+import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-stock',
@@ -15,13 +17,16 @@ import { FooterComponent } from 'src/app/components/footer/footer.component';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, IonicModule, DateFieldComponent, FooterComponent]
 })
-export class StockComponent implements OnInit, OnChanges {
+export class StockComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Stock | null = null;
+  @Input() serverValidationErrors: ServerValidationErrors = {};
   @Output() formSubmit = new EventEmitter<Stock>();
   @Output() formClosed = new EventEmitter<void>();
 
   stockForm: FormGroup;
+  formLevelErrors: string[] = [];
+  private readonly destroy$ = new Subject<void>();
   sellers: Seller[] = [];
   rawMaterials = ['Steel', 'Aluminum', 'Plastic', 'Copper'];
 
@@ -39,6 +44,12 @@ export class StockComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    Object.keys(this.stockForm.controls).forEach((controlName) => {
+      this.stockForm.get(controlName)?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => this.clearServerErrorForControl(controlName));
+    });
+
     this.loadSellers();
     if (this.formData) {
       this.patchForm(this.formData);
@@ -57,6 +68,29 @@ export class StockComponent implements OnInit, OnChanges {
       this.resetForm();
       this.stockForm.enable();
     }
+
+    if (changes['formData'] || changes['mode']) {
+      clearServerValidationErrors(this.stockForm);
+      this.formLevelErrors = [];
+    }
+
+    if (changes['serverValidationErrors']) {
+      clearServerValidationErrors(this.stockForm);
+      this.formLevelErrors = [];
+
+      if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
+        const applyResult = applyServerValidationErrors(this.stockForm, this.serverValidationErrors);
+        this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
+          (allMessages, messages) => [...allMessages, ...messages],
+          []
+        );
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get f() {
@@ -101,6 +135,10 @@ export class StockComponent implements OnInit, OnChanges {
 
   onSubmit() {
     if (this.mode === 'read') return;
+
+    clearServerValidationErrors(this.stockForm);
+    this.formLevelErrors = [];
+
     if (this.stockForm.invalid) {
       this.stockForm.markAllAsTouched();
       return;
@@ -123,5 +161,27 @@ export class StockComponent implements OnInit, OnChanges {
     };
 
     this.formSubmit.emit(apiData);
+  }
+
+  hasServerError(controlName: string): boolean {
+    const serverErrors = this.stockForm.get(controlName)?.errors?.['server'];
+    return Array.isArray(serverErrors) && serverErrors.length > 0;
+  }
+
+  getServerErrorMessages(controlName: string): string[] {
+    const serverErrors = this.stockForm.get(controlName)?.errors?.['server'];
+    return Array.isArray(serverErrors) ? serverErrors : [];
+  }
+
+  private clearServerErrorForControl(controlName: string): void {
+    const control = this.stockForm.get(controlName);
+    const existingErrors = control?.errors;
+
+    if (!control || !existingErrors || !Object.prototype.hasOwnProperty.call(existingErrors, 'server')) {
+      return;
+    }
+
+    const { server, ...remainingErrors } = existingErrors;
+    control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
   }
 }

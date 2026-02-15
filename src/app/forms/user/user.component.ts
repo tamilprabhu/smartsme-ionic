@@ -7,6 +7,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { User } from 'src/app/models/user.model';
+import { ServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-user',
@@ -19,6 +20,7 @@ import { User } from 'src/app/models/user.model';
 export class UserComponent implements OnInit, OnChanges {
   @Input() mode: 'create' | 'read' | 'update' = 'create';
   @Input() formData: Partial<User> | null = null;
+  @Input() serverValidationErrors: ServerValidationErrors = {};
   @Output() formSubmit = new EventEmitter<User>();
   @Output() formClosed = new EventEmitter<void>();
 
@@ -35,6 +37,8 @@ export class UserComponent implements OnInit, OnChanges {
     createdDate: '',
     updatedDate: ''
   };
+  fieldServerErrors: ServerValidationErrors = {};
+  formLevelErrors: string[] = [];
 
   constructor(private location: Location) {}
 
@@ -50,6 +54,13 @@ export class UserComponent implements OnInit, OnChanges {
     }
     if (changes['mode'] && this.mode === 'create') {
       this.resetModel();
+    }
+    if (changes['formData'] || changes['mode']) {
+      this.fieldServerErrors = {};
+      this.formLevelErrors = [];
+    }
+    if (changes['serverValidationErrors']) {
+      this.applyServerValidationErrors();
     }
   }
 
@@ -81,11 +92,46 @@ export class UserComponent implements OnInit, OnChanges {
     if (this.mode === 'read') {
       return;
     }
+    this.fieldServerErrors = {};
+    this.formLevelErrors = [];
+
     if (!form.valid) {
       return;
     }
+
     this.formSubmit.emit({ ...this.model });
-    form.resetForm();
-    this.resetModel();
+  }
+
+  hasServerError(field: string): boolean {
+    return (this.fieldServerErrors[field] ?? []).length > 0;
+  }
+
+  getServerErrorMessages(field: string): string[] {
+    return this.fieldServerErrors[field] ?? [];
+  }
+
+  clearServerError(field: string): void {
+    if (!this.hasServerError(field)) {
+      return;
+    }
+
+    const { [field]: _, ...rest } = this.fieldServerErrors;
+    this.fieldServerErrors = rest;
+  }
+
+  private applyServerValidationErrors(): void {
+    const mappedErrors: ServerValidationErrors = {};
+    const unmappedErrors: string[] = [];
+
+    Object.entries(this.serverValidationErrors ?? {}).forEach(([field, messages]) => {
+      if (this.model.hasOwnProperty(field)) {
+        mappedErrors[field] = messages;
+      } else {
+        unmappedErrors.push(...messages);
+      }
+    });
+
+    this.fieldServerErrors = mappedErrors;
+    this.formLevelErrors = unmappedErrors;
   }
 }

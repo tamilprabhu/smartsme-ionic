@@ -15,6 +15,11 @@
 
     <ion-card-content>
       <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <ion-item lines="none" color="danger" *ngIf="formLevelErrors.length > 0 && mode !== 'read'">
+          <ion-label>
+            <p *ngFor="let message of formLevelErrors">{{ message }}</p>
+          </ion-label>
+        </ion-item>
         <ion-grid>
 
         <ion-row>
@@ -24,6 +29,9 @@
             </ion-item>
             <ion-text color="danger" *ngIf="f['productId'].invalid && (f['productId'].dirty || f['productId'].touched) && mode !== 'read'">
               <small *ngIf="f['productId'].errors?.['required']">Product ID is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('productId') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('productId')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -35,6 +43,9 @@
             </ion-item>
             <ion-text color="danger" *ngIf="f['productName'].invalid && (f['productName'].dirty || f['productName'].touched) && mode !== 'read'">
               <small *ngIf="f['productName'].errors?.['required']">Product Name is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('productName') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('productName')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -49,6 +60,9 @@
             <ion-text color="danger" *ngIf="f['rawMaterial'].invalid && (f['rawMaterial'].dirty || f['rawMaterial'].touched) && mode !== 'read'">
               <small *ngIf="f['rawMaterial'].errors?.['required']">Raw Material is required.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('rawMaterial') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('rawMaterial')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -61,6 +75,9 @@
             <ion-text color="danger" *ngIf="f['weight'].invalid && (f['weight'].dirty || f['weight'].touched) && mode !== 'read'">
               <small *ngIf="f['weight'].errors?.['required']">Weight is required.</small>
               <small *ngIf="f['weight'].errors?.['min']">Weight must be >= 0.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('weight') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('weight')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -76,6 +93,9 @@
               <small *ngIf="f['wastage'].errors?.['min']">Wastage must be >= 0.</small>
               <small *ngIf="f['wastage'].errors?.['pattern']">Wastage must be an integer.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('wastage') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('wastage')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -89,6 +109,9 @@
               <small *ngIf="f['norms'].errors?.['required']">Norms are required.</small>
               <small *ngIf="f['norms'].errors?.['min']">Norms must be >= 0.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('norms') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('norms')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -99,6 +122,9 @@
               <ion-input type="number" step="any" formControlName="totalWeight" label="Total Weight" label-placement="floating" readonly>
               </ion-input>
             </ion-item>
+            <ion-text color="danger" *ngIf="hasServerError('totalWeight') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('totalWeight')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -113,6 +139,9 @@
               <small *ngIf="f['cavity'].errors?.['min']">Cavity must be >= 0.</small>
               <small *ngIf="f['cavity'].errors?.['pattern']">Cavity must be an integer.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('cavity') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('cavity')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -126,6 +155,9 @@
               <small *ngIf="f['shotRate'].errors?.['required']">Shot Rate is required.</small>
               <small *ngIf="f['shotRate'].errors?.['min']">Shot Rate must be >= 0.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('shotRate') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('shotRate')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -138,6 +170,9 @@
             <ion-text color="danger" *ngIf="f['rate'].invalid && (f['rate'].dirty || f['rate'].touched) && mode !== 'read'">
               <small *ngIf="f['rate'].errors?.['required']">Rate is required.</small>
               <small *ngIf="f['rate'].errors?.['min']">Rate must be >= 0.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('rate') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('rate')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -153,6 +188,9 @@
               <small *ngIf="f['incentiveLimit'].errors?.['min']">Incentive Limit must be >= 0.</small>
               <small *ngIf="f['incentiveLimit'].errors?.['pattern']">Incentive Limit must be an integer.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('incentiveLimit') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('incentiveLimit')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -167,6 +205,9 @@
               <small *ngIf="f['productionShotQty'].errors?.['min']">Production Shot Qty must be >= 0.</small>
               <small *ngIf="f['productionShotQty'].errors?.['pattern']">Production Shot Qty must be an integer.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('productionShotQty') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('productionShotQty')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -179,6 +220,9 @@
             <ion-text color="danger" *ngIf="f['perHourProdQty'].invalid && (f['perHourProdQty'].dirty || f['perHourProdQty'].touched) && mode !== 'read'">
               <small *ngIf="f['perHourProdQty'].errors?.['required']">Per Hour Prod. Qty is required.</small>
               <small *ngIf="f['perHourProdQty'].errors?.['min']">Per Hour Prod. Qty must be >= 0.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('perHourProdQty') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('perHourProdQty')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>

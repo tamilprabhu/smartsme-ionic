@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Company } from '../../models/company.model';
 import { CompanyService } from '../../services/company.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-company-management',
@@ -22,6 +23,7 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -100,6 +102,7 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedCompany = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
@@ -108,6 +111,7 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
       next: (companyDetails) => {
         this.selectedCompany = companyDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -121,6 +125,7 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
       next: (companyDetails) => {
         this.selectedCompany = companyDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -162,6 +167,8 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: Company) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.companyService.createCompany(formData).subscribe({
         next: (newCompany) => {
@@ -170,6 +177,7 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
           console.log('Company created successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error creating company:', error);
         }
       });
@@ -184,17 +192,18 @@ export class CompanyManagementComponent implements OnInit, OnDestroy {
           console.log('Company updated successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error updating company:', error);
         }
       });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedCompany = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {

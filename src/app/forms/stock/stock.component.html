@@ -15,6 +15,11 @@
 
     <ion-card-content>
       <form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+        <ion-item lines="none" color="danger" *ngIf="formLevelErrors.length > 0 && mode !== 'read'">
+          <ion-label>
+            <p *ngFor="let message of formLevelErrors">{{ message }}</p>
+          </ion-label>
+        </ion-item>
         <ion-grid>
 
         <ion-row>
@@ -29,6 +34,9 @@
             <ion-text color="danger" *ngIf="f['sellerId'].invalid && (f['sellerId'].dirty || f['sellerId'].touched) && mode !== 'read'">
               <small *ngIf="f['sellerId'].errors?.['required']">Seller Name is required.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('sellerId') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('sellerId')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -41,6 +49,9 @@
               [readonly]="mode === 'read'"
               errorText="Date is required.">
             </app-date-field>
+            <ion-text color="danger" *ngIf="hasServerError('stockDate') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('stockDate')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -53,6 +64,9 @@
             </ion-item>
             <ion-text color="danger" *ngIf="f['rawMaterial'].invalid && (f['rawMaterial'].dirty || f['rawMaterial'].touched) && mode !== 'read'">
               <small *ngIf="f['rawMaterial'].errors?.['required']">Raw Material is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('rawMaterial') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('rawMaterial')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -67,6 +81,9 @@
               <small *ngIf="f['noOfBars'].errors?.['min']">No of Bars must be >= 0.</small>
               <small *ngIf="f['noOfBars'].errors?.['pattern']">No of Bars must be an integer.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('noOfBars') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('noOfBars')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -79,6 +96,9 @@
               <small *ngIf="f['weight'].errors?.['required']">Weight is required.</small>
               <small *ngIf="f['weight'].errors?.['min']">Weight must be >= 0.</small>
             </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('weight') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('weight')">{{ message }}</small>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -89,6 +109,9 @@
             </ion-item>
             <ion-text color="danger" *ngIf="f['inwardType'].invalid && (f['inwardType'].dirty || f['inwardType'].touched) && mode !== 'read'">
               <small *ngIf="f['inwardType'].errors?.['required']">Inward Type is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('inwardType') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('inwardType')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -101,6 +124,9 @@
             <ion-text color="danger" *ngIf="f['rate'].invalid && (f['rate'].dirty || f['rate'].touched) && mode !== 'read'">
               <small *ngIf="f['rate'].errors?.['required']">Rate is required.</small>
               <small *ngIf="f['rate'].errors?.['min']">Rate must be >= 0.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('rate') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('rate')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>

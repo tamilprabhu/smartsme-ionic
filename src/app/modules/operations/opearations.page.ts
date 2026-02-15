@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
+interface OperationItem {
+  icon: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+}
+
 @Component({
   selector: 'app-operations',
   templateUrl: 'operations.page.html',
@@ -8,7 +15,7 @@ import { Router } from '@angular/router';
   standalone: false,
 })
 export class OperationsPage {
-  operations: Array<{ icon: string; title: string; subtitle: string }> = [];
+  operations: OperationItem[] = [];
 
   constructor(private router: Router) {}
 
@@ -18,27 +25,32 @@ export class OperationsPage {
       {
         icon: 'cube-outline',
         title: 'Stock Inward',
-        subtitle: 'Manage incoming inventory'
+        subtitle: 'Manage incoming inventory',
+        summary: 'Modules: Seller lookup, raw material entry, weight/rate capture'
       },
       {
         icon: 'clipboard-outline',
         title: 'Order',
-        subtitle: 'Create and track orders'
+        subtitle: 'Create and track orders',
+        summary: 'Modules: Buyer and product mapping, quantity planning, order lifecycle'
       },
       {
         icon: 'construct-outline',
         title: 'Production Shift',
-        subtitle: 'Log and monitor production shifts'
+        subtitle: 'Log and monitor production shifts',
+        summary: 'Modules: Shift schedule, operators/supervisor, production and rejection'
       },
       {
         icon: 'document-text-outline',
         title: 'Invoice',
-        subtitle: 'Generate and view invoices'
+        subtitle: 'Generate and view invoices',
+        summary: 'Modules: Invoice generation, totals, and dispatch-ready billing'
       },
       {
         icon: 'car-outline',
         title: 'Dispatch',
-        subtitle: 'Schedule and track dispatch'
+        subtitle: 'Schedule and track dispatch',
+        summary: 'Modules: Dispatch planning, quantity movement, and tracking status'
       },
     ];
 

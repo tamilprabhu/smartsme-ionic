@@ -85,6 +85,7 @@
         <app-sellers
           [mode]="formMode!"
           [formData]="selectedSeller"
+          [serverValidationErrors]="serverValidationErrors"
           (formSubmit)="handleFormSubmit($event)"
           (formClosed)="closeForm()">
         </app-sellers>

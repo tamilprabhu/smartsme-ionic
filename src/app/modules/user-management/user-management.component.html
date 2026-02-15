@@ -85,6 +85,7 @@
         <app-user
           [mode]="formMode!"
           [formData]="selectedUser"
+          [serverValidationErrors]="serverValidationErrors"
           (formSubmit)="handleFormSubmit($event)"
           (formClosed)="closeForm()">
         </app-user>

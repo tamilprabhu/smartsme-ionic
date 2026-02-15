@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Seller } from '../../models/seller.model';
 import { SellerService } from '../../services/seller.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-seller-management',
@@ -22,6 +23,7 @@ export class SellerManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -100,6 +102,7 @@ export class SellerManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedSeller = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
@@ -108,6 +111,7 @@ export class SellerManagementComponent implements OnInit, OnDestroy {
       next: (sellerDetails) => {
         this.selectedSeller = sellerDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -121,6 +125,7 @@ export class SellerManagementComponent implements OnInit, OnDestroy {
       next: (sellerDetails) => {
         this.selectedSeller = sellerDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -162,6 +167,8 @@ export class SellerManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: Seller) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.sellerService.createSeller(formData).subscribe({
         next: (newSeller) => {
@@ -170,6 +177,7 @@ export class SellerManagementComponent implements OnInit, OnDestroy {
           console.log('Seller created successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error creating seller:', error);
         }
       });
@@ -184,17 +192,18 @@ export class SellerManagementComponent implements OnInit, OnDestroy {
           console.log('Seller updated successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error updating seller:', error);
         }
       });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedSeller = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {

@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Buyer } from '../../models/buyer.model';
 import { BuyerService } from '../../services/buyer.service';
+import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
   selector: 'app-buyer-management',
@@ -22,6 +23,7 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   searchQuery: string = '';
+  serverValidationErrors: ServerValidationErrors = {};
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -100,6 +102,7 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
   openCreateForm() {
     this.selectedBuyer = null;
     this.formMode = 'create';
+    this.serverValidationErrors = {};
     this.showForm = true;
   }
 
@@ -108,6 +111,7 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
       next: (buyerDetails) => {
         this.selectedBuyer = buyerDetails;
         this.formMode = 'read';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -121,6 +125,7 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
       next: (buyerDetails) => {
         this.selectedBuyer = buyerDetails;
         this.formMode = 'update';
+        this.serverValidationErrors = {};
         this.showForm = true;
       },
       error: (error) => {
@@ -162,6 +167,8 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
   }
 
   handleFormSubmit(formData: Buyer) {
+    this.serverValidationErrors = {};
+
     if (this.formMode === 'create') {
       this.buyerService.createBuyer(formData).subscribe({
         next: (newBuyer) => {
@@ -170,6 +177,7 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
           console.log('Buyer created successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error creating buyer:', error);
         }
       });
@@ -184,17 +192,18 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
           console.log('Buyer updated successfully');
         },
         error: (error) => {
+          this.serverValidationErrors = extractServerValidationErrors(error);
           console.error('Error updating buyer:', error);
         }
       });
     }
-    this.closeForm();
   }
 
   closeForm() {
     this.showForm = false;
     this.selectedBuyer = null;
     this.formMode = null;
+    this.serverValidationErrors = {};
   }
 
   onHeaderBackClick() {
