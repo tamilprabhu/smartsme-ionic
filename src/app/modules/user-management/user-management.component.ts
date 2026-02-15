@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { AlertController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { User } from '../../models/user.model';
@@ -30,7 +31,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   constructor(
     private alertController: AlertController,
-    private navCtrl: NavController,
+    private router: Router,
     private userService: UserService
   ) {
     this.searchSubject.pipe(
@@ -180,6 +181,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   onHeaderBackClick() {
-    this.navCtrl.back();
+    this.router.navigate(['/tabs/profile-masters']);
   }
 }
