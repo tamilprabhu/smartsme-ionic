@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.page-title {
+  margin: 0;
+}
+
+.page-subtitle {
+  margin: 4px 0 0;
+  color: var(--ion-color-medium);
+}
+
+.search-card,
+.empty-state,
+.sme-form-card {
+  margin: 0 16px 16px;
+}
+
+.results-info {
+  margin: 0 16px 12px;
+  --inner-padding-end: 0;
+}
+
+.details,
+.contact {
+  margin-top: 4px;
+}
+
+.action-row ion-button {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-button {
+    width: 100%;
+  }
+}

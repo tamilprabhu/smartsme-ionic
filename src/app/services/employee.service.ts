@@ -36,6 +36,79 @@ export interface EmployeeDropdownResponse {
   };
 }
 
+export interface EmployeeWithUserRole {
+  roleId: number;
+  Role?: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface EmployeeWithUserUser {
+  id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  name: string;
+  email: string;
+  mobile: string;
+  address: string;
+  createdAt?: string;
+  updatedAt?: string;
+  isActive?: number | boolean;
+  isDeleted?: number | boolean;
+  createdBy?: number | string;
+  updatedBy?: number | string;
+  UserRoles?: EmployeeWithUserRole[];
+}
+
+export interface EmployeeWithUserItem {
+  employeeSequence: number;
+  userId: number;
+  companyId: string;
+  salary: number;
+  activeFlag: string;
+  createdAt?: string;
+  updatedAt?: string;
+  isActive?: number | boolean;
+  isDeleted?: number | boolean;
+  createdBy?: number | string;
+  updatedBy?: number | string;
+  roleId?: number;
+  User?: EmployeeWithUserUser;
+  user?: EmployeeWithUserUser;
+}
+
+export interface EmployeeWithUserResponse {
+  items: EmployeeWithUserItem[];
+  paging: {
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    totalItems: number;
+  };
+}
+
+export interface CreateEmployeeWithUserPayload {
+  user: {
+    username: string;
+    firstName: string;
+    lastName: string;
+    name: string;
+    email: string;
+    mobile: string;
+    address: string;
+    password?: string;
+  };
+  employee: {
+    salary: number;
+    activeFlag: string;
+  };
+  roleUser: {
+    roleId: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -131,6 +204,62 @@ export class EmployeeService {
       url += `&sortOrder=${encodeURIComponent(sortOrder)}`;
     }
     return this.http.get<EmployeeDropdownResponse>(url, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(error => throwError(() => error))
+    );
+  }
+
+  getEmployeesWithUser(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.SEQUENCE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<EmployeeWithUserResponse> {
+    let url = `${this.API_URL}/with-user?page=${page}&itemsPerPage=${limit}`;
+    if (search && search.trim()) {
+      url += `&search=${encodeURIComponent(search.trim())}`;
+    }
+    if (sortBy) {
+      url += `&sortBy=${encodeURIComponent(sortBy)}`;
+    }
+    if (sortOrder) {
+      url += `&sortOrder=${encodeURIComponent(sortOrder)}`;
+    }
+    return this.http.get<EmployeeWithUserResponse>(url, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(error => throwError(() => error))
+    );
+  }
+
+  getEmployeeWithUser(employeeSequence: number): Observable<EmployeeWithUserItem> {
+    return this.http.get<EmployeeWithUserItem>(`${this.API_URL}/with-user/${employeeSequence}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(error => throwError(() => error))
+    );
+  }
+
+  createEmployeeWithUser(payload: CreateEmployeeWithUserPayload): Observable<EmployeeWithUserItem> {
+    return this.http.post<EmployeeWithUserItem>(`${this.API_URL}/with-user`, payload, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(error => throwError(() => error))
+    );
+  }
+
+  updateEmployeeWithUser(employeeSequence: number, payload: CreateEmployeeWithUserPayload): Observable<EmployeeWithUserItem> {
+    return this.http.put<EmployeeWithUserItem>(`${this.API_URL}/with-user/${employeeSequence}`, payload, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(error => throwError(() => error))
+    );
+  }
+
+  deleteEmployeeWithUser(employeeSequence: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/with-user/${employeeSequence}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

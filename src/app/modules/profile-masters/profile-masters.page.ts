@@ -44,10 +44,10 @@ export class ProfileMastersPage {
       route: '/machine-process'
     },
     {
-      title: 'Users',
-      subtitle: 'Manage application users',
+      title: 'Employees',
+      subtitle: 'Manage employee accounts and roles',
       icon: 'people-outline',
-      route: '/users'
+      route: '/employee/list'
     },
     {
       title: 'Sellers',

@@ -1,0 +1,317 @@
+<app-header
+  [title]="pageTitle"
+  backAction="custom"
+  [showBackButton]="true"
+  rightIcon="add-outline"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="action === 'list' && openAction('create')">
+</app-header>
+
+<ion-content>
+  <ng-container *ngIf="action === 'list'">
+    <div class="page-header">
+      <div class="page-title-container">
+        <h1 class="page-title">Employees</h1>
+        <p class="page-subtitle">Manage employee accounts and role mapping</p>
+      </div>
+      <ion-button class="add-button" fill="solid" color="primary" (click)="openAction('create')">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Add
+      </ion-button>
+    </div>
+
+    <ion-card class="search-card">
+      <ion-searchbar
+        #searchInput
+        placeholder="Search by username, name, or mobile..."
+        [value]="searchQuery"
+        (ionInput)="onSearchInput($event)"
+        debounce="0"
+        (ionClear)="clearSearch()">
+      </ion-searchbar>
+    </ion-card>
+
+    <ion-item *ngIf="searchQuery" class="results-info">
+      <ion-label>
+        Found <strong>{{ employees.length }}</strong> employee(s)
+      </ion-label>
+    </ion-item>
+
+    <ion-list *ngIf="employees.length > 0">
+      <ion-item *ngFor="let employee of employees; trackBy: trackByEmployee" class="sme-list-item">
+        <ion-label (click)="openAction('view', employee.userId)">
+          <h2>
+            {{ (employee.User || employee.user)?.name || (employee.User || employee.user)?.username || 'Employee' }}
+            <ion-badge color="primary">#{{ employee.employeeSequence }}</ion-badge>
+          </h2>
+          <p class="details">
+            @{{ (employee.User || employee.user)?.username }} | Role:
+            {{ getEmployeeRoleLabel(employee) }}
+          </p>
+          <p class="contact">
+            Email: {{ (employee.User || employee.user)?.email }} | Mobile: {{ (employee.User || employee.user)?.mobile }}
+          </p>
+        </ion-label>
+
+        <ion-buttons slot="end">
+          <ion-button color="tertiary" (click)="openAction('view', employee.userId)">
+            <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+          </ion-button>
+          <ion-button color="secondary" (click)="openAction('update', employee.userId)">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button color="danger" (click)="confirmDeleteFromList(employee)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-list>
+
+    <ion-card *ngIf="employees.length === 0 && !loading" class="empty-state">
+      <ion-card-header>
+        <ion-card-title>No Employees Found</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p *ngIf="searchQuery">No employees match your search "{{ searchQuery }}"</p>
+        <p *ngIf="!searchQuery">No employees available. Click the add button to create one.</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-infinite-scroll (ionInfinite)="loadEmployees($event)" [disabled]="!hasMore">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more employees...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-container>
+
+  <ng-container *ngIf="showForm">
+    <ion-card class="sme-form-card ion-no-margin">
+      <ion-card-header>
+        <ion-card-title>{{ pageTitle }}</ion-card-title>
+        <ion-card-subtitle *ngIf="action !== 'view'">Please fill all required information</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="form">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Username *"
+                  formControlName="username"
+                  (ionInput)="clearServerError('username')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('username')">
+                <small *ngFor="let message of getServerErrorMessages('username')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Password {{ action === 'create' ? '*' : '(optional)' }}"
+                  type="password"
+                  formControlName="password"
+                  (ionInput)="clearServerError('password')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('password')">
+                <small *ngFor="let message of getServerErrorMessages('password')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="First Name *"
+                  formControlName="firstName"
+                  (ionInput)="clearServerError('firstName')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('firstName')">
+                <small *ngFor="let message of getServerErrorMessages('firstName')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Last Name *"
+                  formControlName="lastName"
+                  (ionInput)="clearServerError('lastName')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('lastName')">
+                <small *ngFor="let message of getServerErrorMessages('lastName')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Full Name *"
+                  formControlName="name"
+                  (ionInput)="clearServerError('name')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('name')">
+                <small *ngFor="let message of getServerErrorMessages('name')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Email *"
+                  type="email"
+                  formControlName="email"
+                  (ionInput)="clearServerError('email')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('email')">
+                <small *ngFor="let message of getServerErrorMessages('email')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Mobile *"
+                  formControlName="mobile"
+                  (ionInput)="clearServerError('mobile')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('mobile')">
+                <small *ngFor="let message of getServerErrorMessages('mobile')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Salary *"
+                  type="number"
+                  formControlName="salary"
+                  (ionInput)="clearServerError('salary')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('salary')">
+                <small *ngFor="let message of getServerErrorMessages('salary')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select
+                  labelPlacement="floating"
+                  label="Active Flag *"
+                  formControlName="activeFlag"
+                  (ionChange)="clearServerError('activeFlag')">
+                  <ion-select-option value="Y">Y</ion-select-option>
+                  <ion-select-option value="N">N</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('activeFlag')">
+                <small *ngFor="let message of getServerErrorMessages('activeFlag')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select
+                  labelPlacement="floating"
+                  label="Role *"
+                  formControlName="roleId"
+                  interface="popover"
+                  (ionChange)="clearServerError('roleId')">
+                  <ion-select-option *ngFor="let role of roles" [value]="role.id">
+                    {{ role.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('roleId')">
+                <small *ngFor="let message of getServerErrorMessages('roleId')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-textarea
+                  labelPlacement="floating"
+                  label="Address *"
+                  rows="3"
+                  formControlName="address"
+                  (ionInput)="clearServerError('address')">
+                </ion-textarea>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('address')">
+                <small *ngFor="let message of getServerErrorMessages('address')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="action-row ion-margin-top ion-margin-bottom" *ngIf="action === 'create' || action === 'update'">
+            <ion-col size="6">
+              <ion-button
+                expand="block"
+                color="primary"
+                (click)="submit()"
+                [disabled]="submitting">
+                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                {{ action === 'create' ? 'Create' : 'Update' }}
+              </ion-button>
+            </ion-col>
+            <ion-col size="6">
+              <ion-button color="medium" fill="outline" expand="block" (click)="openAction('list')">
+                <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                Cancel
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="action-row ion-margin-top ion-margin-bottom" *ngIf="action === 'view'">
+            <ion-col size="4">
+              <ion-button color="primary" fill="outline" expand="block" (click)="openAction('update', (selectedEmployee?.userId || selectedEmployeeId) || undefined)">
+                <ion-icon name="create-outline" slot="start"></ion-icon>
+                Edit
+              </ion-button>
+            </ion-col>
+            <ion-col size="4">
+              <ion-button color="danger" fill="outline" expand="block" (click)="openAction('delete', (selectedEmployee?.userId || selectedEmployeeId) || undefined)">
+                <ion-icon name="trash-outline" slot="start"></ion-icon>
+                Delete
+              </ion-button>
+            </ion-col>
+            <ion-col size="4">
+              <ion-button color="medium" fill="outline" expand="block" (click)="openAction('list')">
+                <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+                Back
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+</ion-content>

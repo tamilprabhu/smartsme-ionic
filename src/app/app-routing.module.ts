@@ -50,14 +50,19 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'users',
-    loadChildren: () => import('./modules/user-management/user-management.module').then(m => m.UserManagementModule),
+    path: 'employee',
+    loadChildren: () => import('./modules/employee-management/employee-management.module').then(m => m.EmployeeManagementModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'employees',
-    loadComponent: () => import('./forms/employee/employee.component').then(m => m.EmployeeComponent),
-    canActivate: [AuthGuard]
+    redirectTo: 'employee/list',
+    pathMatch: 'full',
+  },
+  {
+    path: 'users',
+    redirectTo: 'employee/list',
+    pathMatch: 'full',
   },
   {
     path: 'sellers',
