@@ -8,6 +8,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { EmployeeManagementComponent } from './employee-management.component';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { RoleService } from 'src/app/services/role.service';
+import { ReferenceService } from 'src/app/services/reference.service';
 
 class EmployeeServiceStub {
   getEmployeesWithUser() {
@@ -24,6 +25,18 @@ class RoleServiceStub {
   }
 }
 
+class ReferenceServiceStub {
+  getStates() {
+    return of([]);
+  }
+  getDistricts() {
+    return of([]);
+  }
+  getPincodes() {
+    return of([]);
+  }
+}
+
 describe('EmployeeManagementComponent', () => {
   let component: EmployeeManagementComponent;
   let fixture: ComponentFixture<EmployeeManagementComponent>;
@@ -34,7 +47,8 @@ describe('EmployeeManagementComponent', () => {
       imports: [IonicModule.forRoot(), RouterTestingModule, ReactiveFormsModule, FormsModule],
       providers: [
         { provide: EmployeeService, useClass: EmployeeServiceStub },
-        { provide: RoleService, useClass: RoleServiceStub }
+        { provide: RoleService, useClass: RoleServiceStub },
+        { provide: ReferenceService, useClass: ReferenceServiceStub }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();

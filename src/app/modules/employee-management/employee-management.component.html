@@ -218,6 +218,119 @@
           </ion-row>
 
           <ion-row>
+            <ion-col size="12">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Address Line 1 *"
+                  formControlName="addressLine1"
+                  (ionInput)="clearServerError('address')">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('address')">
+                <small *ngFor="let message of getServerErrorMessages('address')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Address Line 2"
+                  formControlName="addressLine2"
+                  (ionInput)="clearServerError('address')">
+                </ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Address Line 3"
+                  formControlName="addressLine3"
+                  (ionInput)="clearServerError('address')">
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="4">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Country"
+                  formControlName="country"
+                  readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" sizeMd="4">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select
+                  labelPlacement="floating"
+                  label="State *"
+                  formControlName="stateId"
+                  interface="popover"
+                  (ionChange)="onStateChanged($event.detail.value)">
+                  <ion-select-option *ngFor="let state of states" [value]="state.id">
+                    {{ state.stateName }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('stateId')">
+                <small *ngFor="let message of getServerErrorMessages('stateId')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+            <ion-col size="12" sizeMd="4">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select
+                  labelPlacement="floating"
+                  label="District *"
+                  formControlName="districtId"
+                  interface="popover"
+                  (ionChange)="clearServerError('districtId')">
+                  <ion-select-option *ngFor="let district of districts" [value]="district.id">
+                    {{ district.districtName }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('districtId')">
+                <small *ngFor="let message of getServerErrorMessages('districtId')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Pincode *"
+                  maxlength="6"
+                  formControlName="pincode"
+                  (ionInput)="onPincodeInput($event)">
+                </ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="hasServerError('pincode')">
+                <small *ngFor="let message of getServerErrorMessages('pincode')">{{ message }}</small>
+              </ion-text>
+            </ion-col>
+            <ion-col size="12" sizeMd="6" *ngIf="pincodeOptions.length > 0">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input
+                  labelPlacement="floating"
+                  label="Post Office"
+                  [value]="pincodeOptions[0].postOfficeName || 'Matched'"
+                  readonly>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
             <ion-col size="12" sizeMd="6">
               <ion-item fill="outline" class="ion-margin-bottom">
                 <ion-select
@@ -249,23 +362,6 @@
               </ion-item>
               <ion-text color="danger" *ngIf="hasServerError('roleId')">
                 <small *ngFor="let message of getServerErrorMessages('roleId')">{{ message }}</small>
-              </ion-text>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col size="12">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-textarea
-                  labelPlacement="floating"
-                  label="Address *"
-                  rows="3"
-                  formControlName="address"
-                  (ionInput)="clearServerError('address')">
-                </ion-textarea>
-              </ion-item>
-              <ion-text color="danger" *ngIf="hasServerError('address')">
-                <small *ngFor="let message of getServerErrorMessages('address')">{{ message }}</small>
               </ion-text>
             </ion-col>
           </ion-row>

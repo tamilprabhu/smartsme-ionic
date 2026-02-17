@@ -15,6 +15,12 @@ import { SortBy } from 'src/app/enums/sort-by.enum';
 import { SortOrder } from 'src/app/enums/sort-order.enum';
 import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 import { RoleItem, RoleService } from 'src/app/services/role.service';
+import {
+  DistrictItem,
+  PincodeItem,
+  ReferenceService,
+  StateItem
+} from 'src/app/services/reference.service';
 
 export type EmployeeAction = 'list' | 'create' | 'view' | 'update' | 'delete';
 
@@ -45,7 +51,11 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   sortOrder: SortOrder = SortOrder.DESC;
 
   serverValidationErrors: ServerValidationErrors = {};
+  readonly countryName = 'India';
   roles: RoleItem[] = [];
+  states: StateItem[] = [];
+  districts: DistrictItem[] = [];
+  pincodeOptions: PincodeItem[] = [];
   private readonly roleNameMap = new Map<number, string>();
 
   private readonly searchSubject = new Subject<string>();
@@ -58,7 +68,8 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     private readonly alertController: AlertController,
     private readonly toastController: ToastController,
     private readonly employeeService: EmployeeService,
-    private readonly roleService: RoleService
+    private readonly roleService: RoleService,
+    private readonly referenceService: ReferenceService
   ) {
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
@@ -67,7 +78,13 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-      address: ['', [Validators.required]],
+      addressLine1: ['', [Validators.required]],
+      addressLine2: [''],
+      addressLine3: [''],
+      country: [{ value: this.countryName, disabled: true }],
+      stateId: [null, [Validators.required]],
+      districtId: [null, [Validators.required]],
+      pincode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       salary: [0, [Validators.required, Validators.min(0)]],
       activeFlag: ['Y', [Validators.required]],
@@ -81,6 +98,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadRoles();
+    this.loadStates();
     this.route.paramMap
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => this.handleRouteChange(params));
@@ -292,6 +310,27 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     return item.employeeSequence;
   }
 
+  onStateChanged(stateId: number | string | null): void {
+    const parsedStateId = Number(stateId);
+    if (!parsedStateId) {
+      this.districts = [];
+      this.form.patchValue({ districtId: null }, { emitEvent: false });
+      return;
+    }
+    this.clearServerError('stateId');
+    this.loadDistricts(parsedStateId);
+  }
+
+  onPincodeInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const pincode = String(target?.value ?? '').trim();
+    this.clearServerError('pincode');
+    this.pincodeOptions = [];
+    if (/^\d{6}$/.test(pincode)) {
+      this.loadPincodes(pincode);
+    }
+  }
+
   private loadRoles(): void {
     this.roleService.getRoles(1, 100).subscribe({
       next: (response) => {
@@ -303,6 +342,53 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
         this.roles = [];
         this.roleNameMap.clear();
         await this.showToast('Failed to load roles', 'danger');
+      }
+    });
+  }
+
+  private loadStates(): void {
+    this.referenceService.getStates().subscribe({
+      next: (response) => {
+        this.states = response ?? [];
+      },
+      error: async () => {
+        this.states = [];
+        await this.showToast('Failed to load states', 'danger');
+      }
+    });
+  }
+
+  private loadDistricts(stateId: number, selectedDistrictName?: string): void {
+    this.referenceService.getDistricts(stateId).subscribe({
+      next: (response) => {
+        this.districts = response ?? [];
+        if (selectedDistrictName) {
+          const district = this.districts.find(
+            (item) => item.districtName.toLowerCase() === selectedDistrictName.toLowerCase()
+          );
+          this.form.patchValue({ districtId: district?.id ?? null }, { emitEvent: false });
+        } else {
+          this.form.patchValue({ districtId: null }, { emitEvent: false });
+        }
+      },
+      error: async () => {
+        this.districts = [];
+        this.form.patchValue({ districtId: null }, { emitEvent: false });
+        if (!selectedDistrictName) {
+          await this.showToast('Failed to load districts', 'danger');
+        }
+      }
+    });
+  }
+
+  private loadPincodes(pincode: string): void {
+    this.referenceService.getPincodes(pincode).subscribe({
+      next: (response) => {
+        this.pincodeOptions = response ?? [];
+      },
+      error: async () => {
+        this.pincodeOptions = [];
+        await this.showToast('Failed to validate pincode', 'danger');
       }
     });
   }
@@ -354,12 +440,20 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
       name: '',
       email: '',
       mobile: '',
-      address: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      country: this.countryName,
+      stateId: null,
+      districtId: null,
+      pincode: '',
       password: '',
       salary: 0,
       activeFlag: 'Y',
       roleId: null
     });
+    this.districts = [];
+    this.pincodeOptions = [];
 
     this.form.enable();
     this.form.controls['password'].setValidators([Validators.required, Validators.minLength(8)]);
@@ -386,6 +480,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   private patchFormFromEmployee(employee: EmployeeWithUserItem): void {
     const user = employee.User ?? employee.user;
     const roleId = this.roleIdFromSelection;
+    const parsedAddress = this.parseAddress(user?.address ?? '');
 
     this.form.reset({
       username: user?.username ?? '',
@@ -394,12 +489,27 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
       name: user?.name ?? '',
       email: user?.email ?? '',
       mobile: user?.mobile ?? '',
-      address: user?.address ?? '',
+      addressLine1: parsedAddress.addressLine1,
+      addressLine2: parsedAddress.addressLine2,
+      addressLine3: parsedAddress.addressLine3,
+      country: this.countryName,
+      stateId: parsedAddress.stateId,
+      districtId: parsedAddress.districtId,
+      pincode: parsedAddress.pincode,
       password: '',
       salary: employee.salary ?? 0,
       activeFlag: employee.activeFlag ?? 'Y',
       roleId
     });
+    this.pincodeOptions = /^\d{6}$/.test(parsedAddress.pincode)
+      ? [{ id: 0, postOfficeName: '', pincode: parsedAddress.pincode, stateName: '' }]
+      : [];
+
+    if (parsedAddress.stateId) {
+      this.loadDistricts(parsedAddress.stateId, parsedAddress.districtName);
+    } else {
+      this.districts = [];
+    }
 
     if (this.action === 'view') {
       this.form.disable();
@@ -462,6 +572,20 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
   private buildPayload(): CreateEmployeeWithUserPayload {
     const value = this.form.getRawValue();
+    const stateName = this.states.find((item) => item.id === Number(value.stateId))?.stateName ?? '';
+    const districtName = this.districts.find((item) => item.id === Number(value.districtId))?.districtName ?? '';
+    const pincode = String(value.pincode ?? '').trim();
+    const composedAddress = [
+      String(value.addressLine1 ?? '').trim(),
+      String(value.addressLine2 ?? '').trim(),
+      String(value.addressLine3 ?? '').trim(),
+      districtName,
+      stateName,
+      this.countryName,
+      pincode
+    ]
+      .filter((part) => part.length > 0)
+      .join(', ');
 
     const user: CreateEmployeeWithUserPayload['user'] = {
       username: String(value.username ?? '').trim(),
@@ -470,7 +594,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
       name: String(value.name ?? '').trim(),
       email: String(value.email ?? '').trim(),
       mobile: String(value.mobile ?? '').trim(),
-      address: String(value.address ?? '').trim()
+      address: composedAddress
     };
 
     const password = String(value.password ?? '').trim();
@@ -487,6 +611,61 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
       roleUser: {
         roleId: Number(value.roleId)
       }
+    };
+  }
+
+  private parseAddress(address: string): {
+    addressLine1: string;
+    addressLine2: string;
+    addressLine3: string;
+    stateId: number | null;
+    districtId: number | null;
+    districtName: string;
+    pincode: string;
+  } {
+    const parts = address
+      .split(',')
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0);
+
+    let pincode = '';
+    if (parts.length > 0 && /^\d{6}$/.test(parts[parts.length - 1])) {
+      pincode = parts.pop() as string;
+    }
+
+    if (parts.length > 0) {
+      const countryPart = parts[parts.length - 1];
+      if (countryPart.toLowerCase() === this.countryName.toLowerCase()) {
+        parts.pop();
+      }
+    }
+
+    let stateId: number | null = null;
+    let districtName = '';
+
+    if (parts.length > 0) {
+      const stateName = parts[parts.length - 1];
+      const matchedState = this.states.find(
+        (item) => item.stateName.toLowerCase() === stateName.toLowerCase()
+      );
+      if (matchedState) {
+        stateId = matchedState.id;
+        parts.pop();
+      }
+    }
+
+    if (parts.length > 0) {
+      districtName = parts.pop() as string;
+    }
+
+    return {
+      addressLine1: parts[0] ?? '',
+      addressLine2: parts[1] ?? '',
+      addressLine3: parts.slice(2).join(', '),
+      stateId,
+      districtId: null,
+      districtName,
+      pincode
     };
   }
 
