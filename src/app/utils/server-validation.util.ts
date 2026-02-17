@@ -32,17 +32,37 @@ export function extractServerValidationErrors(errorResponse: unknown): ServerVal
   const payload = (errorResponse as any)?.error ?? errorResponse;
   const rawErrors = payload?.errors;
 
-  if (!rawErrors || typeof rawErrors !== 'object' || Array.isArray(rawErrors)) {
+  if (!rawErrors) {
     return {};
   }
 
-  return Object.entries(rawErrors).reduce<ServerValidationErrors>((acc, [field, messages]) => {
-    const normalizedMessages = normalizeMessages(messages);
-    if (normalizedMessages.length > 0) {
-      acc[field] = normalizedMessages;
-    }
-    return acc;
-  }, {});
+  // Handle array format: [{field: "username", message: "..."}, ...]
+  if (Array.isArray(rawErrors)) {
+    return rawErrors.reduce<ServerValidationErrors>((acc, error) => {
+      if (error?.field && error?.message) {
+        const field = String(error.field);
+        const message = String(error.message).trim();
+        if (message) {
+          if (!acc[field]) acc[field] = [];
+          acc[field].push(message);
+        }
+      }
+      return acc;
+    }, {});
+  }
+
+  // Handle object format: {username: ["msg1", "msg2"], email: ["msg"]}
+  if (typeof rawErrors === 'object') {
+    return Object.entries(rawErrors).reduce<ServerValidationErrors>((acc, [field, messages]) => {
+      const normalizedMessages = normalizeMessages(messages);
+      if (normalizedMessages.length > 0) {
+        acc[field] = normalizedMessages;
+      }
+      return acc;
+    }, {});
+  }
+
+  return {};
 }
 
 export function clearServerValidationErrors(form: FormGroup): void {
