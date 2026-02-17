@@ -182,8 +182,8 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
       perItemRate: formValue.rate,
       incentiveLimit: formValue.incentiveLimit,
       companyId: 'FINO001',
-      create_date: this.formData?.create_date || new Date().toISOString(),
-      update_date: new Date().toISOString()
+      createdAt: this.formData?.createdAt || Date.now(),
+      updatedAt: Date.now()
     };
     
     this.formSubmit.emit(apiData);

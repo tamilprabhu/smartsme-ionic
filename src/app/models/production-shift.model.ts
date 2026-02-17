@@ -29,8 +29,8 @@ export interface ProductionShift {
   isDeleted?: number;
   createdBy?: number;
   updatedBy?: number;
-  create_date?: string;
-  update_date?: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface ProductionShiftFormData {

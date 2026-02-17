@@ -56,7 +56,7 @@ export class ProductService {
     );
   }
 
-  createProduct(product: Omit<Product, 'prodSequence' | 'create_date' | 'update_date'>): Observable<Product> {
+  createProduct(product: Omit<Product, 'prodSequence' | 'createdAt' | 'updatedAt'>): Observable<Product> {
     return this.http.post<Product>(this.API_URL, product, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class ProductService {
     );
   }
 
-  updateProduct(id: number, product: Partial<Omit<Product, 'prodSequence' | 'create_date'>>): Observable<Product> {
+  updateProduct(id: number, product: Partial<Omit<Product, 'prodSequence' | 'createdAt'>>): Observable<Product> {
     return this.http.put<Product>(`${this.API_URL}/${id}`, product, {
       headers: this.getHeaders()
     }).pipe(
