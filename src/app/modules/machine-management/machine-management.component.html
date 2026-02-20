@@ -1,4 +1,5 @@
 <app-header 
+  title="Machines"
   backAction="custom"
   [showBackButton]="true"
   rightIconColor="primary"
@@ -75,7 +76,7 @@
   <ion-modal *ngIf="showForm" isOpen="true" (ionModalDidDismiss)="closeForm()">
     <ng-template>
       <app-header 
-        [title]="formMode === 'create' ? 'Create Machine' : formMode === 'update' ? 'Update Machine Detail' : 'Machine Details'"
+        [title]="formMode === 'create' ? 'Create Machine' : formMode === 'update' ? 'Update Machine' : 'Machine Details'"
         backAction="dismiss"
         [showBackButton]="true"
         (backClicked)="closeForm()">

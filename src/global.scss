@@ -47,6 +47,18 @@
     --ion-color-light: #ffffff;
     --ion-item-background: #ffffff;
     --ion-toolbar-background: #ffffff;
+    --app-primary-fade: linear-gradient(
+      180deg,
+      rgba(255, 106, 0, 0.22) 0%,
+      rgba(255, 106, 0, 0.08) 55%,
+      rgba(255, 255, 255, 0.98) 100%
+    );
+    --app-primary-fade-soft: linear-gradient(
+      135deg,
+      rgba(255, 106, 0, 0.14) 0%,
+      rgba(255, 106, 0, 0.04) 45%,
+      rgba(255, 255, 255, 1) 100%
+    );
 }
 
 /* Apply background across the Ionic app */
@@ -195,8 +207,10 @@ div {
   align-items: center;
   padding: 20px 16px;
   gap: 12px;
-  background: var(--ion-color-light);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--app-primary-fade-soft);
+  border-bottom: 1px solid rgba(255, 106, 0, 0.2);
+  border-radius: 14px;
+  margin: 8px 12px 12px;
 }
 
 .page-title-container {
@@ -207,7 +221,7 @@ div {
     margin: 0 0 4px 0;
     font-size: 24px;
     font-weight: 600;
-    color: var(--ion-color-dark);
+    color: #442300;
     letter-spacing: -0.5px;
   }
 
@@ -216,6 +230,16 @@ div {
     font-size: 12px;
     color: var(--ion-color-medium);
   }
+}
+
+ion-header ion-toolbar {
+  --background: var(--app-primary-fade);
+  --min-height: 56px;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --border-width: 0;
+  --border-style: none;
+  --border-color: transparent;
 }
 
 .add-button {
@@ -290,6 +314,12 @@ form ion-text[color="danger"] small {
 form :is(ion-input, ion-select, ion-textarea, input, select, textarea).ng-invalid.ng-touched,
 form :is(ion-input, ion-select, ion-textarea, input, select, textarea).ng-invalid.ng-dirty {
   --highlight-color-focused: var(--ion-color-danger, #c62828);
+}
+
+ion-button[color="medium"][fill="outline"] ion-icon[slot="start"] {
+  color: var(--ion-color-medium-shade, #5f6368);
+  opacity: 1;
+  margin-right: 6px;
 }
 
 // Results Info

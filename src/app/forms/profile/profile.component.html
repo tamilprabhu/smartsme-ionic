@@ -73,6 +73,17 @@
           </ion-label>
         </ion-item>
       </ng-template>
+
+      <ion-grid>
+        <ion-row class="ion-margin-top ion-margin-bottom action-row">
+          <ion-col size="12">
+            <ion-button color="medium" fill="outline" expand="block" (click)="goBack()">
+              <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+              Back
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-card-content>
   </ion-card>
 

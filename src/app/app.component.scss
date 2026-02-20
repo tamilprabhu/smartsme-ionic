@@ -13,14 +13,23 @@ ion-menu ion-toolbar {
   --padding-top: 0;
   --padding-bottom: 0;
   --min-height: 0;
+  --background: transparent;
+  --border-width: 0;
+  --border-style: none;
+  --border-color: transparent;
+}
+
+ion-menu ion-header {
+  background: var(--app-primary-fade);
+  border-bottom: 1px solid rgba(255, 106, 0, 0.18);
 }
 
 .profile-item {
     display: flex;
 
-    --background: rgba(255, 255, 255, 0.8);
+    --background: transparent;
     --color: #222;
-    --border-radius: 12px;
+    --border-radius: 0;
     --padding-start: 10px;
     --padding-end: 10px;
     --inner-padding-start: 0;
@@ -34,7 +43,6 @@ ion-menu ion-toolbar {
     text-align: left;
     padding: 8px 10px;
     gap: 10px; // space between avatar and right-side content
-    box-shadow: 0 6px 16px rgba(16, 36, 67, 0.08);
     margin: 0;
 
     ion-avatar {
@@ -74,7 +82,7 @@ ion-menu ion-toolbar {
 
     &:hover,
     &.ion-activated {
-      --background: rgba(30, 164, 255, 0.08);
+      --background: rgba(255, 106, 0, 0.08);
     }
 
     // fallback: stack vertically on narrow screens
