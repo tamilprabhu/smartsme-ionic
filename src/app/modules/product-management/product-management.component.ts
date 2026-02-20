@@ -113,7 +113,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   openReadForm(product: Product) {
-    this.productService.getProduct(product.prodSequence).subscribe({
+    this.productService.getProduct(product.productSequence).subscribe({
       next: (productDetails) => {
         this.selectedProduct = productDetails;
         this.formMode = 'read';
@@ -127,7 +127,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   openUpdateForm(product: Product) {
-    this.productService.getProduct(product.prodSequence).subscribe({
+    this.productService.getProduct(product.productSequence).subscribe({
       next: (productDetails) => {
         this.selectedProduct = productDetails;
         this.formMode = 'update';
@@ -161,9 +161,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteProduct(product: Product) {
-    this.productService.deleteProduct(product.prodSequence).subscribe({
+    this.productService.deleteProduct(product.productSequence).subscribe({
       next: () => {
-        this.products = this.products.filter(p => p.prodSequence !== product.prodSequence);
+        this.products = this.products.filter(p => p.productSequence !== product.productSequence);
         console.log('Product deleted successfully');
       },
       error: (error) => {
@@ -188,9 +188,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.formMode === 'update' && this.selectedProduct) {
-      this.productService.updateProduct(this.selectedProduct.prodSequence, formData).subscribe({
+      this.productService.updateProduct(this.selectedProduct.productSequence, formData).subscribe({
         next: (updatedProduct) => {
-          const index = this.products.findIndex(p => p.prodSequence === this.selectedProduct?.prodSequence);
+          const index = this.products.findIndex(p => p.productSequence === this.selectedProduct?.productSequence);
           if (index > -1) {
             this.products[index] = updatedProduct;
           }

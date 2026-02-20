@@ -150,9 +150,9 @@ export class InvoiceManagementComponent implements OnInit, OnDestroy {
   }
 
   private deleteInvoice(invoice: Invoice) {
-    this.invoiceService.deleteInvoice(invoice.invoiceSeq).subscribe({
+    this.invoiceService.deleteInvoice(invoice.invoiceSequence).subscribe({
       next: () => {
-        this.invoices = this.invoices.filter(d => d.invoiceSeq !== invoice.invoiceSeq);
+        this.invoices = this.invoices.filter(d => d.invoiceSequence !== invoice.invoiceSequence);
       },
       error: (error) => {
         console.error('Error deleting invoice:', error);

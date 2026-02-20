@@ -1,5 +1,5 @@
 export interface Invoice {
-  invoiceSeq: number;
+  invoiceSequence: number;
   invoiceId: string;
   invoiceDate: string;
   compId: string;
