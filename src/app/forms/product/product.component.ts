@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Product } from 'src/app/models/product.model';
+import { ProductUpsertPayload } from 'src/app/services/product.service';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
@@ -18,7 +19,7 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Product | null = null;
   @Input() serverValidationErrors: ServerValidationErrors = {};
-  @Output() formSubmit = new EventEmitter<Product>();
+  @Output() formSubmit = new EventEmitter<ProductUpsertPayload>();
   @Output() formClosed = new EventEmitter<void>();
 
   productForm: FormGroup;
@@ -30,7 +31,7 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(private fb: FormBuilder) {
     this.productForm = this.fb.group({
-      productId: ['', Validators.required],
+      productId: [''],
       productName: ['', Validators.required],
       rawMaterial: ['', Validators.required],
       salesType: ['', Validators.required],
@@ -72,15 +73,19 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['formData'] && this.formData) {
       this.patchForm(this.formData);
+      this.productForm.get('productId')?.disable({ emitEvent: false });
       if (this.mode === 'read') {
         this.productForm.disable();
       } else {
         this.productForm.enable();
+        this.productForm.get('productId')?.disable({ emitEvent: false });
       }
       this.updateTotalWeight();
     } else if (this.mode === 'create') {
       this.resetForm();
       this.productForm.enable();
+      this.productForm.patchValue({ productId: '' }, { emitEvent: false });
+      this.productForm.get('productId')?.disable({ emitEvent: false });
     }
 
     if (changes['formData'] || changes['mode']) {
@@ -94,7 +99,6 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
 
       if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
         const applyResult = applyServerValidationErrors(this.productForm, this.serverValidationErrors, {
-          productId: 'productId',
           productName: 'productName',
           perItemRate: 'rate',
           salesPercent: 'salesPercentage'
@@ -164,26 +168,20 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
     }
     const formValue = this.productForm.getRawValue();
     
-    // Map form fields to API structure
-    const apiData = {
-      prodSequence: this.formData?.prodSequence || 0,
-      productId: formValue.productId,
+    const apiData: ProductUpsertPayload = {
       productName: formValue.productName,
       rawMaterial: formValue.rawMaterial,
       salesType: formValue.salesType,
       salesCode: formValue.salesCode,
-      salesPercent: Number(formValue.salesPercentage).toFixed(2),
-      weight: formValue.weight,
-      wastage: formValue.wastage,
-      norms: formValue.norms,
-      totalWeight: formValue.totalWeight,
-      cavity: formValue.cavity,
-      shotRate: formValue.shotRate,
-      perItemRate: formValue.rate,
-      incentiveLimit: formValue.incentiveLimit,
-      companyId: 'FINO001',
-      createdAt: this.formData?.createdAt || Date.now(),
-      updatedAt: Date.now()
+      salesPercent: Number(formValue.salesPercentage),
+      weight: Number(formValue.weight),
+      wastage: Number(formValue.wastage),
+      norms: Number(formValue.norms),
+      totalWeight: Number(formValue.totalWeight),
+      cavity: Number(formValue.cavity),
+      shotRate: Number(formValue.shotRate),
+      perItemRate: Number(formValue.rate),
+      incentiveLimit: Number(formValue.incentiveLimit)
     };
     
     this.formSubmit.emit(apiData);

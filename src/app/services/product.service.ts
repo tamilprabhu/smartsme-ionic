@@ -17,6 +17,22 @@ export interface ProductResponse {
   };
 }
 
+export interface ProductUpsertPayload {
+  productName: string;
+  rawMaterial: string;
+  weight: number;
+  wastage: number;
+  norms: number;
+  totalWeight: number;
+  cavity: number;
+  shotRate: number;
+  perItemRate: number;
+  incentiveLimit: number;
+  salesType: string;
+  salesCode: string;
+  salesPercent: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -56,7 +72,7 @@ export class ProductService {
     );
   }
 
-  createProduct(product: Omit<Product, 'prodSequence' | 'createdAt' | 'updatedAt'>): Observable<Product> {
+  createProduct(product: ProductUpsertPayload): Observable<Product> {
     return this.http.post<Product>(this.API_URL, product, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +80,7 @@ export class ProductService {
     );
   }
 
-  updateProduct(id: number, product: Partial<Omit<Product, 'prodSequence' | 'createdAt'>>): Observable<Product> {
+  updateProduct(id: number, product: Partial<ProductUpsertPayload>): Observable<Product> {
     return this.http.put<Product>(`${this.API_URL}/${id}`, product, {
       headers: this.getHeaders()
     }).pipe(

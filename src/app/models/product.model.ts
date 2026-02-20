@@ -19,6 +19,6 @@ export interface Product {
   isDeleted?: number;
   createdBy?: number | null;
   updatedBy?: number | null;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string | number;
+  updatedAt: string | number;
 }

@@ -4,7 +4,7 @@ import { AlertController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Product } from '../../models/product.model';
-import { ProductService } from '../../services/product.service';
+import { ProductService, ProductUpsertPayload } from '../../services/product.service';
 import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
@@ -172,7 +172,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  handleFormSubmit(formData: Product) {
+  handleFormSubmit(formData: ProductUpsertPayload) {
     this.serverValidationErrors = {};
 
     if (this.formMode === 'create') {

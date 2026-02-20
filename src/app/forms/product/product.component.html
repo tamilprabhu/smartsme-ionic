@@ -25,14 +25,9 @@
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
-              <ion-input type="text" formControlName="productId" label="Product ID *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+              <ion-input type="text" formControlName="productId" label="Product ID" label-placement="floating" readonly></ion-input>
             </ion-item>
-            <ion-text color="danger" *ngIf="f['productId'].invalid && (f['productId'].dirty || f['productId'].touched) && mode !== 'read'">
-              <small *ngIf="f['productId'].errors?.['required']">Product ID is required.</small>
-            </ion-text>
-            <ion-text color="danger" *ngIf="hasServerError('productId') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('productId')">{{ message }}</small>
-            </ion-text>
+            <ion-note color="medium" *ngIf="mode === 'create'">Generated automatically after creation.</ion-note>
           </ion-col>
         </ion-row>
 
