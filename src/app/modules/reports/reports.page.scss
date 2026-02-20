@@ -5,8 +5,93 @@ ion-item {
   margin-top: 8px;
 }
 
+ion-accordion-group {
+  padding: 0 16px 10px;
+}
+
+ion-accordion {
+  margin: 0 0 10px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+ion-accordion ion-item[slot='header'] {
+  margin-top: 0;
+  border-radius: 0;
+  --background: transparent;
+  --min-height: 52px;
+  --padding-start: 12px;
+  --padding-end: 6px;
+  --inner-padding-end: 12px;
+  --detail-icon-color: var(--ion-color-medium);
+  --detail-icon-opacity: 1;
+  align-items: center;
+}
+
+ion-accordion ion-item[slot='header'] ion-label {
+  margin: 0;
+  padding-right: 0;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+ion-accordion ion-item[slot='header']::part(detail-icon) {
+  margin-inline-start: auto;
+  margin-inline-end: -1px;
+}
+
+ion-accordion.accordion-expanded ion-item[slot='header'] {
+  --background: linear-gradient(180deg, rgba(255, 106, 0, 0.14), rgba(255, 106, 0, 0.04));
+  --detail-icon-color: var(--ion-color-primary);
+  border-bottom: none;
+}
+
+ion-accordion.accordion-expanded ion-item[slot='header'] ion-label {
+  color: var(--ion-color-secondary);
+}
+
+ion-accordion.accordion-expanded {
+  background: linear-gradient(180deg, rgba(255, 106, 0, 0.08), rgba(255, 106, 0, 0) 42%), #ffffff;
+}
+
 .chart-card {
   margin: 16px;
+}
+
+.chart-card ion-card-header {
+  position: relative;
+  cursor: pointer;
+  padding-top: 14px;
+  padding-bottom: 10px;
+}
+
+.chart-card ion-card-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chart-card ion-card-subtitle {
+  font-size: 12px;
+}
+
+.chart-toggle-icon {
+  position: absolute;
+  right: 16px;
+  top: 22px;
+  font-size: 18px;
+  color: var(--ion-color-medium);
+  transition: transform 220ms ease;
+}
+
+.chart-toggle-icon.expanded {
+  transform: rotate(180deg);
 }
 
 .chart-container {
@@ -15,10 +100,82 @@ ion-item {
   width: 100%;
 }
 
+.chart-collapsed-content {
+  padding-top: 2px;
+  padding-bottom: 8px;
+}
+
+.chart-preview-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 40px;
+  margin-bottom: 6px;
+
+  span {
+    width: 12px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, rgba(255, 106, 0, 0.9), rgba(255, 106, 0, 0.35));
+    animation: reportPulse 1.2s ease-in-out infinite;
+  }
+
+  span:nth-child(1) { height: 20px; animation-delay: 0ms; }
+  span:nth-child(2) { height: 30px; animation-delay: 100ms; }
+  span:nth-child(3) { height: 16px; animation-delay: 200ms; }
+  span:nth-child(4) { height: 34px; animation-delay: 300ms; }
+  span:nth-child(5) { height: 24px; animation-delay: 400ms; }
+}
+
+.chart-preview-text {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+  line-height: 1.4;
+}
+
+@keyframes reportPulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
 [slot='content'] {
-  padding: 10px 16px;
-  background: #fafafa;
-  border-left: 3px solid var(--ion-color-primary);
+  padding: 0 16px 10px;
+  background: transparent;
+  border-left: none;
+}
+
+.report-content-card {
+  margin: 0;
+  padding: 10px 14px 12px;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.report-content-spacer {
+  height: 0;
+  margin-bottom: 0;
+}
+
+.report-download-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.report-download-row ion-button {
+  --border-radius: 8px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  min-height: 34px;
+  font-size: 12px;
+  margin: 0;
 }
 
 ion-modal.report-datetime-modal {

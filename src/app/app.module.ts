@@ -8,12 +8,15 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
+import { appNavAnimation } from './animations/app-nav.animation';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule, 
-    IonicModule.forRoot(), 
+    IonicModule.forRoot({
+      navAnimation: appNavAnimation
+    }),
     AppRoutingModule,
     HttpClientModule,
     SidemenuComponent

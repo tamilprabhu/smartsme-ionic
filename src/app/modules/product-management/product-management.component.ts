@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -25,12 +25,14 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   loading = false;
   searchQuery: string = '';
   serverValidationErrors: ServerValidationErrors = {};
+  private backTarget = '/tabs/profile-masters';
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   constructor(
     private alertController: AlertController,
+    private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService
   ) {
@@ -45,6 +47,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('Product Management Component Initialized');
+    this.backTarget = this.route.snapshot.queryParamMap.get('from') === 'dashboard'
+      ? '/tabs/home'
+      : '/tabs/profile-masters';
     this.loadProducts();
   }
 
@@ -209,6 +214,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   onHeaderBackClick() {
     console.log('Header back button clicked - navigating back');
-    this.router.navigate(['/tabs/profile-masters']);
+    this.router.navigate([this.backTarget]);
   }
 }

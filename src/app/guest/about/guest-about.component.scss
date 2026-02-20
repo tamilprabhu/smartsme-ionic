@@ -1,6 +1,51 @@
+ion-content {
+  --padding-top: 12px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.guest-page-shell {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 2px;
+}
+
+.guest-page-card {
+  margin: 0;
+  border-radius: 18px;
+  border: none;
+  background: transparent;
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.02);
+  overflow: hidden;
+
+  ion-card-header {
+    padding: 16px 16px 8px;
+    background: linear-gradient(180deg, rgba(255, 106, 0, 0.08), rgba(255, 106, 0, 0));
+  }
+
+  ion-card-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  ion-card-subtitle {
+    margin-top: 4px;
+    color: var(--ion-color-medium);
+    font-weight: 500;
+  }
+
+  ion-card-content {
+    padding: 12px 16px 16px;
+  }
+}
+
 ion-card-content {
   p {
     color: var(--ion-color-medium);
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    line-height: 1.55;
+    font-size: 0.96rem;
   }
 }

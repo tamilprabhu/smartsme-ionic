@@ -37,11 +37,16 @@
 @import "@ionic/angular/css/palettes/dark.system.css";
 
 :root {
-    --ion-background-color: #f5f7fa;
-    --ion-text-color: #102a43;
-    --ion-color-primary: #0b6fb8;
+    --ion-background-color: #ffffff;
+    --ion-text-color: #1a2433;
+    --ion-color-primary: #ff6a00;
     --ion-color-primary-contrast: #ffffff;
+    --ion-color-secondary: #2b2e34;
+    --ion-color-secondary-contrast: #ffffff;
     --ion-card-background: #ffffff;
+    --ion-color-light: #ffffff;
+    --ion-item-background: #ffffff;
+    --ion-toolbar-background: #ffffff;
 }
 
 /* Apply background across the Ionic app */
@@ -64,7 +69,8 @@ ion-card,
     background: var(--ion-card-background);
     color: var(--ion-text-color);
     border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(16,36,67,0.06);
+    box-shadow: 0 4px 12px rgba(16, 36, 67, 0.04);
+    border: 1px solid rgba(16, 36, 67, 0.08);
     padding: 1rem;
 }
 
@@ -102,21 +108,31 @@ div {
 /* Dark mode overrides: support both system preference and Ionic's .dark class */
 @media (prefers-color-scheme: dark) {
     :root {
-        --ion-background-color: #071526;
-        --ion-text-color: #e6f0fb;
-        --ion-color-primary: #3aa0ff;
-        --ion-color-primary-contrast: #071526;
-        --ion-card-background: #0b2130;
+        --ion-background-color: #ffffff;
+        --ion-text-color: #1a2433;
+        --ion-color-primary: #ff6a00;
+        --ion-color-primary-contrast: #ffffff;
+        --ion-color-secondary: #2b2e34;
+        --ion-color-secondary-contrast: #ffffff;
+        --ion-card-background: #ffffff;
+        --ion-color-light: #ffffff;
+        --ion-item-background: #ffffff;
+        --ion-toolbar-background: #ffffff;
     }
 }
 
 .dark,
 :root.dark {
-    --ion-background-color: #071526;
-    --ion-text-color: #e6f0fb;
-    --ion-color-primary: #3aa0ff;
-    --ion-color-primary-contrast: #071526;
-    --ion-card-background: #0b2130;
+    --ion-background-color: #ffffff;
+    --ion-text-color: #1a2433;
+    --ion-color-primary: #ff6a00;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-secondary: #2b2e34;
+    --ion-color-secondary-contrast: #ffffff;
+    --ion-card-background: #ffffff;
+    --ion-color-light: #ffffff;
+    --ion-item-background: #ffffff;
+    --ion-toolbar-background: #ffffff;
 }
 
 /* Ensure Ionic components pick up dark variables when .dark is present */
@@ -138,7 +154,8 @@ div {
 .dark .card {
     background: var(--ion-card-background);
     color: var(--ion-text-color);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    box-shadow: 0 4px 12px rgba(16, 36, 67, 0.04);
+    border: 1px solid rgba(16, 36, 67, 0.08);
 }
 
 .dark a,
@@ -162,7 +179,7 @@ div {
 .dark ion-input,
 .dark ion-textarea {
     color: var(--ion-text-color) !important;
-    background: rgba(255,255,255,0.02);
+    background: #ffffff;
 }
 
 .sme-form-card {
@@ -330,6 +347,18 @@ div {
     font-size: 14px;
     padding-bottom: 24px;
   }
+}
+
+// Standardize form action buttons (Save/Update/Cancel) to medium size
+ion-row.action-row ion-button[expand="block"] {
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --border-radius: 8px;
+  min-height: 42px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 // Responsive Design - Small Tablets & Mobile

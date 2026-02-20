@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IonAccordionGroup } from '@ionic/angular';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
 
@@ -8,9 +8,10 @@ import { Chart, ChartConfiguration } from 'chart.js/auto';
   styleUrls: ['reports.page.scss'],
   standalone: false,
 })
-export class ReportsPage implements AfterViewInit, OnDestroy {
+export class ReportsPage implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('reportChart') reportChartRef!: ElementRef<HTMLCanvasElement>;
   private chart?: Chart;
+  productionOverviewExpanded = false;
 
   reports = [
     {
@@ -63,8 +64,12 @@ export class ReportsPage implements AfterViewInit, OnDestroy {
     }
   ];
 
+  ngOnInit() {
+    this.preloadReportPreviews();
+  }
+
   ngAfterViewInit() {
-    this.renderChart();
+    // Chart is intentionally collapsed by default.
   }
 
   ngOnDestroy() {
@@ -92,9 +97,7 @@ export class ReportsPage implements AfterViewInit, OnDestroy {
       production: 'Production entry analysis...',
       products: 'Product details...',
     };
-    return new Promise(resolve => {
-      setTimeout(() => resolve(data[reportId as keyof typeof data] || 'No data found.'), 500);
-    });
+    return Promise.resolve(data[reportId as keyof typeof data] || 'No data found.');
   }
 
   onStartDateChange(report: any, value: any) {
@@ -164,6 +167,50 @@ export class ReportsPage implements AfterViewInit, OnDestroy {
       }
     };
     this.chart = new Chart(this.reportChartRef.nativeElement, config);
+  }
+
+  toggleProductionOverview(): void {
+    this.productionOverviewExpanded = !this.productionOverviewExpanded;
+
+    if (this.productionOverviewExpanded) {
+      setTimeout(() => this.renderChart(), 0);
+      return;
+    }
+
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = undefined;
+    }
+  }
+
+  downloadReport(report: any, event?: Event): void {
+    event?.stopPropagation();
+    const payload = [
+      `Report: ${report.name}`,
+      `Start Date: ${report.filters.startDateDisplay || '-'}`,
+      `End Date: ${report.filters.endDateDisplay || '-'}`,
+      `Type: ${report.filters.type || '-'}`,
+      '',
+      `Preview: ${report.preview || 'No data'}`
+    ].join('\n');
+
+    const blob = new Blob([payload], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${report.id}-report.txt`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  private preloadReportPreviews(): void {
+    this.reports.forEach((report) => {
+      report.preview = report.preview || '';
+      if (!report.preview) {
+        this.loadReportData(report.id).then((preview) => {
+          report.preview = preview;
+        });
+      }
+    });
   }
 
 }

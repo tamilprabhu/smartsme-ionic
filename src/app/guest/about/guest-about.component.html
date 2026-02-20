@@ -1,14 +1,13 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>About</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="About"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="goBack()">
+</app-header>
 
 <ion-content class="ion-padding">
-  <ion-card>
+  <div class="guest-page-shell">
+    <ion-card class="guest-page-card">
     <ion-card-header>
       <ion-card-title>SmartSME</ion-card-title>
       <ion-card-subtitle>Manufacturing simplified</ion-card-subtitle>
@@ -22,7 +21,8 @@
         Our focus is on simplicity, speed, and accuracy so your teams can deliver more with less effort.
       </p>
     </ion-card-content>
-  </ion-card>
+    </ion-card>
+  </div>
 </ion-content>
 
 <app-footer></app-footer>

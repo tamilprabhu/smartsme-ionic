@@ -1,14 +1,13 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Contact</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Contact"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="goBack()">
+</app-header>
 
 <ion-content class="ion-padding">
-  <ion-card>
+  <div class="guest-page-shell">
+    <ion-card class="guest-page-card">
     <ion-card-header>
       <ion-card-title>Get in Touch</ion-card-title>
       <ion-card-subtitle>We are here to help</ion-card-subtitle>
@@ -35,7 +34,8 @@
         </ion-item>
       </ion-list>
     </ion-card-content>
-  </ion-card>
+    </ion-card>
+  </div>
 </ion-content>
 
 <app-footer></app-footer>

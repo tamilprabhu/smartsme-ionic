@@ -16,7 +16,7 @@
   </section>
 
   <section class="dash-grid">
-    <ion-card class="dash-card" *ngIf="canViewStock">
+    <ion-card class="dash-card dash-card--clickable ion-activatable" *ngIf="canViewStock" (click)="openStockInward()">
       <ion-card-header>
         <ion-card-title>Stock Inward</ion-card-title>
         <ion-card-subtitle>Heads-up on recent inward</ion-card-subtitle>
@@ -35,6 +35,7 @@
           <strong>{{ stockSummary.latestMaterial }}</strong>
         </div>
       </ion-card-content>
+      <ion-ripple-effect></ion-ripple-effect>
     </ion-card>
 
     <ion-card class="dash-card" *ngIf="summaryCards.length">
@@ -44,10 +45,15 @@
       </ion-card-header>
       <ion-card-content>
         <div class="dash-summary">
-          <div class="dash-summary__item" *ngFor="let item of summaryCards">
+          <button
+            type="button"
+            class="dash-summary__item ion-activatable"
+            *ngFor="let item of summaryCards"
+            (click)="openOverviewModule(item.key)">
             <div class="dash-summary__label">{{ item.label }}</div>
             <div class="dash-summary__value">{{ item.count | number }}</div>
-          </div>
+            <ion-ripple-effect></ion-ripple-effect>
+          </button>
         </div>
       </ion-card-content>
     </ion-card>

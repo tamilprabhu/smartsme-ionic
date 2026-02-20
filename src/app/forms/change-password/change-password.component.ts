@@ -53,7 +53,7 @@ export class ChangePasswordComponent {
   }
 
   goBack() {
-    this.router.navigate(['/profile']).catch(() => this.router.navigate(['/tabs']));
+    this.router.navigate(['/tabs/profile-masters']).catch(() => this.router.navigate(['/tabs/home']));
   }
 
   private resetForm(form: NgForm) {

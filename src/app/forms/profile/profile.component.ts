@@ -29,11 +29,7 @@ export class ProfileComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/tabs']).catch(() => this.router.navigate(['/']));
-  }
-
-  goToChangePassword() {
-    this.router.navigate(['/change-password']).catch(() => this.router.navigate(['/']));
+    this.router.navigate(['/tabs/profile-masters']).catch(() => this.router.navigate(['/tabs/home']));
   }
 
   async loadProfile() {

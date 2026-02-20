@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Stock } from '../../models/stock.model';
 import { StockService } from '../../services/stock.service';
-import { OperationsService } from 'src/app/services/operations.service';
 import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
 
 @Component({
@@ -25,15 +25,16 @@ export class StockManagementComponent implements OnInit, OnDestroy {
   loading = false;
   searchQuery: string = '';
   serverValidationErrors: ServerValidationErrors = {};
+  private backTarget = '/tabs/operations';
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   constructor(
     private alertController: AlertController,
-    private navCtrl: NavController,
+    private route: ActivatedRoute,
+    private router: Router,
     private stockService: StockService,
-    private operationsService: OperationsService
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -46,6 +47,9 @@ export class StockManagementComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('Stock Management Component Initialized');
+    this.backTarget = this.route.snapshot.queryParamMap.get('from') === 'dashboard'
+      ? '/tabs/home'
+      : '/tabs/operations';
     this.loadStocks();
   }
 
@@ -210,6 +214,6 @@ export class StockManagementComponent implements OnInit, OnDestroy {
 
   onHeaderBackClick() {
     console.log('Header back button clicked - navigating back');
-    this.operationsService.navigateToOperations();
+    this.router.navigate([this.backTarget]);
   }
 }

@@ -71,6 +71,10 @@ export class ProfileMastersPage {
 
   constructor(private router: Router) {}
 
+  goBack(): void {
+    this.router.navigate(['/tabs/home']);
+  }
+
   navigateTo(route: string): void {
     this.router.navigateByUrl(route).catch((error) => console.error('Navigation error:', error));
   }

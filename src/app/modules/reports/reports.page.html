@@ -8,16 +8,37 @@
 
 <ion-content>
   <ion-card class="chart-card">
-    <ion-card-header>
+    <ion-card-header button (click)="toggleProductionOverview()">
       <ion-card-title>Production Overview</ion-card-title>
-      <ion-card-subtitle>Snapshot for the last 6 periods</ion-card-subtitle>
+      <ion-card-subtitle>
+        {{ productionOverviewExpanded ? 'Snapshot for the last 6 periods' : 'Tap to expand chart overview' }}
+      </ion-card-subtitle>
+      <ion-icon
+        class="chart-toggle-icon"
+        [class.expanded]="productionOverviewExpanded"
+        name="chevron-down-outline">
+      </ion-icon>
     </ion-card-header>
-    <ion-card-content>
+    <ion-card-content *ngIf="productionOverviewExpanded; else collapsedOverview">
       <div class="chart-container">
         <canvas #reportChart></canvas>
       </div>
     </ion-card-content>
   </ion-card>
+  <ng-template #collapsedOverview>
+    <ion-card-content class="chart-collapsed-content">
+      <div class="chart-preview-bars" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <p class="chart-preview-text">
+        Animated trend preview. Expand to view full production distribution across recent periods.
+      </p>
+    </ion-card-content>
+  </ng-template>
 
   <ion-accordion-group (ionChange)="handleAccordionChange($event)">
     <ion-accordion *ngFor="let report of reports" [value]="report.id">
@@ -25,8 +46,8 @@
         <ion-label>{{ report.name }}</ion-label>
       </ion-item>
 
-      <div slot="content" *ngIf="report.preview">
-        <h2>{{ report.name }} - Filters</h2>
+      <div slot="content" *ngIf="report.preview" class="report-content-card">
+        <div class="report-content-spacer" aria-hidden="true"></div>
 
         
         <!-- START DATE -->
@@ -65,8 +86,11 @@
         </ion-item>
 
 
-        <div style="margin-top: 1em;">
-          <p>{{ report.preview }}</p>
+        <div class="report-download-row">
+          <ion-button size="small" color="primary" fill="outline" (click)="downloadReport(report, $event)">
+            <ion-icon name="download-outline" slot="start"></ion-icon>
+            Download
+          </ion-button>
         </div>
       </div>
     </ion-accordion>

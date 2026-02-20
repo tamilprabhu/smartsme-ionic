@@ -1,15 +1,13 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Login"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="goBack()">
+</app-header>
 
 <ion-content class="ion-padding" [scrollY]="false">
-  <div class="login-shell">
-    <div class="login-card">
+  <div class="guest-page-shell">
+    <ion-card class="login-card">
       <div class="login-header">
         <h1>Welcome Back</h1>
         <p>Please sign in to continue</p>
@@ -26,10 +24,11 @@
           <ion-input [(ngModel)]="password" name="password" type="password" autocomplete="current-password" required></ion-input>
         </ion-item>
 
-        <ion-button expand="block" type="submit" class="login-button" shape="round" color="primary">
+        <ion-button expand="block" type="submit" class="login-button" color="primary">
           Login
         </ion-button>
       </form>
-    </div>
+    </ion-card>
   </div>
 </ion-content>
+<app-footer></app-footer>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { forkJoin, from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LoginService } from 'src/app/services/login.service';
@@ -41,7 +42,17 @@ export class HomePage implements OnInit {
     stock: ['STOCK', 'STOCK_MANAGEMENT', 'INVENTORY', 'STORE']
   };
 
+  private readonly dashboardRouteMap: Record<string, string> = {
+    products: '/products',
+    machines: '/machine-process',
+    users: '/employee/list',
+    sellers: '/sellers',
+    buyers: '/buyers',
+    company: '/company'
+  };
+
   constructor(
+    private router: Router,
     private loginService: LoginService,
     private stockService: StockService,
     private productService: ProductService,
@@ -170,4 +181,20 @@ export class HomePage implements OnInit {
     });
   }
 
+  openStockInward(): void {
+    this.router.navigate(['/tabs/stock-management'], {
+      queryParams: { from: 'dashboard' }
+    });
+  }
+
+  openOverviewModule(key: string): void {
+    const route = this.dashboardRouteMap[key];
+    if (!route) {
+      return;
+    }
+
+    this.router.navigate([route], {
+      queryParams: { from: 'dashboard' }
+    });
+  }
 }

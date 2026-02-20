@@ -1,7 +1,8 @@
 <app-header
   title="Profile & Masters"
-  backAction="back"
-  [showBackButton]="true">
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="goBack()">
 </app-header>
 
 <ion-content class="profile-masters-content">

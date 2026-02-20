@@ -57,6 +57,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   districts: DistrictItem[] = [];
   pincodeOptions: PincodeItem[] = [];
   private readonly roleNameMap = new Map<number, string>();
+  private launchedFromDashboard = false;
 
   private readonly searchSubject = new Subject<string>();
   private readonly destroy$ = new Subject<void>();
@@ -99,6 +100,11 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadRoles();
     this.loadStates();
+    this.route.queryParamMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        this.launchedFromDashboard = params.get('from') === 'dashboard';
+      });
     this.route.paramMap
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => this.handleRouteChange(params));
@@ -212,22 +218,24 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   }
 
   openAction(action: EmployeeAction, id?: number): void {
+    const queryParams = this.route.snapshot.queryParams;
+
     if (action === 'list') {
-      this.router.navigate(['/employee', 'list']);
+      this.router.navigate(['/employee', 'list'], { queryParams });
       return;
     }
 
     if (id != null) {
-      this.router.navigate(['/employee', action, id]);
+      this.router.navigate(['/employee', action, id], { queryParams });
       return;
     }
 
-    this.router.navigate(['/employee', action]);
+    this.router.navigate(['/employee', action], { queryParams });
   }
 
   onHeaderBackClick(): void {
     if (this.action === 'list') {
-      this.router.navigate(['/tabs/profile-masters']);
+      this.router.navigate([this.launchedFromDashboard ? '/tabs/home' : '/tabs/profile-masters']);
       return;
     }
 

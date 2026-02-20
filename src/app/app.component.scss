@@ -7,29 +7,41 @@ $text-color: #111;
 $muted-color: #6b6b6b;
 $shadow: 0 1px 3px rgba(0,0,0,0.08);
 
+ion-menu ion-toolbar {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --min-height: 0;
+}
+
 .profile-item {
     display: flex;
 
     --background: rgba(255, 255, 255, 0.8);
     --color: #222;
     --border-radius: 12px;
-    --padding-start: 12px;
-    --padding-end: 12px;
-    --inner-padding-end: 8px;
+    --padding-start: 10px;
+    --padding-end: 10px;
+    --inner-padding-start: 0;
+    --inner-padding-end: 0;
+    --inner-padding-top: 0;
+    --inner-padding-bottom: 0;
+    --min-height: 0;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     text-align: left;
-    padding: 12px;
-    gap: 12px; // space between avatar and right-side content
+    padding: 8px 10px;
+    gap: 10px; // space between avatar and right-side content
     box-shadow: 0 6px 16px rgba(16, 36, 67, 0.08);
-    margin: 8px 8px 0 8px;
+    margin: 0;
 
     ion-avatar {
-      width: 56px;   // medium size
-      height: 56px;
-      flex: 0 0 56px;
-      margin: 0 12px 0px 0;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      margin: 0 10px 0 0;
 
       img {
         width: 100%;
