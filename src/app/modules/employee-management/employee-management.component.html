@@ -40,7 +40,7 @@
 
     <ion-list *ngIf="employees.length > 0">
       <ion-item *ngFor="let employee of employees; trackBy: trackByEmployee" class="sme-list-item">
-        <ion-label (click)="openAction('view', employee.userId)">
+        <ion-label (click)="openAction('view', employee.employeeSequence)">
           <h2>
             {{ (employee.User || employee.user)?.name || (employee.User || employee.user)?.username || 'Employee' }}
             <ion-badge color="primary">#{{ employee.employeeSequence }}</ion-badge>
@@ -55,10 +55,10 @@
         </ion-label>
 
         <ion-buttons slot="end">
-          <ion-button color="tertiary" (click)="openAction('view', employee.userId)">
+          <ion-button color="tertiary" (click)="openAction('view', employee.employeeSequence)">
             <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
           </ion-button>
-          <ion-button color="secondary" (click)="openAction('update', employee.userId)">
+          <ion-button color="secondary" (click)="openAction('update', employee.employeeSequence)">
             <ion-icon slot="icon-only" name="create-outline"></ion-icon>
           </ion-button>
           <ion-button color="danger" (click)="confirmDeleteFromList(employee)">
@@ -387,13 +387,13 @@
 
           <ion-row class="action-row ion-margin-top ion-margin-bottom" *ngIf="action === 'view'">
             <ion-col size="4">
-              <ion-button color="primary" fill="outline" expand="block" (click)="openAction('update', (selectedEmployee?.userId || selectedEmployeeId) || undefined)">
+              <ion-button color="primary" fill="outline" expand="block" (click)="openAction('update', (selectedEmployee?.employeeSequence || selectedEmployeeId) || undefined)">
                 <ion-icon name="create-outline" slot="start"></ion-icon>
                 Edit
               </ion-button>
             </ion-col>
             <ion-col size="4">
-              <ion-button color="danger" fill="outline" expand="block" (click)="openAction('delete', (selectedEmployee?.userId || selectedEmployeeId) || undefined)">
+              <ion-button color="danger" fill="outline" expand="block" (click)="openAction('delete', (selectedEmployee?.employeeSequence || selectedEmployeeId) || undefined)">
                 <ion-icon name="trash-outline" slot="start"></ion-icon>
                 Delete
               </ion-button>

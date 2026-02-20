@@ -210,14 +210,14 @@ export class EmployeeService {
     );
   }
 
-  getEmployeesWithUser(
+  getEmployeeRegistrations(
     page: number = 1,
     limit: number = ItemsPerPage.TEN,
     search?: string,
     sortBy: SortBy = SortBy.SEQUENCE,
     sortOrder: SortOrder = SortOrder.DESC
   ): Observable<EmployeeWithUserResponse> {
-    let url = `${this.API_URL}/with-user?page=${page}&itemsPerPage=${limit}`;
+    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
     if (search && search.trim()) {
       url += `&search=${encodeURIComponent(search.trim())}`;
     }
@@ -234,32 +234,32 @@ export class EmployeeService {
     );
   }
 
-  getEmployeeWithUser(employeeSequence: number): Observable<EmployeeWithUserItem> {
-    return this.http.get<EmployeeWithUserItem>(`${this.API_URL}/with-user/${employeeSequence}`, {
+  getEmployeeRegistration(employeeSequence: number): Observable<EmployeeWithUserItem> {
+    return this.http.get<EmployeeWithUserItem>(`${this.API_URL}/${employeeSequence}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  createEmployeeWithUser(payload: CreateEmployeeWithUserPayload): Observable<EmployeeWithUserItem> {
-    return this.http.post<EmployeeWithUserItem>(`${this.API_URL}/with-user`, payload, {
+  createEmployeeRegistration(payload: CreateEmployeeWithUserPayload): Observable<EmployeeWithUserItem> {
+    return this.http.post<EmployeeWithUserItem>(`${this.API_URL}`, payload, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  updateEmployeeWithUser(employeeSequence: number, payload: CreateEmployeeWithUserPayload): Observable<EmployeeWithUserItem> {
-    return this.http.put<EmployeeWithUserItem>(`${this.API_URL}/with-user/${employeeSequence}`, payload, {
+  updateEmployeeRegistration(employeeSequence: number, payload: CreateEmployeeWithUserPayload): Observable<EmployeeWithUserItem> {
+    return this.http.patch<EmployeeWithUserItem>(`${this.API_URL}/${employeeSequence}`, payload, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))
     );
   }
 
-  deleteEmployeeWithUser(employeeSequence: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/with-user/${employeeSequence}`, {
+  deleteEmployeeRegistration(employeeSequence: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${employeeSequence}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError(error => throwError(() => error))

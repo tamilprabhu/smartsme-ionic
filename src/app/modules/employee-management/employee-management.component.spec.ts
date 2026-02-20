@@ -11,10 +11,19 @@ import { RoleService } from 'src/app/services/role.service';
 import { ReferenceService } from 'src/app/services/reference.service';
 
 class EmployeeServiceStub {
-  getEmployeesWithUser() {
+  getEmployeeRegistrations() {
     return of({ items: [], paging: { currentPage: 1, totalPages: 1, itemsPerPage: 10, totalItems: 0 } });
   }
-  getEmployeeWithUser() {
+  getEmployeeRegistration() {
+    return of();
+  }
+  createEmployeeRegistration() {
+    return of();
+  }
+  updateEmployeeRegistration() {
+    return of();
+  }
+  deleteEmployeeRegistration() {
     return of();
   }
 }

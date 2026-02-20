@@ -180,7 +180,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.employeeService
-      .getEmployeesWithUser(this.currentPage, 10, this.searchQuery, this.sortBy, this.sortOrder)
+      .getEmployeeRegistrations(this.currentPage, 10, this.searchQuery, this.sortBy, this.sortOrder)
       .subscribe({
         next: (response) => {
           const items = response?.items ?? [];
@@ -252,7 +252,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
         {
           text: 'Delete',
           role: 'destructive',
-          handler: () => this.performDelete(employee.userId, false)
+          handler: () => this.performDelete(employee.employeeSequence, false)
         }
       ]
     });
@@ -275,8 +275,8 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     const payload = this.buildPayload();
 
     const request$ = this.action === 'create'
-      ? this.employeeService.createEmployeeWithUser(payload)
-      : this.employeeService.updateEmployeeWithUser(this.selectedEmployeeId as number, payload);
+      ? this.employeeService.createEmployeeRegistration(payload)
+      : this.employeeService.updateEmployeeRegistration(this.selectedEmployeeId as number, payload);
 
     request$.subscribe({
       next: async () => {
@@ -468,10 +468,10 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     this.form.controls['password'].updateValueAndValidity();
   }
 
-  private loadEmployeeDetails(userId: number): void {
+  private loadEmployeeDetails(employeeSequence: number): void {
     this.loading = true;
 
-    this.employeeService.getEmployeeWithUser(userId).subscribe({
+    this.employeeService.getEmployeeRegistration(employeeSequence).subscribe({
       next: (employee) => {
         this.selectedEmployee = employee;
         this.patchFormFromEmployee(employee);
@@ -529,8 +529,8 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async confirmDeleteFromRoute(userId: number): Promise<void> {
-    this.employeeService.getEmployeeWithUser(userId).subscribe({
+  private async confirmDeleteFromRoute(employeeSequence: number): Promise<void> {
+    this.employeeService.getEmployeeRegistration(employeeSequence).subscribe({
       next: async (employee) => {
         const username = (employee.User ?? employee.user)?.username ?? employee.userId;
         const alert = await this.alertController.create({
@@ -545,7 +545,7 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
             {
               text: 'Delete',
               role: 'destructive',
-              handler: () => this.performDelete(userId, true)
+              handler: () => this.performDelete(employeeSequence, true)
             }
           ]
         });
@@ -559,10 +559,10 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  private performDelete(userId: number, navigateToListAfterDelete: boolean): void {
-    this.employeeService.deleteEmployeeWithUser(userId).subscribe({
+  private performDelete(employeeSequence: number, navigateToListAfterDelete: boolean): void {
+    this.employeeService.deleteEmployeeRegistration(employeeSequence).subscribe({
       next: async () => {
-        this.employees = this.employees.filter((item) => item.userId !== userId);
+        this.employees = this.employees.filter((item) => item.employeeSequence !== employeeSequence);
         await this.showToast('Employee deleted successfully', 'success');
 
         if (navigateToListAfterDelete) {
