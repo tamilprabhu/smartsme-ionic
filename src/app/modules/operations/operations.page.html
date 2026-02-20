@@ -11,7 +11,7 @@
     </div>
 
     <div class="operations-stack">
-      <ion-card button *ngFor="let op of operations" class="op-card ion-no-margin" (click)="navigateTo(op.title)">
+      <ion-card button *ngFor="let op of operations" class="op-card ion-no-margin" (click)="navigateTo(op)">
         <div class="operation-row">
           <ion-icon [name]="op.icon"></ion-icon>
           <div class="operation-text">

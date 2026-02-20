@@ -6,6 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Seller } from 'src/app/models/seller.model';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
   selector: 'app-sellers',
@@ -120,6 +121,7 @@ export class SellerComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.sellerForm.invalid) {
       this.sellerForm.markAllAsTouched();
+      focusAndScrollToFirstError();
       return;
     }
 

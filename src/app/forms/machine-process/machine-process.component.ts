@@ -5,6 +5,7 @@ import { IonicModule, NavController } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from 'src/app/components/footer/footer.component';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
   selector: 'app-machine-process',
@@ -106,6 +107,7 @@ export class MachineProcessComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.processForm.invalid) {
       this.processForm.markAllAsTouched();
+      focusAndScrollToFirstError();
       return;
     }
 

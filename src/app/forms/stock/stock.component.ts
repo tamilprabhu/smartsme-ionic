@@ -9,6 +9,7 @@ import { SellerService } from 'src/app/services/seller.service';
 import { DateFieldComponent } from 'src/app/components/date-field/date-field.component';
 import { FooterComponent } from 'src/app/components/footer/footer.component';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
   selector: 'app-stock',
@@ -141,6 +142,7 @@ export class StockComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.stockForm.invalid) {
       this.stockForm.markAllAsTouched();
+      focusAndScrollToFirstError();
       return;
     }
 

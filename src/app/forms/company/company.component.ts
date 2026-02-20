@@ -5,6 +5,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { CommonModule, Location } from '@angular/common';
 import { Company } from 'src/app/models/company.model';
 import { ServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
   selector: 'app-company',
@@ -103,6 +104,8 @@ export class CompanyComponent implements OnInit, OnChanges {
     this.formLevelErrors = [];
 
     if (!form.valid) {
+      form.control.markAllAsTouched();
+      focusAndScrollToFirstError();
       return;
     }
 

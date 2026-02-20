@@ -21,6 +21,7 @@ import {
   ReferenceService,
   StateItem
 } from 'src/app/services/reference.service';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 export type EmployeeAction = 'list' | 'create' | 'view' | 'update' | 'delete';
 
@@ -267,6 +268,8 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      focusAndScrollToFirstError();
+      return;
     }
 
     this.submitting = true;

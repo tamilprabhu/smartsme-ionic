@@ -6,6 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Buyer } from 'src/app/models/buyer.model';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
   selector: 'app-buyer',
@@ -108,6 +109,7 @@ export class BuyerComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.buyerForm.invalid) {
       this.buyerForm.markAllAsTouched();
+      focusAndScrollToFirstError();
       return;
     }
     this.formSubmit.emit(this.buyerForm.value);

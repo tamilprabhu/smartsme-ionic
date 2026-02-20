@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { FooterComponent } from 'src/app/components/footer/footer.component';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
   selector: 'app-change-password',
@@ -29,6 +30,8 @@ export class ChangePasswordComponent {
 
   async onSubmit(form: NgForm) {
     if (!form.valid) {
+      form.control.markAllAsTouched();
+      focusAndScrollToFirstError();
       await this.showToast('Please fill in all fields', 'warning');
       return;
     }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { LoginService } from './services/login.service';
 import { Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
+import { canAccessAnyModule } from './utils/module-access.util';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { MenuController } from '@ionic/angular';
 export class AppComponent {
   isLoggedIn: boolean = false;
   user: any = null;
+  profileMenuLabel = 'Profile';
 
   constructor(
     private loginService: LoginService,
@@ -28,6 +30,16 @@ export class AppComponent {
 
     this.loginService.currentUser$.subscribe(user => {
       this.user = user;
+      const userRoles = this.loginService.getUserRoles();
+      const hasMasterAccess = canAccessAnyModule(userRoles, [
+        'COMPANY',
+        'MACHINE_PROCESS',
+        'EMPLOYEES',
+        'SELLERS',
+        'BUYERS',
+        'PRODUCTS'
+      ]);
+      this.profileMenuLabel = hasMasterAccess ? 'Profile & Masters' : 'Profile';
     });
   }
 

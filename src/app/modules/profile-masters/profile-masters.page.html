@@ -1,5 +1,5 @@
 <app-header
-  title="Profile & Masters"
+  [title]="pageTitle"
   backAction="custom"
   [showBackButton]="true"
   (backClicked)="goBack()">
@@ -12,7 +12,7 @@
       <p>Access profile settings, master setup, and supporting modules.</p>
     </div>
 
-    <section class="section-block">
+    <section class="section-block" *ngIf="profileItems.length > 0">
       <h2>Profile</h2>
       <ion-list lines="none" class="section-list">
         <ion-item button detail="true" class="nav-item" *ngFor="let item of profileItems" (click)="navigateTo(item.route)">
@@ -25,7 +25,7 @@
       </ion-list>
     </section>
 
-    <section class="section-block">
+    <section class="section-block" *ngIf="masterItems.length > 0">
       <h2>Masters</h2>
       <ion-list lines="none" class="section-list">
         <ion-item button detail="true" class="nav-item" *ngFor="let item of masterItems" (click)="navigateTo(item.route)">

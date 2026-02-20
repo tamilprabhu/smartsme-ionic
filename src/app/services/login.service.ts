@@ -3,6 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import {
+  getRolesFromDecodedToken,
+  getRolesFromStoredUser,
+  hasAnyRole as hasAnyRoleUtil,
+  hasRole as hasRoleUtil
+} from '../utils/role-access.util';
 
 interface LoginResponse {
   user: {
@@ -186,16 +192,19 @@ export class LoginService {
   }
 
   getUserRoles(): string[] {
-    const decoded = this.getDecodedToken();
-    return decoded?.roles || [];
+    const tokenRoles = getRolesFromDecodedToken(this.getDecodedToken());
+    if (tokenRoles.length) {
+      return tokenRoles;
+    }
+
+    return getRolesFromStoredUser(localStorage.getItem('currentUser'));
   }
 
   hasRole(role: string): boolean {
-    return this.getUserRoles().includes(role);
+    return hasRoleUtil(this.getUserRoles(), role);
   }
 
   hasAnyRole(roles: string[]): boolean {
-    const userRoles = this.getUserRoles();
-    return roles.some(role => userRoles.includes(role));
+    return hasAnyRoleUtil(this.getUserRoles(), roles);
   }
 }

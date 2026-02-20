@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { GuestGuard } from './guards/guest.guard';
+import { ModuleAccessGuard } from './guards/module-access.guard';
 
 const routes: Routes = [
   {
@@ -42,17 +43,20 @@ const routes: Routes = [
   {
     path: 'company',
     loadChildren: () => import('./modules/company-management/company-management.module').then(m => m.CompanyManagementModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'COMPANY' }
   },
   {
     path: 'machine-process',
     loadChildren: () => import('./modules/machine-management/machine-management.module').then(m => m.MachineManagementModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'MACHINE_PROCESS' }
   },
   {
     path: 'employee',
     loadChildren: () => import('./modules/employee-management/employee-management.module').then(m => m.EmployeeManagementModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'EMPLOYEES' }
   },
   {
     path: 'employees',
@@ -67,27 +71,32 @@ const routes: Routes = [
   {
     path: 'sellers',
     loadChildren: () => import('./modules/seller-management/seller-management.module').then(m => m.SellerManagementModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'SELLERS' }
   },
   {
     path: 'buyers',
     loadChildren: () => import('./modules/buyer-management/buyer-management.module').then(m => m.BuyerManagementModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'BUYERS' }
   },
   {
     path: 'products',
     loadChildren: () => import('./modules/product-management/product-management.module').then(m => m.ProductManagementModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'PRODUCTS' }
   },
   {
     path: 'change-password',
     loadComponent: () => import('./forms/change-password/change-password.component').then(m => m.ChangePasswordComponent),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'CHANGE_PASSWORD' }
   },
   {
     path: 'profile',
     loadComponent: () => import('./forms/profile/profile.component').then(m => m.ProfileComponent),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'PROFILE' }
   }
 ];
 @NgModule({

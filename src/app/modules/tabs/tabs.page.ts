@@ -1,5 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MenuController, IonTabs } from '@ionic/angular';
+import { LoginService } from 'src/app/services/login.service';
+import { canAccessAnyModule, canAccessModule } from 'src/app/utils/module-access.util';
 
 @Component({
   selector: 'app-tabs',
@@ -11,10 +13,27 @@ export class TabsPage {
 
   currentTab = 'home';
   isMenuOpen = false;
+  canViewOperations = false;
+  canViewReports = false;
 
   @ViewChild(IonTabs) tabs!: IonTabs;
 
-  constructor(private menuController: MenuController) {}
+  constructor(
+    private menuController: MenuController,
+    private loginService: LoginService
+  ) {}
+
+  ngOnInit(): void {
+    const userRoles = this.loginService.getUserRoles();
+    this.canViewReports = canAccessModule(userRoles, 'REPORTS');
+    this.canViewOperations = canAccessAnyModule(userRoles, [
+      'STOCK_INWARD',
+      'ORDER',
+      'INVOICE',
+      'DISPATCH',
+      'PRODUCTION_SHIFT'
+    ]);
+  }
 
   onTabChange(event: any) {
     console.log('Tab changed to: ' + event.tab);

@@ -259,6 +259,39 @@ div {
   }
 }
 
+@keyframes formErrorReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+form ion-text[color="danger"] {
+  display: block;
+  margin-inline-start: 14px;
+  margin-inline-end: 14px;
+  margin-top: -8px;
+  margin-bottom: 10px;
+  scroll-margin-top: 104px;
+  animation: formErrorReveal 180ms ease-out;
+}
+
+form ion-text[color="danger"] small {
+  display: block;
+  color: var(--ion-color-danger, #c62828);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+form :is(ion-input, ion-select, ion-textarea, input, select, textarea).ng-invalid.ng-touched,
+form :is(ion-input, ion-select, ion-textarea, input, select, textarea).ng-invalid.ng-dirty {
+  --highlight-color-focused: var(--ion-color-danger, #c62828);
+}
+
 // Results Info
 .results-info {
   --padding-start: 16px;

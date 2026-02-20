@@ -7,6 +7,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { Product } from 'src/app/models/product.model';
 import { ProductUpsertPayload } from 'src/app/services/product.service';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
   selector: 'app-product',
@@ -164,6 +165,7 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
+      focusAndScrollToFirstError();
       return;
     }
     const formValue = this.productForm.getRawValue();

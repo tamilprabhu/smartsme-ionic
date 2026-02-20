@@ -14,6 +14,7 @@ import { ShiftType } from 'src/app/enums/shift-type.enum';
 import { ShiftHours } from 'src/app/enums/shift-hours.enum';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
 import { DateFieldComponent } from 'src/app/components/date-field/date-field.component';
+import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
   selector: 'app-production-shift-form',
@@ -248,6 +249,7 @@ export class ProductionShiftFormComponent implements OnInit, OnChanges, OnDestro
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      focusAndScrollToFirstError();
       return;
     }
 

@@ -5,12 +5,12 @@
       <ion-icon name="home-outline"></ion-icon>
     </ion-tab-button>
 
-    <ion-tab-button tab="operations">
+    <ion-tab-button tab="operations" *ngIf="canViewOperations">
       <ion-label>Operations</ion-label>
       <ion-icon name="cog-outline"></ion-icon>
     </ion-tab-button>
 
-    <ion-tab-button tab="reports">
+    <ion-tab-button tab="reports" *ngIf="canViewReports">
       <ion-label>Reports</ion-label>
       <ion-icon name="document-text-outline"></ion-icon>
     </ion-tab-button>

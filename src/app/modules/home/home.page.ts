@@ -11,6 +11,11 @@ import { SellerService } from 'src/app/services/seller.service';
 import { BuyerService } from 'src/app/services/buyer.service';
 import { CompanyService } from 'src/app/services/company.service';
 import { ItemsPerPage } from 'src/app/enums/items-per-page.enum';
+import {
+  AppModuleKey,
+  canAccessModule
+} from 'src/app/utils/module-access.util';
+import { getRolesFromStoredUser } from 'src/app/utils/role-access.util';
 
 @Component({
   selector: 'app-home',
@@ -31,15 +36,14 @@ export class HomePage implements OnInit {
 
   summaryCards: Array<{ key: string; label: string; count: number }> = [];
 
-  private readonly adminRoles = ['ADMIN', 'ROLE_ADMIN', 'SUPER_ADMIN'];
-  private readonly roleMap: Record<string, string[]> = {
-    company: ['COMPANY', 'COMPANY_MANAGEMENT'],
-    products: ['PRODUCT', 'PRODUCT_MANAGEMENT'],
-    machines: ['MACHINE', 'MACHINE_MANAGEMENT'],
-    users: ['USER', 'USER_MANAGEMENT'],
-    sellers: ['SELLER', 'SELLER_MANAGEMENT'],
-    buyers: ['BUYER', 'BUYER_MANAGEMENT'],
-    stock: ['STOCK', 'STOCK_MANAGEMENT', 'INVENTORY', 'STORE']
+  private readonly moduleMap: Record<string, AppModuleKey> = {
+    company: 'COMPANY',
+    products: 'PRODUCTS',
+    machines: 'MACHINE_PROCESS',
+    users: 'EMPLOYEES',
+    sellers: 'SELLERS',
+    buyers: 'BUYERS',
+    stock: 'STOCK_INWARD'
   };
 
   private readonly dashboardRouteMap: Record<string, string> = {
@@ -69,12 +73,8 @@ export class HomePage implements OnInit {
     this.loadDashboard();
   }
 
-  private isAdmin(): boolean {
-    return true; //this.hasAnyRole(this.adminRoles);
-  }
-
-  private canView(key: keyof HomePage['roleMap']): boolean {
-    return this.isAdmin() || this.hasAnyRole(this.roleMap[key]);
+  private canView(key: keyof HomePage['moduleMap']): boolean {
+    return canAccessModule(this.userRoles, this.moduleMap[key]);
   }
 
   private loadProfile() {
@@ -134,7 +134,7 @@ export class HomePage implements OnInit {
         { key: 'sellers', label: 'Sellers', count: res.sellers ?? 0 },
         { key: 'buyers', label: 'Buyers', count: res.buyers ?? 0 },
         { key: 'company', label: 'Company', count: res.companies ?? 0 }
-      ].filter(item => this.canView(item.key as keyof HomePage['roleMap']));
+      ].filter(item => this.canView(item.key as keyof HomePage['moduleMap']));
 
       if (res.stock) {
         this.stockSummary.total = res.stock.paging.totalItems || 0;
@@ -150,21 +150,7 @@ export class HomePage implements OnInit {
     if (decodedRoles.length) {
       return decodedRoles;
     }
-    try {
-      const raw = localStorage.getItem('currentUser');
-      if (!raw) return [];
-      const user = JSON.parse(raw);
-      if (Array.isArray(user?.roles)) {
-        return user.roles.map((role: any) => role?.name ?? role).filter(Boolean);
-      }
-    } catch {
-      return [];
-    }
-    return [];
-  }
-
-  private hasAnyRole(roles: string[]): boolean {
-    return roles.some(role => this.userRoles.includes(role));
+    return getRolesFromStoredUser(localStorage.getItem('currentUser'));
   }
 
   private safe<T>(source$: Observable<T>): Observable<T | null> {
