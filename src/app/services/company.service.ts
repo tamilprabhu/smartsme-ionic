@@ -56,7 +56,7 @@ export class CompanyService {
     );
   }
 
-  createCompany(company: Omit<Company, 'companySequence' | 'createDate' | 'updateDate'>): Observable<Company> {
+  createCompany(company: Omit<Company, 'companySequence' | 'createdAt' | 'updatedAt'>): Observable<Company> {
     return this.http.post<Company>(this.API_URL, company, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class CompanyService {
     );
   }
 
-  updateCompany(id: number, company: Partial<Omit<Company, 'companySequence' | 'createDate'>>): Observable<Company> {
+  updateCompany(id: number, company: Partial<Omit<Company, 'companySequence' | 'createdAt'>>): Observable<Company> {
     return this.http.put<Company>(`${this.API_URL}/${id}`, company, {
       headers: this.getHeaders()
     }).pipe(

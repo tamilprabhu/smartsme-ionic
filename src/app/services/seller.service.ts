@@ -56,7 +56,7 @@ export class SellerService {
     );
   }
 
-  createSeller(seller: Omit<Seller, 'sellerSequence' | 'createDate' | 'updateDate'>): Observable<Seller> {
+  createSeller(seller: Omit<Seller, 'sellerSequence' | 'createdAt' | 'updatedAt'>): Observable<Seller> {
     return this.http.post<Seller>(this.API_URL, seller, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class SellerService {
     );
   }
 
-  updateSeller(id: number, seller: Partial<Omit<Seller, 'sellerSequence' | 'createDate'>>): Observable<Seller> {
+  updateSeller(id: number, seller: Partial<Omit<Seller, 'sellerSequence' | 'createdAt'>>): Observable<Seller> {
     return this.http.put<Seller>(`${this.API_URL}/${id}`, seller, {
       headers: this.getHeaders()
     }).pipe(

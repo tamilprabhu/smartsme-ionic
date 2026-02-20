@@ -7,6 +7,10 @@ export interface Machine {
   capacity: string;
   model: string;
   activeFlag: string;
-  createDate: string;
-  updateDate: string;
+  createdAt: string | number;
+  updatedAt: string | number;
+  isActive?: number;
+  isDeleted?: number;
+  createdBy?: number | null;
+  updatedBy?: number | null;
 }

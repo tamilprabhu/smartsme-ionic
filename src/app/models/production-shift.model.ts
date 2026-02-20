@@ -27,10 +27,10 @@ export interface ProductionShift {
   less80Reason?: string;
   isActive?: number;
   isDeleted?: number;
-  createdBy?: number;
-  updatedBy?: number;
-  createdAt: number;
-  updatedAt: number;
+  createdBy?: number | null;
+  updatedBy?: number | null;
+  createdAt: string | number;
+  updatedAt: string | number;
 }
 
 export interface ProductionShiftFormData {

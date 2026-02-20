@@ -56,7 +56,7 @@ export class OrderService {
     );
   }
 
-  createOrder(order: Omit<Order, 'orderSequence' | 'createDate' | 'updateDate'>): Observable<Order> {
+  createOrder(order: Omit<Order, 'orderSequence' | 'createdAt' | 'updatedAt'>): Observable<Order> {
     return this.http.post<Order>(this.API_URL, order, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class OrderService {
     );
   }
 
-  updateOrder(id: number, order: Partial<Omit<Order, 'orderSequence' | 'createDate'>>): Observable<Order> {
+  updateOrder(id: number, order: Partial<Omit<Order, 'orderSequence' | 'createdAt'>>): Observable<Order> {
     return this.http.put<Order>(`${this.API_URL}/${id}`, order, {
       headers: this.getHeaders()
     }).pipe(

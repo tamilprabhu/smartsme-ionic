@@ -20,7 +20,7 @@ export class CompanyComponent implements OnInit, OnChanges {
   @Output() formClosed = new EventEmitter<void>();
 
   // Internal state for form binding
-  model: Omit<Company, 'companySequence' | 'createDate' | 'updateDate'> = {
+  model: Omit<Company, 'companySequence' | 'createdAt' | 'updatedAt'> = {
     companyId: '',
     companyName: '',
     businessCons: 'corporation',

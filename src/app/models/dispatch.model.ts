@@ -1,6 +1,6 @@
 export interface Dispatch {
   dispatchSequence: number;
-  prodId: string;
+  productId: string;
   companyId: string;
   orderId: string;
   dispatchId: string;
@@ -10,6 +10,10 @@ export interface Dispatch {
   totalWeight: number;
   normalWeight: number;
   normsWeight: number;
-  createDate: string;
-  updateDate: string;
+  createdAt: string | number;
+  updatedAt: string | number;
+  isActive?: number;
+  isDeleted?: number;
+  createdBy?: number | null;
+  updatedBy?: number | null;
 }

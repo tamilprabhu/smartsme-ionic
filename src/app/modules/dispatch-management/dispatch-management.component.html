@@ -44,7 +44,7 @@
     <ion-item *ngFor="let dispatch of dispatches" class="sme-list-item">
       <ion-label (click)="openReadForm(dispatch)">
         <h2>{{ dispatch.dispatchId }} <ion-badge color="primary">#{{ dispatch.orderId }}</ion-badge></h2>
-        <p class="details">Product: <strong>{{ dispatch.prodId }}</strong> | Date: <strong>{{ dispatch.dispatchDate | date:'short' }}</strong></p>
+        <p class="details">Product: <strong>{{ dispatch.productId }}</strong> | Date: <strong>{{ dispatch.dispatchDate | date:'short' }}</strong></p>
         <p class="quantity">Quantity: {{ dispatch.quantity }} | Packs: {{ dispatch.noOfPacks }} | Weight: {{ dispatch.totalWeight }}kg</p>
       </ion-label>
       <ion-buttons slot="end">

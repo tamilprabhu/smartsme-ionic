@@ -44,7 +44,7 @@
     <ion-item *ngFor="let order of orders" class="order-item">
       <ion-label (click)="openReadForm(order)">
         <h2>{{ order.orderName }} <ion-badge [color]="order.orderStatus === 'completed' ? 'success' : order.orderStatus === 'pending' ? 'warning' : 'primary'">#{{ order.orderId }}</ion-badge></h2>
-        <p class="details">Product: <strong>{{ order.prodId }}</strong> | Buyer: <strong>{{ order.buyerId }}</strong></p>
+        <p class="details">Product: <strong>{{ order.productId }}</strong> | Buyer: <strong>{{ order.buyerId }}</strong></p>
         <p class="pricing">Quantity: {{ order.orderQuantity }} | Price: ₹{{ order.totalPrice }} | Target: {{ order.targetDate | date:'short' }}</p>
       </ion-label>
       <ion-buttons slot="end">

@@ -56,7 +56,7 @@ export class InvoiceService {
     );
   }
 
-  createInvoice(invoice: Omit<Invoice, 'invoiceSequence' | 'createDate' | 'updateDate'>): Observable<Invoice> {
+  createInvoice(invoice: Omit<Invoice, 'invoiceSequence' | 'createdAt' | 'updatedAt'>): Observable<Invoice> {
     return this.http.post<Invoice>(this.API_URL, invoice, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class InvoiceService {
     );
   }
 
-  updateInvoice(id: number, invoice: Partial<Omit<Invoice, 'invoiceSequence' | 'createDate'>>): Observable<Invoice> {
+  updateInvoice(id: number, invoice: Partial<Omit<Invoice, 'invoiceSequence' | 'createdAt'>>): Observable<Invoice> {
     return this.http.put<Invoice>(`${this.API_URL}/${id}`, invoice, {
       headers: this.getHeaders()
     }).pipe(

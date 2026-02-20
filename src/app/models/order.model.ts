@@ -3,7 +3,7 @@ export interface Order {
   orderId: string;
   orderName: string;
   companyId: string;
-  prodId: string;
+  productId: string;
   buyerId: string;
   orderStatus: string;
   orderDate: string;
@@ -12,6 +12,10 @@ export interface Order {
   price: number;
   discount: number;
   totalPrice: number;
-  createDate: string;
-  updateDate: string;
+  createdAt: string | number;
+  updatedAt: string | number;
+  isActive?: number;
+  isDeleted?: number;
+  createdBy?: number | null;
+  updatedBy?: number | null;
 }

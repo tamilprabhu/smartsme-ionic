@@ -156,8 +156,8 @@ export class StockComponent implements OnInit, OnChanges, OnDestroy {
       weight: Number(formValue.weight),
       inwardType: formValue.inwardType,
       rate: Number(formValue.rate),
-      createDate: this.formData?.createDate || new Date().toISOString(),
-      updateDate: new Date().toISOString()
+      createdAt: this.formData?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     this.formSubmit.emit(apiData);

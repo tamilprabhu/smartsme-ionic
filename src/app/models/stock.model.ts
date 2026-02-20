@@ -9,6 +9,10 @@ export interface Stock {
   weight: number;
   inwardType: string;
   rate: number;
-  createDate: string;
-  updateDate: string;
+  createdAt: string | number;
+  updatedAt: string | number;
+  isActive?: number;
+  isDeleted?: number;
+  createdBy?: number | null;
+  updatedBy?: number | null;
 }

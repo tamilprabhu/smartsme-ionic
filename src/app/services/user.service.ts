@@ -56,7 +56,7 @@ export class UserService {
     );
   }
 
-  createUser(user: Omit<User, 'id' | 'createdDate' | 'updatedDate'>): Observable<User> {
+  createUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Observable<User> {
     return this.http.post<User>(this.API_URL, user, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class UserService {
     );
   }
 
-  updateUser(id: number, user: Partial<Omit<User, 'id' | 'createdDate'>>): Observable<User> {
+  updateUser(id: number, user: Partial<Omit<User, 'id' | 'createdAt'>>): Observable<User> {
     return this.http.put<User>(`${this.API_URL}/${id}`, user, {
       headers: this.getHeaders()
     }).pipe(

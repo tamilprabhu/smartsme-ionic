@@ -2,9 +2,9 @@ export interface Invoice {
   invoiceSequence: number;
   invoiceId: string;
   invoiceDate: string;
-  compId: string;
-  buyrId: string;
-  prodId: string;
+  companyId: string;
+  buyerId: string;
+  productId: string;
   quantity: number;
   unitPrice: number;
   cgstRate: number;
@@ -14,6 +14,10 @@ export interface Invoice {
   totalAmount: number;
   sacCode: string;
   buyrGstin: string;
-  createDate: string;
-  updateDate: string;
+  createdAt: string | number;
+  updatedAt: string | number;
+  isActive?: number;
+  isDeleted?: number;
+  createdBy?: number | null;
+  updatedBy?: number | null;
 }

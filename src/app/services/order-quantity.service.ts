@@ -56,7 +56,7 @@ export class OrderQuantityService {
     );
   }
 
-  createOrderQuantity(orderQuantity: Omit<OrderQuantity, 'createDate' | 'updateDate'>): Observable<OrderQuantity> {
+  createOrderQuantity(orderQuantity: Omit<OrderQuantity, 'createdAt' | 'updatedAt'>): Observable<OrderQuantity> {
     return this.http.post<OrderQuantity>(this.API_URL, orderQuantity, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +64,7 @@ export class OrderQuantityService {
     );
   }
 
-  updateOrderQuantity(id: string, orderQuantity: Partial<Omit<OrderQuantity, 'orderId' | 'createDate'>>): Observable<OrderQuantity> {
+  updateOrderQuantity(id: string, orderQuantity: Partial<Omit<OrderQuantity, 'orderId' | 'createdAt'>>): Observable<OrderQuantity> {
     return this.http.put<OrderQuantity>(`${this.API_URL}/${id}`, orderQuantity, {
       headers: this.getHeaders()
     }).pipe(

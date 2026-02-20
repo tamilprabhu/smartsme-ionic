@@ -8,6 +8,10 @@ export interface User {
   mobile: string;
   address: string;
   password?: string;
-  createdDate: string;
-  updatedDate: string;
+  createdAt: string | number;
+  updatedAt: string | number;
+  isActive?: number;
+  isDeleted?: number;
+  createdBy?: number | null;
+  updatedBy?: number | null;
 }

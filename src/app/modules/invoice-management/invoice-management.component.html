@@ -43,9 +43,9 @@
   <ion-list *ngIf="invoices.length > 0">
     <ion-item *ngFor="let invoice of invoices" class="invoice-item">
       <ion-label (click)="openReadForm(invoice)">
-        <h2>{{ invoice.invoiceId }} <ion-badge color="primary">#{{ invoice.compId }}</ion-badge></h2>
-        <p class="details">Buyer: <strong>{{ invoice.buyrId }}</strong> | Date: <strong>{{ invoice.invoiceDate | date:'short' }}</strong></p>
-        <p class="amount">Product: {{ invoice.prodId }} | Quantity: {{ invoice.quantity }} | Amount: ₹{{ invoice.totalAmount }}</p>
+        <h2>{{ invoice.invoiceId }} <ion-badge color="primary">#{{ invoice.companyId }}</ion-badge></h2>
+        <p class="details">Buyer: <strong>{{ invoice.buyerId }}</strong> | Date: <strong>{{ invoice.invoiceDate | date:'short' }}</strong></p>
+        <p class="amount">Product: {{ invoice.productId }} | Quantity: {{ invoice.quantity }} | Amount: ₹{{ invoice.totalAmount }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="secondary" (click)="openUpdateForm(invoice)">
