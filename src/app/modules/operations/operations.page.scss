@@ -96,3 +96,39 @@
   margin-top: 4px;
   line-height: 1.3;
 }
+
+:host-context(.dark-theme) .operations-content {
+  --background:
+    radial-gradient(1200px 420px at 50% -220px, rgba(255, 106, 0, 0.14), transparent 65%),
+    var(--app-gunmetal-deep);
+}
+
+:host-context(.dark-theme) .page-title {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .page-subtitle {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .op-card {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+:host-context(.dark-theme) .op-card:hover {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
+}
+
+:host-context(.dark-theme) .operation-title {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .operation-subtitle {
+  color: #d3dae7;
+}
+
+:host-context(.dark-theme) .operation-summary {
+  color: #bfc8d8;
+}

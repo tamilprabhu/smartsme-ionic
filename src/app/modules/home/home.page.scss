@@ -77,6 +77,10 @@ ion-content {
   border-bottom: 1px solid rgba(15, 23, 42, 0.06);
 }
 
+.dash-card--overview ion-card-header {
+  border-bottom: none;
+}
+
 .dash-card ion-card-title {
   color: #111827;
   font-weight: 650;
@@ -192,4 +196,77 @@ ion-content {
   .dash-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+:host-context(.dark-theme) ion-content {
+  --background:
+    radial-gradient(1200px 420px at 50% -220px, rgba(255, 106, 0, 0.14), transparent 65%),
+    var(--app-gunmetal-deep);
+}
+
+:host-context(.dark-theme) .dash-hero__brand {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+}
+
+:host-context(.dark-theme) .dash-hero__logo {
+  background: #2f333c;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 106, 0, 0.24);
+}
+
+:host-context(.dark-theme) .dash-hero__text h1 {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .dash-hero__text p {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .dash-card {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(.dark-theme) .dash-card ion-card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+:host-context(.dark-theme) .dash-card--overview ion-card-header {
+  border-bottom: none;
+}
+
+:host-context(.dark-theme) .dash-card ion-card-title {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .dash-card ion-card-subtitle {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .dash-metric {
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+:host-context(.dark-theme) .dash-metric span {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .dash-metric strong {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .dash-summary__item {
+  background: linear-gradient(180deg, rgba(255, 106, 0, 0.14), rgba(52, 56, 65, 0.98) 72%);
+  border: 1px solid rgba(255, 106, 0, 0.24);
+}
+
+:host-context(.dark-theme) .dash-summary__label {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .dash-summary__value {
+  color: #f0f3f8;
 }

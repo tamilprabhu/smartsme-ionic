@@ -59,6 +59,38 @@
       rgba(255, 106, 0, 0.04) 45%,
       rgba(255, 255, 255, 1) 100%
     );
+    --app-gunmetal: #2b2e34;
+    --app-gunmetal-soft: #343841;
+    --app-gunmetal-deep: #1f232a;
+    --app-toolbar-dark-fade: linear-gradient(
+      180deg,
+      rgba(255, 106, 0, 0.2) 0%,
+      rgba(52, 56, 65, 0.92) 50%,
+      rgba(31, 35, 42, 0.98) 100%
+    );
+}
+
+/* Manual dark mode toggled from side menu */
+html.dark-theme,
+body.dark-theme {
+    --ion-background-color: var(--app-gunmetal-deep);
+    --ion-text-color: #f0f3f8;
+    --ion-color-primary: #ff8a2a;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-secondary: var(--app-gunmetal);
+    --ion-color-secondary-contrast: #ffffff;
+    --ion-card-background: var(--app-gunmetal-soft);
+    --ion-color-light: var(--app-gunmetal-soft);
+    --ion-item-background: var(--app-gunmetal-soft);
+    --ion-toolbar-background: var(--app-gunmetal);
+    --ion-color-medium: #b4bdcc;
+    --app-primary-fade: var(--app-toolbar-dark-fade);
+    --app-primary-fade-soft: linear-gradient(
+      135deg,
+      rgba(255, 106, 0, 0.14) 0%,
+      rgba(43, 46, 52, 0.96) 45%,
+      rgba(31, 35, 42, 1) 100%
+    );
 }
 
 /* Apply background across the Ionic app */
@@ -498,4 +530,179 @@ ion-modal.app-confirm-dialog-modal::part(content) {
 ion-modal.app-confirm-dialog-modal ion-content {
   --background: transparent !important;
   background: transparent !important;
+}
+
+html.dark-theme ion-modal.app-confirm-dialog-modal,
+body.dark-theme ion-modal.app-confirm-dialog-modal {
+  --backdrop-opacity: 0.3;
+}
+
+html.dark-theme ion-modal.app-confirm-dialog-modal::part(backdrop),
+body.dark-theme ion-modal.app-confirm-dialog-modal::part(backdrop) {
+  opacity: 0.34 !important;
+  background: #000 !important;
+}
+
+html.dark-theme :is(ion-modal.report-datetime-modal, ion-modal.date-field-modal)::part(content),
+body.dark-theme :is(ion-modal.report-datetime-modal, ion-modal.date-field-modal)::part(content) {
+  background: var(--app-gunmetal-soft) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.38);
+}
+
+html.dark-theme :is(ion-modal.report-datetime-modal, ion-modal.date-field-modal) ion-content,
+body.dark-theme :is(ion-modal.report-datetime-modal, ion-modal.date-field-modal) ion-content {
+  --background: var(--app-gunmetal-soft) !important;
+}
+
+html.dark-theme :is(ion-modal.report-datetime-modal, ion-modal.date-field-modal) ion-datetime,
+body.dark-theme :is(ion-modal.report-datetime-modal, ion-modal.date-field-modal) ion-datetime {
+  --background: var(--app-gunmetal-soft);
+  --background-rgb: 52, 56, 65;
+  --wheel-highlight-background: rgba(255, 106, 0, 0.2);
+  color: #f0f3f8;
+}
+
+html.dark-theme :is(ion-modal.report-datetime-modal, ion-modal.date-field-modal) ion-button,
+body.dark-theme :is(ion-modal.report-datetime-modal, ion-modal.date-field-modal) ion-button {
+  --color: #f0f3f8;
+}
+
+html.dark-theme .page-title-container .page-title,
+body.dark-theme .page-title-container .page-title {
+  color: #f0f3f8;
+}
+
+html.dark-theme .page-header,
+body.dark-theme .page-header {
+  border-bottom: 1px solid rgba(255, 106, 0, 0.28);
+}
+
+html.dark-theme .sme-list-item,
+body.dark-theme .sme-list-item {
+  --border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+html.dark-theme .sme-list-item ion-label p,
+body.dark-theme .sme-list-item ion-label p {
+  color: #c6cfde !important;
+}
+
+html.dark-theme .sme-list-item ion-label p strong,
+body.dark-theme .sme-list-item ion-label p strong {
+  color: #f0f3f8 !important;
+}
+
+html.dark-theme .sme-list-item ion-label :is(.material, .address, .business, .details, .contact, .type, .quantity, .specs, .meta),
+body.dark-theme .sme-list-item ion-label :is(.material, .address, .business, .details, .contact, .type, .quantity, .specs, .meta) {
+  color: #c6cfde !important;
+}
+
+html.dark-theme .sme-list-item ion-buttons ion-button,
+body.dark-theme .sme-list-item ion-buttons ion-button {
+  --background: rgba(255, 255, 255, 0.08);
+  --background-hover: rgba(255, 255, 255, 0.14);
+  --box-shadow: none;
+  --border-radius: 10px;
+  border: none;
+}
+
+html.dark-theme .sme-list-item ion-buttons ion-button[color="secondary"],
+body.dark-theme .sme-list-item ion-buttons ion-button[color="secondary"] {
+  --color: #ffb06b;
+}
+
+html.dark-theme .sme-list-item ion-buttons ion-button[color="secondary"] ion-icon,
+body.dark-theme .sme-list-item ion-buttons ion-button[color="secondary"] ion-icon {
+  color: #ffb06b !important;
+  opacity: 1 !important;
+}
+
+html.dark-theme .sme-list-item ion-buttons ion-button[color="danger"],
+body.dark-theme .sme-list-item ion-buttons ion-button[color="danger"] {
+  --color: #ff8a8a;
+}
+
+html.dark-theme .sme-list-item ion-buttons ion-button[color="danger"] ion-icon,
+body.dark-theme .sme-list-item ion-buttons ion-button[color="danger"] ion-icon {
+  color: #ff8a8a !important;
+  opacity: 1 !important;
+}
+
+/* Dark mode consistency: headers */
+html.dark-theme ion-header ion-toolbar,
+body.dark-theme ion-header ion-toolbar {
+  --background: var(--app-primary-fade);
+  --color: #f0f3f8;
+  border-bottom: 1px solid rgba(255, 106, 0, 0.22);
+}
+
+html.dark-theme ion-header ion-title,
+html.dark-theme ion-header ion-button,
+html.dark-theme ion-header ion-icon,
+body.dark-theme ion-header ion-title,
+body.dark-theme ion-header ion-button,
+body.dark-theme ion-header ion-icon {
+  color: #f0f3f8 !important;
+}
+
+/* Dark mode consistency: cards */
+html.dark-theme ion-card,
+body.dark-theme ion-card {
+  background: var(--ion-card-background);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-theme :is(.guest-page-card, .page-card, .dash-card, .search-card, .empty-state),
+body.dark-theme :is(.guest-page-card, .page-card, .dash-card, .search-card, .empty-state) {
+  background: var(--ion-card-background) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+html.dark-theme :is(ion-card-header, .guest-page-card ion-card-header, .page-card ion-card-header),
+body.dark-theme :is(ion-card-header, .guest-page-card ion-card-header, .page-card ion-card-header) {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 106, 0, 0.18),
+    rgba(255, 106, 0, 0.06) 46%,
+    rgba(43, 46, 52, 0.16) 100%
+  );
+}
+
+html.dark-theme :is(ion-card-title, ion-card-subtitle),
+body.dark-theme :is(ion-card-title, ion-card-subtitle) {
+  color: #f0f3f8 !important;
+}
+
+/* Dark mode consistency: accordions */
+html.dark-theme ion-accordion-group,
+body.dark-theme ion-accordion-group {
+  background: transparent;
+}
+
+html.dark-theme ion-accordion,
+body.dark-theme ion-accordion {
+  background: var(--ion-card-background) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+}
+
+html.dark-theme ion-accordion ion-item[slot='header'],
+body.dark-theme ion-accordion ion-item[slot='header'] {
+  --background: rgba(255, 255, 255, 0.03) !important;
+  --color: #f0f3f8;
+  --detail-icon-color: #c6cfde;
+}
+
+html.dark-theme ion-accordion.accordion-expanded ion-item[slot='header'],
+body.dark-theme ion-accordion.accordion-expanded ion-item[slot='header'] {
+  --background: linear-gradient(180deg, rgba(255, 106, 0, 0.2), rgba(255, 106, 0, 0.06)) !important;
+  --detail-icon-color: var(--ion-color-primary);
+}
+
+html.dark-theme ion-accordion [slot='content'],
+body.dark-theme ion-accordion [slot='content'] {
+  background: transparent;
+  color: #dbe2ee;
 }

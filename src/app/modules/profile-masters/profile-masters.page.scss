@@ -92,3 +92,40 @@
     margin-bottom: 0;
   }
 }
+
+:host-context(.dark-theme) .profile-masters-content {
+  --background:
+    radial-gradient(1200px 420px at 50% -220px, rgba(255, 106, 0, 0.12), transparent 65%),
+    var(--app-gunmetal-deep);
+}
+
+:host-context(.dark-theme) .page-intro {
+  background: linear-gradient(140deg, rgba(255, 106, 0, 0.16) 0%, rgba(52, 56, 65, 0.92) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+:host-context(.dark-theme) .page-intro h1 {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .page-intro p {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .section-block h2 {
+  color: #cfd7e6;
+}
+
+:host-context(.dark-theme) .nav-item {
+  --background: var(--app-gunmetal-soft);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:host-context(.dark-theme) .nav-item h3 {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .nav-item p {
+  color: #c6cfde;
+}

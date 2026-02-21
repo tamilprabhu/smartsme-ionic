@@ -26,6 +26,16 @@
             <ion-icon slot="start" name="help-buoy-outline" class="menu-icon"></ion-icon>
             <span class="menu-label">Help</span>
           </ion-item>
+          <ion-item lines="none" class="menu-item theme-toggle-item">
+            <ion-icon slot="start" name="moon-outline" class="menu-icon"></ion-icon>
+            <span class="menu-label">Dark Mode</span>
+            <ion-toggle
+              slot="end"
+              [checked]="isDarkMode"
+              (ionChange)="onThemeToggle($event)"
+              aria-label="Toggle dark mode">
+            </ion-toggle>
+          </ion-item>
         </ion-list>
         <div class="menu-spacer"></div>
         <ion-button color="primary" expand="block" class="menu-logout-button" (click)="logout()">

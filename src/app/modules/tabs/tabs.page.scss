@@ -1,1 +1,28 @@
+:host-context(.dark-theme) ion-tab-bar {
+  --background: linear-gradient(
+    180deg,
+    rgba(52, 56, 65, 0.96) 0%,
+    rgba(31, 35, 42, 0.98) 100%
+  );
+  --border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 106, 0, 0.22);
+  box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.35);
+}
 
+:host-context(.dark-theme) ion-tab-button {
+  --color: #b7c0d0;
+  --color-selected: #ff8a2a;
+  --background: transparent;
+  --background-focused: transparent;
+  --background-focused-opacity: 0;
+  --ripple-color: rgba(255, 106, 0, 0.18);
+}
+
+:host-context(.dark-theme) ion-tab-button ion-icon {
+  font-size: 20px;
+}
+
+:host-context(.dark-theme) ion-tab-button ion-label {
+  font-size: 0.73rem;
+  letter-spacing: 0.01em;
+}

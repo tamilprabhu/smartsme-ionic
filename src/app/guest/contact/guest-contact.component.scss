@@ -68,3 +68,42 @@ ion-card-content {
     margin: 0;
   }
 }
+
+:host-context(.dark-theme) ion-content {
+  --background:
+    radial-gradient(1200px 420px at 50% -220px, rgba(255, 106, 0, 0.14), transparent 65%),
+    var(--app-gunmetal-deep);
+}
+
+:host-context(.dark-theme) .guest-page-card {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(.dark-theme) .guest-page-card ion-card-header {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 106, 0, 0.18),
+    rgba(255, 106, 0, 0.06) 46%,
+    rgba(43, 46, 52, 0.16) 100%
+  );
+}
+
+:host-context(.dark-theme) .guest-page-card ion-card-title,
+:host-context(.dark-theme) .guest-page-card ion-card-subtitle {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) ion-card-content ion-item {
+  --background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:host-context(.dark-theme) ion-card-content h3 {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) ion-card-content p {
+  color: #c6cfde;
+}

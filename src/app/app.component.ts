@@ -15,6 +15,8 @@ export class AppComponent {
   isLoggedIn: boolean = false;
   user: any = null;
   profileMenuLabel = 'Profile';
+  isDarkMode = false;
+  private readonly themeStorageKey = 'sme-theme';
 
   constructor(
     private loginService: LoginService,
@@ -23,6 +25,8 @@ export class AppComponent {
   ) {}
 
   ngOnInit() {
+    this.initializeTheme();
+
     this.loginService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
       this.menuController.enable(status, 'rightMenu');
@@ -41,6 +45,23 @@ export class AppComponent {
       ]);
       this.profileMenuLabel = hasMasterAccess ? 'Profile & Masters' : 'Profile';
     });
+  }
+
+  private initializeTheme(): void {
+    const savedTheme = localStorage.getItem(this.themeStorageKey);
+    this.applyTheme(savedTheme === 'dark');
+  }
+
+  onThemeToggle(event: CustomEvent): void {
+    const enabled = !!event.detail?.checked;
+    this.applyTheme(enabled);
+    localStorage.setItem(this.themeStorageKey, enabled ? 'dark' : 'light');
+  }
+
+  private applyTheme(enabled: boolean): void {
+    this.isDarkMode = enabled;
+    document.documentElement.classList.toggle('dark-theme', enabled);
+    document.body.classList.toggle('dark-theme', enabled);
   }
 
   logout() {

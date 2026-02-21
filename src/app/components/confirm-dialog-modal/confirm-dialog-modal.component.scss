@@ -85,6 +85,34 @@
   --color: #333;
 }
 
+:host-context(.dark-theme) .confirm-modal__sheet {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 106, 0, 0.2) 0%,
+      rgba(52, 56, 65, 0.96) 52%,
+      rgba(31, 35, 42, 0.98) 100%
+    ),
+    var(--app-gunmetal-soft, #343841);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.4);
+}
+
+:host-context(.dark-theme) .confirm-modal__sheet h2 {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .confirm-modal__sheet p {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .confirm-modal__action--cancel {
+  --background: rgba(255, 255, 255, 0.12);
+  --background-hover: rgba(255, 255, 255, 0.2);
+  --color: #f0f3f8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 ion-content {
   --background: transparent;
 }

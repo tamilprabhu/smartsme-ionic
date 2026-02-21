@@ -132,6 +132,15 @@ ion-menu ion-header {
   }
 }
 
+.theme-toggle-item {
+  --min-height: 52px;
+
+  ion-toggle {
+    --handle-width: 20px;
+    --handle-height: 20px;
+  }
+}
+
 .menu-icon {
   width: 22px;
   font-size: 18px;
@@ -153,4 +162,40 @@ ion-menu ion-header {
 
 .menu-spacer {
   flex: 1 1 auto;
+}
+
+:host-context(.dark-theme) ion-menu ion-header {
+  background: linear-gradient(180deg, rgba(43, 46, 52, 0.96), rgba(33, 36, 43, 0.96));
+  border-bottom: 1px solid rgba(255, 106, 0, 0.22);
+}
+
+:host-context(.dark-theme) .profile-item {
+  --color: #f0f3f8;
+
+  ion-label h3 {
+    color: #f0f3f8;
+  }
+
+  ion-label p {
+    color: rgba(240, 243, 248, 0.72);
+  }
+
+  .profile-chevron {
+    color: rgba(240, 243, 248, 0.75);
+  }
+
+  &:hover,
+  &.ion-activated {
+    --background: rgba(255, 106, 0, 0.14);
+  }
+}
+
+:host-context(.dark-theme) .menu-item {
+  --color: #f0f3f8;
+
+  &:hover,
+  &.active {
+    background: rgba(255, 106, 0, 0.14);
+    --color: #f0f3f8;
+  }
 }

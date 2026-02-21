@@ -192,3 +192,52 @@ ion-modal.report-datetime-modal {
     flex-direction: column;
   }
 }
+
+:host-context(.dark-theme) ion-content {
+  --background:
+    radial-gradient(1200px 420px at 50% -220px, rgba(255, 106, 0, 0.14), transparent 65%),
+    var(--app-gunmetal-deep);
+}
+
+:host-context(.dark-theme) ion-item {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:host-context(.dark-theme) ion-accordion {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+:host-context(.dark-theme) ion-accordion ion-item[slot='header'] {
+  --background: rgba(255, 255, 255, 0.03);
+  --detail-icon-color: #c6cfde;
+}
+
+:host-context(.dark-theme) ion-accordion ion-item[slot='header'] ion-label {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) ion-accordion.accordion-expanded ion-item[slot='header'] {
+  --background: linear-gradient(180deg, rgba(255, 106, 0, 0.2), rgba(255, 106, 0, 0.06));
+}
+
+:host-context(.dark-theme) ion-accordion.accordion-expanded {
+  background: linear-gradient(180deg, rgba(255, 106, 0, 0.14), rgba(255, 106, 0, 0.03) 42%), var(--app-gunmetal-soft);
+}
+
+:host-context(.dark-theme) .chart-card {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(.dark-theme) .chart-card ion-card-title,
+:host-context(.dark-theme) .chart-card ion-card-subtitle,
+:host-context(.dark-theme) .chart-preview-text {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .report-content-card {
+  color: #dbe2ee;
+}
