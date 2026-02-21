@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { AlertController, IonSearchbar, ToastController } from '@ionic/angular';
+import { IonSearchbar, ToastController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import {
@@ -22,6 +22,7 @@ import {
   StateItem
 } from 'src/app/services/reference.service';
 import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
+import { ConfirmDialogService } from '../../components/confirm-dialog-modal/confirm-dialog.service';
 
 export type EmployeeAction = 'list' | 'create' | 'view' | 'update' | 'delete';
 
@@ -67,8 +68,8 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly alertController: AlertController,
     private readonly toastController: ToastController,
+    private readonly confirmDialog: ConfirmDialogService,
     private readonly employeeService: EmployeeService,
     private readonly roleService: RoleService,
     private readonly referenceService: ReferenceService
@@ -245,20 +246,18 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
   async confirmDeleteFromList(employee: EmployeeWithUserItem): Promise<void> {
     const username = (employee.User ?? employee.user)?.username ?? employee.userId;
-    const alert = await this.alertController.create({
-      header: 'Confirm Delete',
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Confirm Delete',
       message: `Delete employee "${username}"?`,
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Delete',
-          role: 'destructive',
-          handler: () => this.performDelete(employee.employeeSequence, false)
-        }
-      ]
+      confirmText: 'Delete',
+      confirmColor: 'danger'
     });
 
-    await alert.present();
+    if (!confirmed) {
+      return;
+    }
+
+    this.performDelete(employee.employeeSequence, false);
   }
 
   async submit(): Promise<void> {
@@ -536,24 +535,19 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     this.employeeService.getEmployeeRegistration(employeeSequence).subscribe({
       next: async (employee) => {
         const username = (employee.User ?? employee.user)?.username ?? employee.userId;
-        const alert = await this.alertController.create({
-          header: 'Confirm Delete',
+        const confirmed = await this.confirmDialog.confirm({
+          title: 'Confirm Delete',
           message: `Delete employee "${username}"?`,
-          buttons: [
-            {
-              text: 'Cancel',
-              role: 'cancel',
-              handler: () => this.openAction('list')
-            },
-            {
-              text: 'Delete',
-              role: 'destructive',
-              handler: () => this.performDelete(employeeSequence, true)
-            }
-          ]
+          confirmText: 'Delete',
+          confirmColor: 'danger'
         });
 
-        await alert.present();
+        if (!confirmed) {
+          this.openAction('list');
+          return;
+        }
+
+        this.performDelete(employeeSequence, true);
       },
       error: async () => {
         await this.showToast('Failed to load employee for delete', 'danger');

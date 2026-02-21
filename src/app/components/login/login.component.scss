@@ -33,6 +33,14 @@ ion-content {
   margin-bottom: 16px;
   padding: 6px 6px 4px;
 
+  .guest-logo {
+    width: clamp(96px, 20vw, 140px);
+    height: auto;
+    display: block;
+    margin: 0 auto 10px;
+    animation: fadeRise 420ms ease-out both;
+  }
+
   h1 {
     margin: 0 0 6px;
     font-size: 1.6rem;
@@ -63,4 +71,12 @@ ion-content {
 ion-input {
   scroll-margin-top: 0 !important;
   scroll-snap-align: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-header .guest-logo,
+  .login-header h1,
+  .login-header p {
+    animation: none !important;
+  }
 }

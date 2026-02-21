@@ -18,6 +18,19 @@ ion-content {
   box-shadow:
     0 2px 8px rgba(15, 23, 42, 0.02);
   overflow: hidden;
+  position: relative;
+  padding-top: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .guest-logo {
+    width: clamp(104px, 24vw, 150px);
+    height: auto;
+    display: block;
+    margin: 0 0 0;
+    animation: fadeRise 450ms ease-out both;
+  }
 
   ion-card-header {
     padding: 16px 16px 8px;
@@ -55,5 +68,11 @@ ion-card-content {
     --padding-bottom: 10px;
     font-size: 14px;
     font-weight: 500;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guest-page-card .guest-logo {
+    animation: none !important;
   }
 }

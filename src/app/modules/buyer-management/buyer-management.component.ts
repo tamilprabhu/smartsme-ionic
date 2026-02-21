@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController, IonSearchbar } from '@ionic/angular';
+import { IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Buyer } from '../../models/buyer.model';
 import { BuyerService } from '../../services/buyer.service';
 import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { ConfirmDialogService } from '../../components/confirm-dialog-modal/confirm-dialog.service';
 
 @Component({
   selector: 'app-buyer-management',
@@ -31,7 +32,7 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private alertController: AlertController,
+    private readonly confirmDialog: ConfirmDialogService,
     private route: ActivatedRoute,
     private router: Router,
     private buyerService: BuyerService
@@ -141,23 +142,18 @@ export class BuyerManagementComponent implements OnInit, OnDestroy {
   }
 
   async confirmDelete(buyer: Buyer) {
-    const alert = await this.alertController.create({
-      header: 'Confirm Delete',
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Confirm Delete',
       message: `Are you sure you want to delete buyer "${buyer.buyerName}"?`,
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Delete',
-          handler: () => {
-            this.deleteBuyer(buyer);
-          }
-        }
-      ]
+      confirmText: 'Delete',
+      confirmColor: 'danger'
     });
-    await alert.present();
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deleteBuyer(buyer);
   }
 
   deleteBuyer(buyer: Buyer) {

@@ -1,0 +1,18 @@
+<ion-content class="confirm-modal" [scrollY]="false">
+  <div class="confirm-modal__sheet">
+    <h2>{{ title }}</h2>
+    <p>{{ message }}</p>
+    <div class="confirm-modal__actions">
+      <ion-button class="confirm-modal__action confirm-modal__action--cancel" (click)="cancel()" [attr.aria-label]="cancelText">
+        <span>No</span>
+      </ion-button>
+      <ion-button
+        class="confirm-modal__action confirm-modal__action--confirm"
+        [attr.aria-label]="confirmText"
+        (click)="confirm()"
+      >
+        <span>Yes</span>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, IonSearchbar, ToastController, IonicModule } from '@ionic/angular';
+import { IonSearchbar, ToastController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -16,6 +16,7 @@ import { ProductService } from 'src/app/services/product.service';
 import { SortBy } from 'src/app/enums/sort-by.enum';
 import { SortOrder } from 'src/app/enums/sort-order.enum';
 import { HeaderComponent } from 'src/app/components/header/header.component';
+import { ConfirmDialogService } from '../../../components/confirm-dialog-modal/confirm-dialog.service';
 
 @Component({
   selector: 'app-production-shift-list',
@@ -61,7 +62,7 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private alertController: AlertController,
+    private readonly confirmDialog: ConfirmDialogService,
     private toastController: ToastController,
     private shiftService: ProductionShiftService,
     private machineService: MachineService,
@@ -210,15 +211,18 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
 
   async confirmDelete(shift: ProductionShift, event: Event) {
     event.stopPropagation();
-    const alert = await this.alertController.create({
-      header: 'Confirm Delete',
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Confirm Delete',
       message: `Delete shift "${shift.shiftId}"?`,
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Delete', role: 'destructive', handler: () => this.deleteShift(shift) }
-      ]
+      confirmText: 'Delete',
+      confirmColor: 'danger'
     });
-    await alert.present();
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deleteShift(shift);
   }
 
   deleteShift(shift: ProductionShift) {

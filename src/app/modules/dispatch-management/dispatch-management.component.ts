@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { NavController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Dispatch } from '../../models/dispatch.model';
 import { DispatchService } from '../../services/dispatch.service';
 import { OperationsService } from 'src/app/services/operations.service';
 import { ServerValidationErrors, extractServerValidationErrors } from 'src/app/utils/server-validation.util';
+import { ConfirmDialogService } from '../../components/confirm-dialog-modal/confirm-dialog.service';
 
 @Component({
   selector: 'app-dispatch-management',
@@ -30,7 +31,7 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private alertController: AlertController,
+    private readonly confirmDialog: ConfirmDialogService,
     private navCtrl: NavController,
     private dispatchService: DispatchService,
     private operationsService: OperationsService
@@ -137,23 +138,18 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
   }
 
   async confirmDelete(dispatch: Dispatch) {
-    const alert = await this.alertController.create({
-      header: 'Confirm Delete',
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Confirm Delete',
       message: `Are you sure you want to delete dispatch "${dispatch.dispatchId}"?`,
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Delete',
-          handler: () => {
-            this.deleteDispatch(dispatch);
-          }
-        }
-      ]
+      confirmText: 'Delete',
+      confirmColor: 'danger'
     });
-    await alert.present();
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deleteDispatch(dispatch);
   }
 
   deleteDispatch(dispatch: Dispatch) {

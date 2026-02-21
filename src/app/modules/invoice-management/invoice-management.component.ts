@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { AlertController, NavController, IonSearchbar } from '@ionic/angular';
+import { NavController, IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Invoice } from '../../models/invoice.model';
 import { InvoiceService } from '../../services/invoice.service';
 import { OperationsService } from 'src/app/services/operations.service';
+import { ConfirmDialogService } from '../../components/confirm-dialog-modal/confirm-dialog.service';
 
 @Component({
   selector: 'app-invoice-management',
@@ -28,7 +29,7 @@ export class InvoiceManagementComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private alertController: AlertController,
+    private readonly confirmDialog: ConfirmDialogService,
     private navController: NavController,
     private invoiceService: InvoiceService,
     private operationsService: OperationsService
@@ -132,21 +133,18 @@ export class InvoiceManagementComponent implements OnInit, OnDestroy {
   }
 
   async confirmDelete(invoice: Invoice) {
-    const alert = await this.alertController.create({
-      header: 'Confirm Delete',
+    const confirmed = await this.confirmDialog.confirm({
+      title: 'Confirm Delete',
       message: `Are you sure you want to delete invoice ${invoice.invoiceId}?`,
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Delete',
-          role: 'destructive',
-          handler: () => {
-            this.deleteInvoice(invoice);
-          }
-        }
-      ]
+      confirmText: 'Delete',
+      confirmColor: 'danger'
     });
-    await alert.present();
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deleteInvoice(invoice);
   }
 
   private deleteInvoice(invoice: Invoice) {

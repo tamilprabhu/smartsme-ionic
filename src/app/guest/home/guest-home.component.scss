@@ -19,6 +19,14 @@ ion-content {
   text-align: center;
   max-width: 520px;
 
+  .hero-logo {
+    width: clamp(112px, 24vw, 160px);
+    height: auto;
+    display: block;
+    margin: 0 auto 14px;
+    animation: fadeRise 450ms ease-out both;
+  }
+
   h1 {
     font-size: 1.8rem;
     font-weight: 700;
@@ -73,6 +81,7 @@ ion-content {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero .hero-logo,
   .hero h1,
   .hero p {
     animation: none !important;

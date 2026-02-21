@@ -479,3 +479,23 @@ ion-row.action-row ion-button[expand="block"] {
     }
   }
 }
+
+/* Shared confirm dialog modal overrides */
+ion-modal.app-confirm-dialog-modal {
+  --backdrop-opacity: 0.08;
+  --background: transparent;
+}
+
+ion-modal.app-confirm-dialog-modal::part(backdrop) {
+  opacity: 0.08 !important;
+  background: #000 !important;
+}
+
+ion-modal.app-confirm-dialog-modal::part(content) {
+  background: transparent !important;
+}
+
+ion-modal.app-confirm-dialog-modal ion-content {
+  --background: transparent !important;
+  background: transparent !important;
+}
