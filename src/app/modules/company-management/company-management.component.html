@@ -3,8 +3,7 @@
   backAction="custom"
   [showBackButton]="true"
   rightIconColor="primary"
-  (backClicked)="onHeaderBackClick()"
-  (rightButtonClicked)="openCreateForm()">
+  (backClicked)="onHeaderBackClick()">
 </app-header>
 
 <ion-content>
@@ -13,14 +12,6 @@
       <h1 class="page-title">Companies</h1>
       <p class="page-subtitle">Manage company information</p>
     </div>
-    <ion-button 
-      class="add-button"
-      fill="solid" 
-      color="primary"
-      (click)="openCreateForm()">
-      <ion-icon slot="start" name="add-outline"></ion-icon>
-      Add
-    </ion-button>
   </div>
 
   <ion-card class="search-card">
@@ -47,14 +38,6 @@
         <p class="business">Business: <strong>{{ company.businessCons }}</strong> | Type: <strong>{{ company.companyType }}</strong></p>
         <p class="contact">Contact: {{ company.propName }} | Phone: {{ company.directPhone }}</p>
       </ion-label>
-      <ion-buttons slot="end">
-        <ion-button color="secondary" (click)="openUpdateForm(company)">
-          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-        </ion-button>
-        <ion-button color="danger" (click)="confirmDelete(company)">
-          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
     </ion-item>
   </ion-list>
 
@@ -64,7 +47,7 @@
     </ion-card-header>
     <ion-card-content>
       <p *ngIf="searchQuery">No companies match your search "{{ searchQuery }}"</p>
-      <p *ngIf="!searchQuery && companies.length === 0">No companies available. Click the add button to create one.</p>
+      <p *ngIf="!searchQuery && companies.length === 0">No companies available.</p>
     </ion-card-content>
   </ion-card>
 

@@ -1,0 +1,48 @@
+<app-header
+  title="FAQ"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="goBack()">
+</app-header>
+
+<ion-content class="ion-padding">
+  <div class="page-shell">
+    <ion-card class="page-card">
+      <ion-card-header>
+        <ion-card-title>Frequently Asked Questions</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-accordion-group expand="inset">
+          <ion-accordion value="one">
+            <ion-item slot="header" color="light">
+              <ion-label>How do I view a record?</ion-label>
+            </ion-item>
+            <div class="ion-padding" slot="content">
+              Open any module list and tap on the record row to open it in view mode.
+            </div>
+          </ion-accordion>
+
+          <ion-accordion value="two">
+            <ion-item slot="header" color="light">
+              <ion-label>How do I search items?</ion-label>
+            </ion-item>
+            <div class="ion-padding" slot="content">
+              Use the search bar in each module page and clear it manually to reset results.
+            </div>
+          </ion-accordion>
+
+          <ion-accordion value="three">
+            <ion-item slot="header" color="light">
+              <ion-label>Who can access modules?</ion-label>
+            </ion-item>
+            <div class="ion-padding" slot="content">
+              Access is role-based. Modules appear based on permissions assigned to your user.
+            </div>
+          </ion-accordion>
+        </ion-accordion-group>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<app-footer></app-footer>

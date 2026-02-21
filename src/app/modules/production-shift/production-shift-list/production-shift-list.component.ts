@@ -175,9 +175,6 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
 
   toggleSearch() {
     this.showSearch = !this.showSearch;
-    if (!this.showSearch) {
-      this.clearSearch();
-    }
   }
 
   toggleSortOptions() {

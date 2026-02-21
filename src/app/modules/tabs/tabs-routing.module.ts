@@ -55,21 +55,18 @@ const routes: Routes = [
       },
       {
         path: 'stock-management',
-        loadChildren: () => import('../stock-management/stock-management.module').then(m => m.StockManagementModule),
-        canActivate: [ModuleAccessGuard],
-        data: { moduleKey: 'STOCK_INWARD' }
+        redirectTo: 'operations',
+        pathMatch: 'full'
       },
       {
         path: 'order-management',
-        loadChildren: () => import('../order-management/order-management.module').then(m => m.OrderManagementModule),
-        canActivate: [ModuleAccessGuard],
-        data: { moduleKey: 'ORDER' }
+        redirectTo: 'operations',
+        pathMatch: 'full'
       },
       {
         path: 'invoice-management',
-        loadChildren: () => import('../invoice-management/invoice-management.module').then(m => m.InvoiceManagementModule),
-        canActivate: [ModuleAccessGuard],
-        data: { moduleKey: 'INVOICE' }
+        redirectTo: 'operations',
+        pathMatch: 'full'
       },
       {
         path: 'menu',

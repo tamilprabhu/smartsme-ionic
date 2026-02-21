@@ -97,6 +97,16 @@ const routes: Routes = [
     loadComponent: () => import('./forms/profile/profile.component').then(m => m.ProfileComponent),
     canActivate: [AuthGuard, ModuleAccessGuard],
     data: { moduleKey: 'PROFILE' }
+  },
+  {
+    path: 'help',
+    loadComponent: () => import('./pages/help/help.component').then(m => m.HelpComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'faq',
+    loadComponent: () => import('./pages/faq/faq.component').then(m => m.FaqComponent),
+    canActivate: [AuthGuard]
   }
 ];
 @NgModule({

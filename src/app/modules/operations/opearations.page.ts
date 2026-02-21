@@ -20,6 +20,7 @@ interface OperationItem {
 })
 export class OperationsPage {
   operations: OperationItem[] = [];
+  private readonly temporarilyHiddenModules: AppModuleKey[] = ['STOCK_INWARD', 'ORDER', 'INVOICE'];
 
   private readonly allOperations: OperationItem[] = [
     {
@@ -71,7 +72,9 @@ export class OperationsPage {
 
   ngOnInit() {
     const userRoles = this.loginService.getUserRoles();
-    this.operations = this.allOperations.filter((item) => canAccessModule(userRoles, item.moduleKey));
+    this.operations = this.allOperations.filter(
+      (item) => canAccessModule(userRoles, item.moduleKey) && !this.temporarilyHiddenModules.includes(item.moduleKey)
+    );
   }
 
 

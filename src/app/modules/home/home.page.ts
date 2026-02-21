@@ -94,7 +94,8 @@ export class HomePage implements OnInit {
   }
 
   private loadDashboard() {
-    this.canViewStock = this.canView('stock');
+    // Temporarily hide Stock Inward module from dashboard.
+    this.canViewStock = false;
 
     const products$ = this.canView('products')
       ? this.safe(this.productService.getProducts(1, ItemsPerPage.ONE).pipe(map(r => r.paging.totalItems)))

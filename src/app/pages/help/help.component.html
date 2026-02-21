@@ -1,0 +1,41 @@
+<app-header
+  title="Help"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="goBack()">
+</app-header>
+
+<ion-content class="ion-padding">
+  <div class="page-shell">
+    <ion-card class="page-card">
+      <ion-card-header>
+        <ion-card-title>Need Assistance?</ion-card-title>
+        <ion-card-subtitle>Find support for common tasks</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Use the dashboard and module pages to manage masters, operations, and reports.</p>
+        <p>If something is not working as expected, check the FAQ page first for quick answers.</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="page-card quick-links">
+      <ion-card-header>
+        <ion-card-title>Quick Help</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list lines="none">
+          <ion-item button detail="true" routerLink="/faq">
+            <ion-icon slot="start" name="help-circle-outline"></ion-icon>
+            <ion-label>Open FAQ</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-icon slot="start" name="mail-outline"></ion-icon>
+            <ion-label>Support: support@smartsme.com</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<app-footer></app-footer>

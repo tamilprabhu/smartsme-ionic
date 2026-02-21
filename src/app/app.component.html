@@ -22,6 +22,10 @@
             <i slot="start" class="fa fa-th-large menu-icon" aria-hidden="true"></i>
             <span class="menu-label">{{ profileMenuLabel }}</span>
           </ion-item>
+          <ion-item button class="menu-item" (click)="navigateTo('/help')">
+            <ion-icon slot="start" name="help-buoy-outline" class="menu-icon"></ion-icon>
+            <span class="menu-label">Help</span>
+          </ion-item>
         </ion-list>
         <div class="menu-spacer"></div>
         <ion-button color="primary" expand="block" class="menu-logout-button" (click)="logout()">
