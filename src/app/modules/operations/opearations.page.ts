@@ -20,7 +20,7 @@ interface OperationItem {
 })
 export class OperationsPage {
   operations: OperationItem[] = [];
-  private readonly temporarilyHiddenModules: AppModuleKey[] = ['STOCK_INWARD', 'ORDER', 'INVOICE'];
+  private readonly temporarilyHiddenModules: AppModuleKey[] = ['STOCK_INWARD', 'INVOICE'];
 
   private readonly allOperations: OperationItem[] = [
     {
@@ -36,7 +36,7 @@ export class OperationsPage {
       title: 'Order',
       subtitle: 'Create and track orders',
       summary: 'Modules: Buyer and product mapping, quantity planning, order lifecycle',
-      route: '/tabs/order-management',
+      route: '/orders',
       moduleKey: 'ORDER'
     },
     {

@@ -87,6 +87,17 @@ const routes: Routes = [
     data: { moduleKey: 'PRODUCTS' }
   },
   {
+    path: 'orders',
+    loadChildren: () => import('./modules/order-management/order-management.module').then(m => m.OrderManagementModule),
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'ORDER' }
+  },
+  {
+    path: 'order',
+    redirectTo: 'orders',
+    pathMatch: 'full'
+  },
+  {
     path: 'change-password',
     loadComponent: () => import('./forms/change-password/change-password.component').then(m => m.ChangePasswordComponent),
     canActivate: [AuthGuard, ModuleAccessGuard],

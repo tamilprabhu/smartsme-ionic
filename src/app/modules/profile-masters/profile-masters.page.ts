@@ -84,6 +84,13 @@ export class ProfileMastersPage {
       icon: 'cube-outline',
       route: '/products',
       moduleKey: 'PRODUCTS'
+    },
+    {
+      title: 'Orders',
+      subtitle: 'Create and manage sales orders',
+      icon: 'clipboard-outline',
+      route: '/orders',
+      moduleKey: 'ORDER'
     }
   ];
 

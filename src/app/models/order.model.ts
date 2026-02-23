@@ -1,3 +1,5 @@
+import { NumericLike } from './product.model';
+
 export interface Order {
   orderSequence: number;
   orderId: string;
@@ -9,9 +11,9 @@ export interface Order {
   orderDate: string;
   targetDate: string;
   orderQuantity: number;
-  price: number;
-  discount: number;
-  totalPrice: number;
+  price: NumericLike;
+  discount: NumericLike;
+  totalPrice: NumericLike;
   createdAt: string | number;
   updatedAt: string | number;
   isActive?: number;

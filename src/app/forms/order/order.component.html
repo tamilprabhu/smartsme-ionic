@@ -1,0 +1,145 @@
+<ion-content>
+  <ion-card class="sme-form-card ion-no-margin">
+    <ion-card-header>
+      <ion-card-title>
+        {{
+          mode === 'create'
+            ? 'Order Details'
+            : mode === 'update'
+            ? 'Edit Order Details'
+            : 'Order Details'
+        }}
+      </ion-card-title>
+      <ion-card-subtitle *ngIf="mode !== 'read'">Please fill all required information</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+        <ion-item lines="none" color="danger" *ngIf="formLevelErrors.length > 0 && mode !== 'read'">
+          <ion-label>
+            <p *ngFor="let message of formLevelErrors">{{ message }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input type="text" formControlName="orderId" label="Order ID" label-placement="floating" [readonly]="true"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input type="text" formControlName="orderName" label="Order Name *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="f['orderName'].invalid && (f['orderName'].dirty || f['orderName'].touched) && mode !== 'read'">
+                <small *ngIf="f['orderName'].errors?.['required']">Order Name is required.</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select formControlName="productId" label="Product *" label-placement="floating" [disabled]="mode === 'read'">
+                  <ion-select-option *ngFor="let product of products" [value]="product.productId">
+                    {{ product.productName }} ({{ product.productId }})
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-text color="danger" *ngIf="f['productId'].invalid && (f['productId'].dirty || f['productId'].touched) && mode !== 'read'">
+                <small *ngIf="f['productId'].errors?.['required']">Product is required.</small>
+              </ion-text>
+            </ion-col>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select formControlName="buyerId" label="Buyer *" label-placement="floating" [disabled]="mode === 'read'">
+                  <ion-select-option *ngFor="let buyer of buyers" [value]="buyer.buyerId">
+                    {{ buyer.buyerName }} ({{ buyer.buyerId }})
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-text color="danger" *ngIf="f['buyerId'].invalid && (f['buyerId'].dirty || f['buyerId'].touched) && mode !== 'read'">
+                <small *ngIf="f['buyerId'].errors?.['required']">Buyer is required.</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-select formControlName="orderStatus" label="Order Status *" label-placement="floating" [disabled]="mode === 'read'">
+                  <ion-select-option *ngFor="let status of orderStatuses" [value]="status">{{ status }}</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" sizeMd="3">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input type="date" formControlName="orderDate" label="Order Date *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="f['orderDate'].invalid && (f['orderDate'].dirty || f['orderDate'].touched) && mode !== 'read'">
+                <small *ngIf="f['orderDate'].errors?.['required']">Order Date is required.</small>
+              </ion-text>
+            </ion-col>
+            <ion-col size="12" sizeMd="3">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input type="date" formControlName="targetDate" label="Target Date *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+              </ion-item>
+              <ion-text color="danger" *ngIf="f['targetDate'].invalid && (f['targetDate'].dirty || f['targetDate'].touched) && mode !== 'read'">
+                <small *ngIf="f['targetDate'].errors?.['required']">Target Date is required.</small>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" sizeMd="3">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input type="number" formControlName="orderQuantity" label="Order Quantity *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" sizeMd="3">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input type="number" formControlName="price" label="Price *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" sizeMd="3">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input type="number" formControlName="discount" label="Discount *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" sizeMd="3">
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-input type="number" formControlName="totalPrice" label="Total Price *" label-placement="floating" [readonly]="true"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="mode !== 'read'">
+            <ion-col size="6">
+              <ion-button expand="block" type="submit" color="primary" [disabled]="orderForm.invalid">
+                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                {{ mode === 'create' ? 'Submit' : 'Update' }}
+              </ion-button>
+            </ion-col>
+            <ion-col size="6">
+              <ion-button color="medium" fill="outline" expand="block" (click)="goBack()">
+                <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                Cancel
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="mode === 'read'">
+            <ion-col size="12">
+              <ion-button color="medium" fill="outline" expand="block" (click)="goBack()">
+                <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+                Back
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<app-footer></app-footer>
