@@ -51,10 +51,10 @@ export class ProfileMastersPage {
       moduleKey: 'COMPANY'
     },
     {
-      title: 'Machine Process',
-      subtitle: 'Manage machine details and process setup',
+      title: 'Machine',
+      subtitle: 'Manage machine details',
       icon: 'construct-outline',
-      route: '/machine-process',
+      route: '/machine',
       moduleKey: 'MACHINE_PROCESS'
     },
     {

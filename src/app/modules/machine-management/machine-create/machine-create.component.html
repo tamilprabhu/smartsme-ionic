@@ -1,0 +1,15 @@
+<app-header
+  title="Create Machine"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="onCancel()">
+</app-header>
+
+<ion-content>
+  <app-machine
+    [mode]="'create'"
+    [serverValidationErrors]="serverValidationErrors"
+    (formSubmit)="onSubmit($event)"
+    (formClosed)="onCancel()">
+  </app-machine>
+</ion-content>

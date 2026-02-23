@@ -1,0 +1,19 @@
+<app-header
+  title="Machine Details"
+  backAction="custom"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onBack()"
+  (rightButtonClicked)="onEdit()">
+</app-header>
+
+<ion-content>
+  <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
+
+  <app-machine
+    *ngIf="!loading && machine"
+    [mode]="'read'"
+    [formData]="machine"
+    (formClosed)="onBack()">
+  </app-machine>
+</ion-content>

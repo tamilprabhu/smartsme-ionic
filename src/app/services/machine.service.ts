@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
@@ -17,6 +17,14 @@ export interface MachineResponse {
   };
 }
 
+export interface MachineUpsertPayload {
+  machineName: string;
+  machineType: string;
+  capacity: string;
+  model: string;
+  activeFlag: 'Y' | 'N';
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,27 +32,32 @@ export class MachineService {
   private readonly API_URL = `${environment.apiBaseUrl}/machine`;
 
   constructor(
-    private http: HttpClient,
-    private loginService: LoginService
+    private readonly http: HttpClient,
+    private readonly loginService: LoginService
   ) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.loginService.getToken();
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     });
   }
 
   getMachines(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<MachineResponse> {
-    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
-    if (search && search.trim()) {
-      url += `&search=${encodeURIComponent(search.trim())}`;
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('itemsPerPage', String(limit));
+
+    if (search?.trim()) {
+      params = params.set('search', search.trim());
     }
-    return this.http.get<MachineResponse>(url, {
-      headers: this.getHeaders()
+
+    return this.http.get<MachineResponse>(this.API_URL, {
+      headers: this.getHeaders(),
+      params
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -52,31 +65,31 @@ export class MachineService {
     return this.http.get<Machine>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
-  createMachine(machine: Omit<Machine, 'machineSequence' | 'createdAt' | 'updatedAt'>): Observable<Machine> {
+  createMachine(machine: MachineUpsertPayload): Observable<Machine> {
     return this.http.post<Machine>(this.API_URL, machine, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
-  updateMachine(id: number, machine: Partial<Omit<Machine, 'machineSequence' | 'createdAt'>>): Observable<Machine> {
+  updateMachine(id: number, machine: Partial<MachineUpsertPayload>): Observable<Machine> {
     return this.http.put<Machine>(`${this.API_URL}/${id}`, machine, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
-  deleteMachine(id: number): Observable<{message: string}> {
-    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
+  deleteMachine(id: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 }

@@ -48,7 +48,7 @@ export class HomePage implements OnInit {
 
   private readonly dashboardRouteMap: Record<string, string> = {
     products: '/products',
-    machines: '/machine-process',
+    machines: '/machine',
     users: '/employee/list',
     sellers: '/sellers',
     buyers: '/buyers',

@@ -47,7 +47,7 @@ const routes: Routes = [
     data: { moduleKey: 'COMPANY' }
   },
   {
-    path: 'machine-process',
+    path: 'machine',
     loadChildren: () => import('./modules/machine-management/machine-management.module').then(m => m.MachineManagementModule),
     canActivate: [AuthGuard, ModuleAccessGuard],
     data: { moduleKey: 'MACHINE_PROCESS' }
