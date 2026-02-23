@@ -31,14 +31,11 @@
               <ion-input
                 type="text"
                 formControlName="sellerId"
-                label="Seller ID *"
+                label="Seller ID"
                 label-placement="floating"
-                [readonly]="mode === 'read'">
+                [readonly]="true">
               </ion-input>
             </ion-item>
-            <ion-text color="danger" *ngIf="f['sellerId'].invalid && (f['sellerId'].dirty || f['sellerId'].touched) && mode !== 'read'">
-              <small *ngIf="f['sellerId'].errors?.['required']">Seller ID is required.</small>
-            </ion-text>
             <ion-text color="danger" *ngIf="hasServerError('sellerId') && mode !== 'read'">
               <small *ngFor="let message of getServerErrorMessages('sellerId')">{{ message }}</small>
             </ion-text>
@@ -66,82 +63,69 @@
           </ion-col>
         </ion-row>
 
-        <!-- Address -->
+        <!-- Seller Address -->
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-textarea
-                formControlName="address"
-                label="Address"
+                formControlName="sellerAddress"
+                label="Seller Address *"
                 label-placement="floating"
                 [readonly]="mode === 'read'"
                 rows="3">
               </ion-textarea>
             </ion-item>
-            <ion-text color="danger" *ngIf="hasServerError('address') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('address')">{{ message }}</small>
+            <ion-text color="danger" *ngIf="f['sellerAddress'].invalid && (f['sellerAddress'].dirty || f['sellerAddress'].touched) && mode !== 'read'">
+              <small *ngIf="f['sellerAddress'].errors?.['required']">Seller Address is required.</small>
+            </ion-text>
+            <ion-text color="danger" *ngIf="hasServerError('sellerAddress') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('sellerAddress')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
 
-        <!-- Phone -->
+        <!-- Seller Phone -->
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-input 
                 type="tel"
-                formControlName="phone"
-                label="Phone"
+                formControlName="sellerPhone"
+                label="Seller Phone *"
                 label-placement="floating"
                 [readonly]="mode === 'read'">
               </ion-input>
             </ion-item>
-            <ion-text color="danger" *ngIf="f['phone'].invalid && (f['phone'].dirty || f['phone'].touched) && mode !== 'read'">
-              <small *ngIf="f['phone'].errors?.['pattern']">
-                Enter a valid phone number (at least 7 digits, digits/+-/space allowed).
+            <ion-text color="danger" *ngIf="f['sellerPhone'].invalid && (f['sellerPhone'].dirty || f['sellerPhone'].touched) && mode !== 'read'">
+              <small *ngIf="f['sellerPhone'].errors?.['required']">Seller Phone is required.</small>
+              <small *ngIf="f['sellerPhone'].errors?.['pattern']">
+                Enter a valid 10-digit phone number.
               </small>
             </ion-text>
-            <ion-text color="danger" *ngIf="hasServerError('phone') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('phone')">{{ message }}</small>
+            <ion-text color="danger" *ngIf="hasServerError('sellerPhone') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('sellerPhone')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
 
-        <!-- Email -->
+        <!-- Seller Email -->
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-input
                 type="email"
-                formControlName="email"
-                label="Email"
+                formControlName="sellerEmail"
+                label="Seller Email *"
                 label-placement="floating"
                 [readonly]="mode === 'read'">
               </ion-input>
             </ion-item>
-            <ion-text color="danger" *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched) && mode !== 'read'">
-              <small *ngIf="f['email'].errors?.['email']">Enter a valid email address.</small>
+            <ion-text color="danger" *ngIf="f['sellerEmail'].invalid && (f['sellerEmail'].dirty || f['sellerEmail'].touched) && mode !== 'read'">
+              <small *ngIf="f['sellerEmail'].errors?.['required']">Seller Email is required.</small>
+              <small *ngIf="f['sellerEmail'].errors?.['email']">Enter a valid email address.</small>
             </ion-text>
-            <ion-text color="danger" *ngIf="hasServerError('email') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('email')">{{ message }}</small>
-            </ion-text>
-          </ion-col>
-        </ion-row>
-
-        <!-- GSTIN -->
-        <ion-row>
-          <ion-col size="12">
-            <ion-item fill="outline" class="ion-margin-bottom">
-              <ion-input
-                type="text"
-                formControlName="gstin"
-                label="GSTIN"
-                label-placement="floating"
-                [readonly]="mode === 'read'">
-              </ion-input>
-            </ion-item>
-            <ion-text color="danger" *ngIf="hasServerError('gstin') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('gstin')">{{ message }}</small>
+            <ion-text color="danger" *ngIf="hasServerError('sellerEmail') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('sellerEmail')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>

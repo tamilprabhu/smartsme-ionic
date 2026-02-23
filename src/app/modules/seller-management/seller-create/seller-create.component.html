@@ -1,0 +1,15 @@
+<app-header
+  title="Create Seller"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="onCancel()">
+</app-header>
+
+<ion-content>
+  <app-sellers
+    [mode]="'create'"
+    [serverValidationErrors]="serverValidationErrors"
+    (formSubmit)="onSubmit($event)"
+    (formClosed)="onCancel()">
+  </app-sellers>
+</ion-content>

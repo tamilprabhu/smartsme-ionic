@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Seller } from 'src/app/models/seller.model';
+import { SellerUpsertPayload } from 'src/app/services/seller.service';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
 import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
@@ -20,22 +21,19 @@ export class SellerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() formData: Seller | null = null;
   @Input() serverValidationErrors: ServerValidationErrors = {};
 
-  @Output() formSubmit = new EventEmitter<Seller>();
+  @Output() formSubmit = new EventEmitter<SellerUpsertPayload>();
   @Output() formClosed = new EventEmitter<void>();
 
   sellerForm: FormGroup;
   formLevelErrors: string[] = [];
   private readonly destroy$ = new Subject<void>();
-  isEdit = false;
-
   constructor(private fb: FormBuilder) {
     this.sellerForm = this.fb.group({
-      sellerId: ['', Validators.required],
+      sellerId: [''],
       sellerName: ['', Validators.required],
-      address: [''],
-      phone: ['', [Validators.pattern(/^[0-9\-\+ ]{7,}$/)]],
-      email: ['', [Validators.email]],
-      gstin: ['']
+      sellerAddress: ['', Validators.required],
+      sellerPhone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      sellerEmail: ['', [Validators.required, Validators.email]]
     });
   }
 
@@ -49,21 +47,17 @@ export class SellerComponent implements OnInit, OnChanges, OnDestroy {
     if (this.formData) {
       this.patchForm(this.formData);
     }
+
+    this.applyModeState();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['formData'] && this.formData) {
-      this.isEdit = this.mode === 'update';
       this.patchForm(this.formData);
-
-      if (this.mode === 'read') {
-        this.sellerForm.disable();
-      } else {
-        this.sellerForm.enable();
-      }
+      this.applyModeState();
     } else if (this.mode === 'create') {
       this.resetForm();
-      this.sellerForm.enable();
+      this.applyModeState();
     }
 
     if (changes['formData'] || changes['mode']) {
@@ -77,9 +71,10 @@ export class SellerComponent implements OnInit, OnChanges, OnDestroy {
 
       if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
         const applyResult = applyServerValidationErrors(this.sellerForm, this.serverValidationErrors, {
-          sellerAddress: 'address',
-          sellerPhone: 'phone',
-          sellerEmail: 'email'
+          sellerName: 'sellerName',
+          sellerAddress: 'sellerAddress',
+          sellerPhone: 'sellerPhone',
+          sellerEmail: 'sellerEmail'
         });
         this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
           (allMessages, messages) => [...allMessages, ...messages],
@@ -99,12 +94,23 @@ export class SellerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   patchForm(data: Seller) {
-    this.sellerForm.patchValue(data);
+    this.sellerForm.patchValue({
+      sellerId: data.sellerId || '',
+      sellerName: data.sellerName || '',
+      sellerAddress: data.sellerAddress || '',
+      sellerPhone: data.sellerPhone || '',
+      sellerEmail: data.sellerEmail || ''
+    }, { emitEvent: false });
   }
 
   resetForm() {
-    this.sellerForm.reset();
-    this.isEdit = false;
+    this.sellerForm.reset({
+      sellerId: '',
+      sellerName: '',
+      sellerAddress: '',
+      sellerPhone: '',
+      sellerEmail: ''
+    }, { emitEvent: false });
   }
 
   goBack() {
@@ -125,7 +131,14 @@ export class SellerComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
-    this.formSubmit.emit(this.sellerForm.value);
+    const value = this.sellerForm.getRawValue();
+    const payload: SellerUpsertPayload = {
+      sellerName: value.sellerName,
+      sellerAddress: value.sellerAddress,
+      sellerPhone: value.sellerPhone,
+      sellerEmail: value.sellerEmail
+    };
+    this.formSubmit.emit(payload);
   }
 
   hasServerError(controlName: string): boolean {
@@ -148,5 +161,15 @@ export class SellerComponent implements OnInit, OnChanges, OnDestroy {
 
     const { server, ...remainingErrors } = existingErrors;
     control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
+  }
+
+  private applyModeState(): void {
+    if (this.mode === 'read') {
+      this.sellerForm.disable({ emitEvent: false });
+      return;
+    }
+
+    this.sellerForm.enable({ emitEvent: false });
+    this.sellerForm.get('sellerId')?.disable({ emitEvent: false });
   }
 }

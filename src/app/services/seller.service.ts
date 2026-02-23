@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../enums/items-per-page.enum';
+import { SortBy } from '../enums/sort-by.enum';
+import { SortOrder } from '../enums/sort-order.enum';
 import { Seller } from '../models/seller.model';
 
 export interface SellerResponse {
@@ -15,6 +17,13 @@ export interface SellerResponse {
     itemsPerPage: number;
     totalItems: number;
   };
+}
+
+export interface SellerUpsertPayload {
+  sellerName: string;
+  sellerAddress: string;
+  sellerPhone: string;
+  sellerEmail: string;
 }
 
 @Injectable({
@@ -36,15 +45,28 @@ export class SellerService {
     });
   }
 
-  getSellers(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<SellerResponse> {
-    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
-    if (search && search.trim()) {
-      url += `&search=${encodeURIComponent(search.trim())}`;
+  getSellers(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.CREATE_DATE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<SellerResponse> {
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('itemsPerPage', String(limit))
+      .set('sortBy', sortBy)
+      .set('sortOrder', sortOrder);
+
+    if (search?.trim()) {
+      params = params.set('search', search.trim());
     }
-    return this.http.get<SellerResponse>(url, {
-      headers: this.getHeaders()
+
+    return this.http.get<SellerResponse>(this.API_URL, {
+      headers: this.getHeaders(),
+      params
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -52,23 +74,23 @@ export class SellerService {
     return this.http.get<Seller>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
-  createSeller(seller: Omit<Seller, 'sellerSequence' | 'createdAt' | 'updatedAt'>): Observable<Seller> {
+  createSeller(seller: SellerUpsertPayload): Observable<Seller> {
     return this.http.post<Seller>(this.API_URL, seller, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
-  updateSeller(id: number, seller: Partial<Omit<Seller, 'sellerSequence' | 'createdAt'>>): Observable<Seller> {
+  updateSeller(id: number, seller: Partial<SellerUpsertPayload>): Observable<Seller> {
     return this.http.put<Seller>(`${this.API_URL}/${id}`, seller, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -76,7 +98,7 @@ export class SellerService {
     return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 }
