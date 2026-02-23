@@ -1,0 +1,19 @@
+<app-header
+  title="Update Dispatch"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="onCancel()">
+</app-header>
+
+<ion-content>
+  <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
+
+  <app-dispatch
+    *ngIf="!loading && dispatch"
+    mode="update"
+    [formData]="dispatch"
+    [serverValidationErrors]="serverValidationErrors"
+    (formSubmit)="onSubmit($event)"
+    (formClosed)="onCancel()">
+  </app-dispatch>
+</ion-content>

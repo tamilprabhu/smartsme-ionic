@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../enums/items-per-page.enum';
+import { SortBy } from '../enums/sort-by.enum';
+import { SortOrder } from '../enums/sort-order.enum';
 import { Stock } from '../models/stock.model';
 
 export interface StockResponse {
@@ -36,13 +38,26 @@ export class StockService {
     });
   }
 
-  getStocks(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<StockResponse> {
-    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
-    if (search && search.trim()) {
-      url += `&search=${encodeURIComponent(search.trim())}`;
+  getStocks(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.CREATE_DATE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<StockResponse> {
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('itemsPerPage', String(limit))
+      .set('sortBy', sortBy)
+      .set('sortOrder', sortOrder);
+
+    if (search?.trim()) {
+      params = params.set('search', search.trim());
     }
-    return this.http.get<StockResponse>(url, {
-      headers: this.getHeaders()
+
+    return this.http.get<StockResponse>(this.API_URL, {
+      headers: this.getHeaders(),
+      params
     }).pipe(
       catchError(error => throwError(() => error))
     );

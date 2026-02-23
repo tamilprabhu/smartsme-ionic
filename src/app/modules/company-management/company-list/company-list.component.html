@@ -1,0 +1,101 @@
+<app-header
+  title="Companies"
+  backAction="custom"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="createCompany()">
+</app-header>
+
+<ion-content>
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Companies</h1>
+      <p class="page-subtitle">Create, search, update and delete companies</p>
+    </div>
+    <ion-button class="sort-toggle-button" fill="clear" size="small" (click)="toggleSortOptions()">
+      <ion-icon name="funnel-outline"></ion-icon>
+    </ion-button>
+    <ion-button class="add-button" fill="solid" color="primary" (click)="createCompany()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar
+      #searchInput
+      placeholder="Search by company name, ID, owner or email..."
+      [value]="searchControl.value"
+      (ionInput)="onSearchInput($event)"
+      (ionClear)="clearSearch()"
+      debounce="0">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-card class="search-card" *ngIf="showSortOptions">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" sizeMd="6">
+          <ion-item fill="outline">
+            <ion-select label="Sort By" label-placement="stacked" [(ngModel)]="sortBy" (ionChange)="onSortChange()">
+              <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">{{ option.label }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" sizeMd="6">
+          <ion-item fill="outline">
+            <ion-select label="Sort Order" label-placement="stacked" [(ngModel)]="sortOrder" (ionChange)="onSortChange()">
+              <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">{{ option.label }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <ion-item *ngIf="listError" lines="none" color="danger" class="results-info">
+    <ion-label>{{ listError }}</ion-label>
+  </ion-item>
+
+  <ion-item *ngIf="searchControl.value" class="results-info">
+    <ion-label>
+      Found <strong>{{ companies.length }}</strong> company(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="companies.length > 0">
+    <ion-item *ngFor="let company of companies; trackBy: trackByCompanySequence" class="sme-list-item" (click)="viewCompany(company)">
+      <ion-label>
+        <h2>
+          {{ company.companyName }}
+          <ion-badge color="primary">#{{ company.companyId }}</ion-badge>
+        </h2>
+        <p class="business">Business: <strong>{{ company.businessCons }}</strong> | Type: <strong>{{ company.companyType }}</strong></p>
+        <p class="contact">Owner: {{ company.propName }} | Phone: {{ company.directPhone }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="secondary" (click)="editCompany(company, $event)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(company, $event)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="companies.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Companies Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchControl.value">No companies match your search "{{ searchControl.value }}"</p>
+      <p *ngIf="!searchControl.value">No companies available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadCompanies($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more companies..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

@@ -28,7 +28,7 @@ export class OperationsPage {
       title: 'Stock Inward',
       subtitle: 'Manage incoming inventory',
       summary: 'Modules: Seller lookup, raw material entry, weight/rate capture',
-      route: '/tabs/stock-management',
+      route: '/stock',
       moduleKey: 'STOCK_INWARD'
     },
     {
@@ -52,7 +52,7 @@ export class OperationsPage {
       title: 'Invoice',
       subtitle: 'Generate and view invoices',
       summary: 'Modules: Invoice generation, totals, and dispatch-ready billing',
-      route: '/tabs/invoice-management',
+      route: '/invoice',
       moduleKey: 'INVOICE'
     },
     {
@@ -60,7 +60,7 @@ export class OperationsPage {
       title: 'Dispatch',
       subtitle: 'Schedule and track dispatch',
       summary: 'Modules: Dispatch planning, quantity movement, and tracking status',
-      route: '/tabs/dispatch-management',
+      route: '/dispatch',
       moduleKey: 'DISPATCH'
     }
   ];

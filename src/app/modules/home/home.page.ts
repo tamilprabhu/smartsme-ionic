@@ -49,7 +49,7 @@ export class HomePage implements OnInit {
   private readonly dashboardRouteMap: Record<string, string> = {
     products: '/products',
     machines: '/machine',
-    users: '/employee/list',
+    users: '/employee',
     sellers: '/sellers',
     buyers: '/buyers',
     company: '/company'
@@ -169,7 +169,7 @@ export class HomePage implements OnInit {
   }
 
   openStockInward(): void {
-    this.router.navigate(['/tabs/stock-management'], {
+    this.router.navigate(['/stock'], {
       queryParams: { from: 'dashboard' }
     });
   }

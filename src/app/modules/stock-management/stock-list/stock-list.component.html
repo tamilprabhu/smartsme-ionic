@@ -1,0 +1,101 @@
+<app-header
+  title="Stock Inward"
+  backAction="custom"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="createStock()">
+</app-header>
+
+<ion-content>
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Stock</h1>
+      <p class="page-subtitle">Create, search, update and delete stock entries</p>
+    </div>
+    <ion-button class="sort-toggle-button" fill="clear" size="small" (click)="toggleSortOptions()">
+      <ion-icon name="funnel-outline"></ion-icon>
+    </ion-button>
+    <ion-button class="add-button" fill="solid" color="primary" (click)="createStock()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar
+      #searchInput
+      placeholder="Search by stock ID, material or seller..."
+      [value]="searchControl.value"
+      (ionInput)="onSearchInput($event)"
+      (ionClear)="clearSearch()"
+      debounce="0">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-card class="search-card" *ngIf="showSortOptions">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" sizeMd="6">
+          <ion-item fill="outline">
+            <ion-select label="Sort By" label-placement="stacked" [(ngModel)]="sortBy" (ionChange)="onSortChange()">
+              <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">{{ option.label }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" sizeMd="6">
+          <ion-item fill="outline">
+            <ion-select label="Sort Order" label-placement="stacked" [(ngModel)]="sortOrder" (ionChange)="onSortChange()">
+              <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">{{ option.label }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <ion-item *ngIf="listError" lines="none" color="danger" class="results-info">
+    <ion-label>{{ listError }}</ion-label>
+  </ion-item>
+
+  <ion-item *ngIf="searchControl.value" class="results-info">
+    <ion-label>
+      Found <strong>{{ stocks.length }}</strong> stock record(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="stocks.length > 0">
+    <ion-item *ngFor="let stock of stocks; trackBy: trackByStockSequence" class="sme-list-item" (click)="viewStock(stock)">
+      <ion-label>
+        <h2>
+          {{ stock.stockId }}
+          <ion-badge color="primary">#{{ stock.sellerId }}</ion-badge>
+        </h2>
+        <p class="material">Material: <strong>{{ stock.rawMaterial }}</strong> | Date: <strong>{{ stock.stockDate | date:'shortDate' }}</strong></p>
+        <p class="meta">Bars: {{ stock.noOfBars }} | Weight: {{ stock.weight }} | Rate: {{ stock.rate }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="secondary" (click)="editStock(stock, $event)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(stock, $event)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="stocks.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Stock Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchControl.value">No stock matches your search "{{ searchControl.value }}"</p>
+      <p *ngIf="!searchControl.value">No stock available. Click the add button to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadStocks($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more stock..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

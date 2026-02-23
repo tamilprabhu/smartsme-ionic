@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../enums/items-per-page.enum';
+import { SortBy } from '../enums/sort-by.enum';
+import { SortOrder } from '../enums/sort-order.enum';
 import { Invoice } from '../models/invoice.model';
 
 export interface InvoiceResponse {
@@ -15,6 +17,21 @@ export interface InvoiceResponse {
     itemsPerPage: number;
     totalItems: number;
   };
+}
+
+export interface InvoiceUpsertPayload {
+  invoiceDate: string;
+  buyerId: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  cgstRate: number;
+  cgstAmount: number;
+  sgstRate: number;
+  sgstAmount: number;
+  totalAmount: number;
+  sacCode: string;
+  buyrGstin: string;
 }
 
 @Injectable({
@@ -36,13 +53,26 @@ export class InvoiceService {
     });
   }
 
-  getInvoices(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<InvoiceResponse> {
-    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
-    if (search && search.trim()) {
-      url += `&search=${encodeURIComponent(search.trim())}`;
+  getInvoices(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.CREATE_DATE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<InvoiceResponse> {
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('itemsPerPage', String(limit))
+      .set('sortBy', sortBy)
+      .set('sortOrder', sortOrder);
+
+    if (search?.trim()) {
+      params = params.set('search', search.trim());
     }
-    return this.http.get<InvoiceResponse>(url, {
-      headers: this.getHeaders()
+
+    return this.http.get<InvoiceResponse>(this.API_URL, {
+      headers: this.getHeaders(),
+      params
     }).pipe(
       catchError(error => throwError(() => error))
     );
@@ -56,7 +86,7 @@ export class InvoiceService {
     );
   }
 
-  createInvoice(invoice: Omit<Invoice, 'invoiceSequence' | 'createdAt' | 'updatedAt'>): Observable<Invoice> {
+  createInvoice(invoice: InvoiceUpsertPayload): Observable<Invoice> {
     return this.http.post<Invoice>(this.API_URL, invoice, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +94,7 @@ export class InvoiceService {
     );
   }
 
-  updateInvoice(id: number, invoice: Partial<Omit<Invoice, 'invoiceSequence' | 'createdAt'>>): Observable<Invoice> {
+  updateInvoice(id: number, invoice: Partial<InvoiceUpsertPayload>): Observable<Invoice> {
     return this.http.put<Invoice>(`${this.API_URL}/${id}`, invoice, {
       headers: this.getHeaders()
     }).pipe(

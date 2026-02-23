@@ -83,6 +83,13 @@ export class ProductionShiftListComponent implements OnInit, OnDestroy {
     this.loadShifts();
   }
 
+  ionViewWillEnter() {
+    this.currentPage = 1;
+    this.hasMore = true;
+    this.shifts = [];
+    this.loadShifts();
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();

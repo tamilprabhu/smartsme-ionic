@@ -11,6 +11,7 @@ import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util'
   selector: 'app-company',
   templateUrl: './company.component.html',
   styleUrls: ['./company.component.scss'],
+  standalone: true,
   imports: [FooterComponent, FormsModule, IonicModule, CommonModule]
 })
 export class CompanyComponent implements OnInit, OnChanges {

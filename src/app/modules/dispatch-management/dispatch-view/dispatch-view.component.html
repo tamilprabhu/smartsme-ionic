@@ -1,0 +1,17 @@
+<app-header
+  title="View Dispatch"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="onBack()">
+</app-header>
+
+<ion-content>
+  <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
+
+  <app-dispatch
+    *ngIf="!loading && dispatch"
+    mode="read"
+    [formData]="dispatch"
+    (formClosed)="onBack()">
+  </app-dispatch>
+</ion-content>

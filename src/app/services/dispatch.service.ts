@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../enums/items-per-page.enum';
+import { SortBy } from '../enums/sort-by.enum';
+import { SortOrder } from '../enums/sort-order.enum';
 import { Dispatch } from '../models/dispatch.model';
 
 export interface DispatchResponse {
@@ -15,6 +17,17 @@ export interface DispatchResponse {
     itemsPerPage: number;
     totalItems: number;
   };
+}
+
+export interface DispatchUpsertPayload {
+  orderId: string;
+  productId: string;
+  dispatchDate: string;
+  quantity: number;
+  noOfPacks: number;
+  totalWeight: number;
+  normalWeight: number;
+  normsWeight: number;
 }
 
 @Injectable({
@@ -36,13 +49,26 @@ export class DispatchService {
     });
   }
 
-  getDispatches(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<DispatchResponse> {
-    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
-    if (search && search.trim()) {
-      url += `&search=${encodeURIComponent(search.trim())}`;
+  getDispatches(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.CREATE_DATE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<DispatchResponse> {
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('itemsPerPage', String(limit))
+      .set('sortBy', sortBy)
+      .set('sortOrder', sortOrder);
+
+    if (search?.trim()) {
+      params = params.set('search', search.trim());
     }
-    return this.http.get<DispatchResponse>(url, {
-      headers: this.getHeaders()
+
+    return this.http.get<DispatchResponse>(this.API_URL, {
+      headers: this.getHeaders(),
+      params
     }).pipe(
       catchError(error => throwError(() => error))
     );
@@ -56,7 +82,7 @@ export class DispatchService {
     );
   }
 
-  createDispatch(dispatch: Omit<Dispatch, 'dispatchSequence' | 'createdAt' | 'updatedAt'>): Observable<Dispatch> {
+  createDispatch(dispatch: DispatchUpsertPayload): Observable<Dispatch> {
     return this.http.post<Dispatch>(this.API_URL, dispatch, {
       headers: this.getHeaders()
     }).pipe(
@@ -64,7 +90,7 @@ export class DispatchService {
     );
   }
 
-  updateDispatch(id: number, dispatch: Partial<Omit<Dispatch, 'dispatchSequence' | 'createdAt'>>): Observable<Dispatch> {
+  updateDispatch(id: number, dispatch: Partial<DispatchUpsertPayload>): Observable<Dispatch> {
     return this.http.put<Dispatch>(`${this.API_URL}/${id}`, dispatch, {
       headers: this.getHeaders()
     }).pipe(

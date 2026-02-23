@@ -1,0 +1,19 @@
+<app-header
+  title="Update Company"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="onCancel()">
+</app-header>
+
+<ion-content>
+  <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
+
+  <app-company
+    *ngIf="!loading && company"
+    mode="update"
+    [formData]="company"
+    [serverValidationErrors]="serverValidationErrors"
+    (formSubmit)="onSubmit($event)"
+    (formClosed)="onCancel()">
+  </app-company>
+</ion-content>

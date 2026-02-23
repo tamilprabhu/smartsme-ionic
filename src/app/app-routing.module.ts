@@ -53,6 +53,24 @@ const routes: Routes = [
     data: { moduleKey: 'MACHINE_PROCESS' }
   },
   {
+    path: 'stock',
+    loadChildren: () => import('./modules/stock-management/stock-management.module').then(m => m.StockManagementModule),
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'STOCK_INWARD' }
+  },
+  {
+    path: 'dispatch',
+    loadChildren: () => import('./modules/dispatch-management/dispatch-management.module').then(m => m.DispatchManagementModule),
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'DISPATCH' }
+  },
+  {
+    path: 'invoice',
+    loadChildren: () => import('./modules/invoice-management/invoice-management.module').then(m => m.InvoiceManagementModule),
+    canActivate: [AuthGuard, ModuleAccessGuard],
+    data: { moduleKey: 'INVOICE' }
+  },
+  {
     path: 'employee',
     loadChildren: () => import('./modules/employee-management/employee-management.module').then(m => m.EmployeeManagementModule),
     canActivate: [AuthGuard, ModuleAccessGuard],
@@ -60,12 +78,17 @@ const routes: Routes = [
   },
   {
     path: 'employees',
-    redirectTo: 'employee/list',
+    redirectTo: 'employee',
+    pathMatch: 'full',
+  },
+  {
+    path: 'employees/create',
+    redirectTo: 'employee/create',
     pathMatch: 'full',
   },
   {
     path: 'users',
-    redirectTo: 'employee/list',
+    redirectTo: 'employee',
     pathMatch: 'full',
   },
   {

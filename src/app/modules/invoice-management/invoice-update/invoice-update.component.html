@@ -1,0 +1,19 @@
+<app-header
+  title="Update Invoice"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="onCancel()">
+</app-header>
+
+<ion-content>
+  <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
+
+  <app-invoice
+    *ngIf="!loading && invoice"
+    mode="update"
+    [formData]="invoice"
+    [serverValidationErrors]="serverValidationErrors"
+    (formSubmit)="onSubmit($event)"
+    (formClosed)="onCancel()">
+  </app-invoice>
+</ion-content>

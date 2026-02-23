@@ -223,16 +223,30 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
     const queryParams = this.route.snapshot.queryParams;
 
     if (action === 'list') {
-      this.router.navigate(['/employee', 'list'], { queryParams });
+      this.router.navigate(['/employee'], { queryParams });
       return;
     }
 
-    if (id != null) {
-      this.router.navigate(['/employee', action, id], { queryParams });
+    if (action === 'create') {
+      this.router.navigate(['/employee', 'create'], { queryParams });
       return;
     }
 
-    this.router.navigate(['/employee', action], { queryParams });
+    if (action === 'delete' && id != null) {
+      this.confirmDeleteFromRoute(id);
+      return;
+    }
+
+    if ((action === 'view' || action === 'update') && id != null) {
+      if (action === 'update') {
+        this.router.navigate(['/employee', id, 'edit'], { queryParams });
+      } else {
+        this.router.navigate(['/employee', id], { queryParams });
+      }
+      return;
+    }
+
+    this.router.navigate(['/employee'], { queryParams });
   }
 
   onHeaderBackClick(): void {
@@ -405,12 +419,17 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
   private handleRouteChange(params: ParamMap): void {
     const routePath = this.route.snapshot.routeConfig?.path ?? '';
-    const actionFromRoutePath = (routePath.split('/')[0] || 'list') as EmployeeAction;
-    const actionParam = params.get('action') as EmployeeAction | null;
-    const actionCandidate = actionParam ?? actionFromRoutePath;
-    const action = actionCandidate && this.actions.includes(actionCandidate) ? actionCandidate : 'list';
-    const idParam = params.get('path-param');
+    const idParam = params.get('id');
     const id = idParam ? Number(idParam) : null;
+    let action: EmployeeAction = 'list';
+
+    if (routePath === 'create') {
+      action = 'create';
+    } else if (routePath === ':id/edit') {
+      action = 'update';
+    } else if (routePath === ':id') {
+      action = 'view';
+    }
 
     this.action = action;
     this.selectedEmployeeId = Number.isFinite(id) ? id : null;
@@ -430,11 +449,6 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
 
     if (!this.selectedEmployeeId) {
       this.openAction('list');
-      return;
-    }
-
-    if (action === 'delete') {
-      this.confirmDeleteFromRoute(this.selectedEmployeeId);
       return;
     }
 

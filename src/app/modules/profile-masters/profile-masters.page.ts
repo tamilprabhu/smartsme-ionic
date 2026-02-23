@@ -61,7 +61,7 @@ export class ProfileMastersPage {
       title: 'Employees',
       subtitle: 'Manage employee accounts and roles',
       icon: 'people-outline',
-      route: '/employee/list',
+      route: '/employee',
       moduleKey: 'EMPLOYEES'
     },
     {
