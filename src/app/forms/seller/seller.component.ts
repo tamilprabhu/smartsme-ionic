@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
-import { Location, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
@@ -28,7 +28,7 @@ export class SellerComponent implements OnInit, OnChanges, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   isEdit = false;
 
-  constructor(private location: Location, private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {
     this.sellerForm = this.fb.group({
       sellerId: ['', Validators.required],
       sellerName: ['', Validators.required],

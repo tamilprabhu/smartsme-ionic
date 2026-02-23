@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { NgForm, FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Company } from 'src/app/models/company.model';
 import { ServerValidationErrors } from 'src/app/utils/server-validation.util';
 import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
@@ -41,7 +41,7 @@ export class CompanyComponent implements OnInit, OnChanges {
   fieldServerErrors: ServerValidationErrors = {};
   formLevelErrors: string[] = [];
 
-  constructor(private location: Location) {}
+  constructor() {}
 
   ngOnInit() {
     if (this.formData) {

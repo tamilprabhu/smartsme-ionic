@@ -134,7 +134,7 @@ export class MachineListComponent implements OnInit, OnDestroy {
     this.router.navigate([this.backTarget]);
   }
 
-  trackByMachineSequence(index: number, machine: Machine): number {
+  trackByMachineSequence(_index: number, machine: Machine): number {
     return machine.machineSequence;
   }
 

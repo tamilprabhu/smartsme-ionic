@@ -134,7 +134,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.router.navigate([this.backTarget]);
   }
 
-  trackByProductSequence(index: number, product: Product): number {
+  trackByProductSequence(_index: number, product: Product): number {
     return product.productSequence;
   }
 

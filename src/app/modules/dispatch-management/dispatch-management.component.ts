@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { NavController, IonSearchbar } from '@ionic/angular';
+import { IonSearchbar } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Dispatch } from '../../models/dispatch.model';
@@ -32,7 +32,6 @@ export class DispatchManagementComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly confirmDialog: ConfirmDialogService,
-    private navCtrl: NavController,
     private dispatchService: DispatchService,
     private operationsService: OperationsService
   ) {

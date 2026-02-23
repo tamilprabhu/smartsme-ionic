@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { IonAccordionGroup } from '@ionic/angular';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
 
 @Component({
