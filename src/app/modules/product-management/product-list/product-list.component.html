@@ -1,0 +1,79 @@
+<app-header
+  title="Products"
+  backAction="custom"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="createProduct()">
+</app-header>
+
+<ion-content>
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Products</h1>
+      <p class="page-subtitle">Create, search, update and delete products</p>
+    </div>
+    <ion-button class="add-button" fill="solid" color="primary" (click)="createProduct()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar
+      #searchInput
+      placeholder="Search by name, ID, material, sales type or code..."
+      [value]="searchControl.value"
+      (ionInput)="onSearchInput($event)"
+      (ionClear)="clearSearch()"
+      debounce="0">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="listError" lines="none" color="danger" class="results-info">
+    <ion-label>{{ listError }}</ion-label>
+  </ion-item>
+
+  <ion-item *ngIf="searchControl.value" class="results-info">
+    <ion-label>
+      Found <strong>{{ products.length }}</strong> product(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="products.length > 0">
+    <ion-item *ngFor="let product of products; trackBy: trackByProductSequence" class="sme-list-item" (click)="viewProduct(product)">
+      <ion-label>
+        <h2>
+          {{ product.productName }}
+          <ion-badge color="primary">#{{ product.productId }}</ion-badge>
+        </h2>
+        <p class="material">Raw Material: <strong>{{ product.rawMaterial }}</strong></p>
+        <p class="specs">Weight: {{ product.weight }}kg | Total: {{ product.totalWeight }}kg | Cavity: {{ product.cavity }}</p>
+        <p class="specs">Sales: {{ product.salesType }} | {{ product.salesCode }} | {{ product.salesPercent }}%</p>
+        <p class="specs">Shot Rate: {{ product.shotRate }} | Item Rate: {{ product.perItemRate }} | Incentive: {{ product.incentiveLimit }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="secondary" (click)="editProduct(product, $event)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(product, $event)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="products.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Products Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchControl.value">No products match your search "{{ searchControl.value }}"</p>
+      <p *ngIf="!searchControl.value">No products available. Click Add to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadProducts($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more products..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

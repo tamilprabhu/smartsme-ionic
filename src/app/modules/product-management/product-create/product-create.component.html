@@ -1,0 +1,15 @@
+<app-header
+  title="Create Product"
+  backAction="custom"
+  [showBackButton]="true"
+  (backClicked)="onCancel()">
+</app-header>
+
+<ion-content>
+  <app-product
+    [mode]="'create'"
+    [serverValidationErrors]="serverValidationErrors"
+    (formSubmit)="onSubmit($event)"
+    (formClosed)="onCancel()">
+  </app-product>
+</ion-content>

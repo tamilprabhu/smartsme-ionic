@@ -1,12 +1,16 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Product } from 'src/app/models/product.model';
 import { ProductUpsertPayload } from 'src/app/services/product.service';
-import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
+import {
+  ServerValidationErrors,
+  applyServerValidationErrors,
+  clearServerValidationErrors
+} from 'src/app/utils/server-validation.util';
 import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
@@ -20,78 +24,70 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Product | null = null;
   @Input() serverValidationErrors: ServerValidationErrors = {};
+
   @Output() formSubmit = new EventEmitter<ProductUpsertPayload>();
   @Output() formClosed = new EventEmitter<void>();
 
   productForm: FormGroup;
   formLevelErrors: string[] = [];
-  private readonly destroy$ = new Subject<void>();
 
-  rawMaterials = ['Steel', 'Aluminum', 'Plastic', 'Copper']; // example options
+  rawMaterials = ['Steel', 'Aluminum', 'Plastic', 'Copper'];
   salesTypeOptions = ['Sales', 'Contract'];
 
-  constructor(private fb: FormBuilder) {
+  private readonly destroy$ = new Subject<void>();
+
+  constructor(private readonly fb: FormBuilder) {
     this.productForm = this.fb.group({
       productId: [''],
-      productName: ['', Validators.required],
-      rawMaterial: ['', Validators.required],
-      salesType: ['', Validators.required],
-      salesCode: ['', Validators.required],
-      salesPercentage: [0, [Validators.required, Validators.min(0), Validators.max(100), Validators.pattern('^[0-9]+(\\.[0-9]+)?$')]],
+      productName: ['', [Validators.required]],
+      rawMaterial: ['', [Validators.required]],
+      salesType: ['', [Validators.required]],
+      salesCode: ['', [Validators.required]],
+      salesPercent: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
       weight: [0, [Validators.required, Validators.min(0)]],
-      wastage: [0, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+$')]],
+      wastage: [0, [Validators.required, Validators.min(0)]],
       norms: [0, [Validators.required, Validators.min(0)]],
-      totalWeight: [{ value: 0, disabled: true }],
+      totalWeight: [{ value: 0, disabled: true }, [Validators.required, Validators.min(0)]],
       cavity: [0, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+$')]],
       shotRate: [0, [Validators.required, Validators.min(0)]],
-      rate: [0, [Validators.required, Validators.min(0)]],
-      incentiveLimit: [0, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+$')]],
-      productionShotQty: [0, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+$')]],
-      perHourProdQty: [0, [Validators.required, Validators.min(0)]]
+      perItemRate: [0, [Validators.required, Validators.min(0)]],
+      incentiveLimit: [0, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+$')]]
     });
-
-    // Watch weight and wastage to calculate totalWeight real-time
-    this.productForm.get('weight')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.updateTotalWeight());
-    this.productForm.get('wastage')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.updateTotalWeight());
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     Object.keys(this.productForm.controls).forEach((controlName) => {
       this.productForm.get(controlName)?.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => this.clearServerErrorForControl(controlName));
     });
 
+    this.productForm.get('weight')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateTotalWeight());
+
+    this.productForm.get('wastage')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateTotalWeight());
+
     if (this.formData) {
       this.patchForm(this.formData);
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['formData'] && this.formData) {
-      this.patchForm(this.formData);
-      this.productForm.get('productId')?.disable({ emitEvent: false });
-      if (this.mode === 'read') {
-        this.productForm.disable();
-      } else {
-        this.productForm.enable();
-        this.productForm.get('productId')?.disable({ emitEvent: false });
-      }
-      this.updateTotalWeight();
-    } else if (this.mode === 'create') {
-      this.resetForm();
-      this.productForm.enable();
-      this.productForm.patchValue({ productId: '' }, { emitEvent: false });
-      this.productForm.get('productId')?.disable({ emitEvent: false });
-    }
-
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['formData'] || changes['mode']) {
       clearServerValidationErrors(this.productForm);
       this.formLevelErrors = [];
+
+      if (this.formData) {
+        this.patchForm(this.formData);
+      } else if (this.mode === 'create') {
+        this.resetForm();
+      }
+
+      this.applyModeState();
+      this.updateTotalWeight();
     }
 
     if (changes['serverValidationErrors']) {
@@ -100,10 +96,9 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
 
       if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
         const applyResult = applyServerValidationErrors(this.productForm, this.serverValidationErrors, {
-          productName: 'productName',
-          perItemRate: 'rate',
-          salesPercent: 'salesPercentage'
+          productName: 'productName'
         });
+
         this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
           (allMessages, messages) => [...allMessages, ...messages],
           []
@@ -112,7 +107,7 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -121,43 +116,7 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
     return this.productForm.controls;
   }
 
-  patchForm(data: Product) {
-    this.productForm.patchValue({
-      productId: data.productId,
-      productName: data.productName,
-      rawMaterial: data.rawMaterial,
-      salesType: data.salesType || '',
-      salesCode: data.salesCode || '',
-      salesPercentage: data.salesPercent ? Number(data.salesPercent) : 0,
-      weight: data.weight,
-      wastage: data.wastage,
-      norms: data.norms,
-      totalWeight: data.totalWeight,
-      cavity: data.cavity,
-      shotRate: data.shotRate,
-      rate: data.perItemRate,
-      incentiveLimit: data.incentiveLimit,
-      productionShotQty: 0, // Default value
-      perHourProdQty: 0 // Default value
-    });
-  }
-
-  resetForm() {
-    this.productForm.reset();
-  }
-
-  goBack() {
-    this.formClosed.emit();
-  }
-
-  updateTotalWeight() {
-    const weight = this.productForm.get('weight')?.value || 0;
-    const wastage = this.productForm.get('wastage')?.value || 0;
-    const totalWeight = weight * (1 + wastage / 100);
-    this.productForm.get('totalWeight')?.setValue(totalWeight, { emitEvent: false });
-  }
-
-  onSubmit() {
+  onSubmit(): void {
     if (this.mode === 'read') return;
 
     clearServerValidationErrors(this.productForm);
@@ -168,25 +127,29 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
       focusAndScrollToFirstError();
       return;
     }
-    const formValue = this.productForm.getRawValue();
-    
-    const apiData: ProductUpsertPayload = {
-      productName: formValue.productName,
-      rawMaterial: formValue.rawMaterial,
-      salesType: formValue.salesType,
-      salesCode: formValue.salesCode,
-      salesPercent: Number(formValue.salesPercentage),
-      weight: Number(formValue.weight),
-      wastage: Number(formValue.wastage),
-      norms: Number(formValue.norms),
-      totalWeight: Number(formValue.totalWeight),
-      cavity: Number(formValue.cavity),
-      shotRate: Number(formValue.shotRate),
-      perItemRate: Number(formValue.rate),
-      incentiveLimit: Number(formValue.incentiveLimit)
+
+    const value = this.productForm.getRawValue();
+    const payload: ProductUpsertPayload = {
+      productName: value.productName,
+      rawMaterial: value.rawMaterial,
+      salesType: value.salesType,
+      salesCode: value.salesCode,
+      salesPercent: Number(value.salesPercent),
+      weight: Number(value.weight),
+      wastage: Number(value.wastage),
+      norms: Number(value.norms),
+      totalWeight: Number(value.totalWeight),
+      cavity: Number(value.cavity),
+      shotRate: Number(value.shotRate),
+      perItemRate: Number(value.perItemRate),
+      incentiveLimit: Number(value.incentiveLimit)
     };
-    
-    this.formSubmit.emit(apiData);
+
+    this.formSubmit.emit(payload);
+  }
+
+  goBack(): void {
+    this.formClosed.emit();
   }
 
   hasServerError(controlName: string): boolean {
@@ -197,6 +160,62 @@ export class ProductComponent implements OnInit, OnChanges, OnDestroy {
   getServerErrorMessages(controlName: string): string[] {
     const serverErrors = this.productForm.get(controlName)?.errors?.['server'];
     return Array.isArray(serverErrors) ? serverErrors : [];
+  }
+
+  private patchForm(data: Product): void {
+    this.productForm.patchValue({
+      productId: data.productId || '',
+      productName: data.productName || '',
+      rawMaterial: data.rawMaterial || '',
+      salesType: data.salesType || '',
+      salesCode: data.salesCode || '',
+      salesPercent: Number(data.salesPercent ?? 0),
+      weight: Number(data.weight ?? 0),
+      wastage: Number(data.wastage ?? 0),
+      norms: Number(data.norms ?? 0),
+      totalWeight: Number(data.totalWeight ?? 0),
+      cavity: Number(data.cavity ?? 0),
+      shotRate: Number(data.shotRate ?? 0),
+      perItemRate: Number(data.perItemRate ?? 0),
+      incentiveLimit: Number(data.incentiveLimit ?? 0)
+    }, { emitEvent: false });
+  }
+
+  private resetForm(): void {
+    this.productForm.reset({
+      productId: '',
+      productName: '',
+      rawMaterial: '',
+      salesType: '',
+      salesCode: '',
+      salesPercent: 0,
+      weight: 0,
+      wastage: 0,
+      norms: 0,
+      totalWeight: 0,
+      cavity: 0,
+      shotRate: 0,
+      perItemRate: 0,
+      incentiveLimit: 0
+    }, { emitEvent: false });
+  }
+
+  private applyModeState(): void {
+    if (this.mode === 'read') {
+      this.productForm.disable({ emitEvent: false });
+      return;
+    }
+
+    this.productForm.enable({ emitEvent: false });
+    this.productForm.get('productId')?.disable({ emitEvent: false });
+    this.productForm.get('totalWeight')?.disable({ emitEvent: false });
+  }
+
+  private updateTotalWeight(): void {
+    const weight = Number(this.productForm.get('weight')?.value || 0);
+    const wastage = Number(this.productForm.get('wastage')?.value || 0);
+    const totalWeight = Number((weight * (1 + wastage / 100)).toFixed(4));
+    this.productForm.get('totalWeight')?.setValue(totalWeight, { emitEvent: false });
   }
 
   private clearServerErrorForControl(controlName: string): void {

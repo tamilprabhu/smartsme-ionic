@@ -1,24 +1,26 @@
+export type NumericLike = number | string;
+
 export interface Product {
   productSequence: number;
   productId: string;
   companyId: string;
   productName: string;
   rawMaterial: string;
-  weight: string;
+  weight: NumericLike;
   wastage: number;
-  norms: string;
-  totalWeight: string;
+  norms: NumericLike;
+  totalWeight: NumericLike;
   cavity: number;
-  shotRate: string;
-  perItemRate: string;
-  salesType?: string;
-  salesCode?: string;
-  salesPercent?: string;
+  shotRate: NumericLike;
+  perItemRate: NumericLike;
+  salesType: string;
+  salesCode: string;
+  salesPercent: NumericLike;
   incentiveLimit: number;
+  createdAt: string;
+  updatedAt: string;
   isActive?: number;
   isDeleted?: number;
   createdBy?: number | null;
   updatedBy?: number | null;
-  createdAt: string | number;
-  updatedAt: string | number;
 }

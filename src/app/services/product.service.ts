@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
@@ -40,27 +40,32 @@ export class ProductService {
   private readonly API_URL = `${environment.apiBaseUrl}/product`;
 
   constructor(
-    private http: HttpClient,
-    private loginService: LoginService
+    private readonly http: HttpClient,
+    private readonly loginService: LoginService
   ) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.loginService.getToken();
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     });
   }
 
   getProducts(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<ProductResponse> {
-    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
-    if (search && search.trim()) {
-      url += `&search=${encodeURIComponent(search.trim())}`;
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('itemsPerPage', String(limit));
+
+    if (search?.trim()) {
+      params = params.set('search', search.trim());
     }
-    return this.http.get<ProductResponse>(url, {
-      headers: this.getHeaders()
+
+    return this.http.get<ProductResponse>(this.API_URL, {
+      headers: this.getHeaders(),
+      params
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -68,7 +73,7 @@ export class ProductService {
     return this.http.get<Product>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -76,7 +81,7 @@ export class ProductService {
     return this.http.post<Product>(this.API_URL, product, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -84,15 +89,15 @@ export class ProductService {
     return this.http.put<Product>(`${this.API_URL}/${id}`, product, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
-  deleteProduct(id: number): Observable<{message: string}> {
-    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
+  deleteProduct(id: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 }
