@@ -31,12 +31,9 @@
                 formControlName="buyerId"
                 label="Buyer ID *"
                 label-placement="floating"
-                [readonly]="mode === 'read'">
+                [readonly]="true">
               </ion-input>
             </ion-item>
-            <ion-text color="danger" *ngIf="f['buyerId'].invalid && (f['buyerId'].dirty || f['buyerId'].touched) && mode !== 'read'">
-              <small *ngIf="f['buyerId'].errors?.['required']">Buyer ID is required.</small>
-            </ion-text>
             <ion-text color="danger" *ngIf="hasServerError('buyerId') && mode !== 'read'">
               <small *ngFor="let message of getServerErrorMessages('buyerId')">{{ message }}</small>
             </ion-text>
@@ -64,84 +61,85 @@
           </ion-col>
         </ion-row>
 
-        <!-- Address -->
+        <!-- Buyer Address -->
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-textarea 
-                formControlName="address" 
-                label="Address *"
+                formControlName="buyerAddress" 
+                label="Buyer Address *"
                 label-placement="floating"
                 [readonly]="mode === 'read'"
                 rows="3">
               </ion-textarea>
             </ion-item>
-            <ion-text color="danger" *ngIf="f['address'].invalid && (f['address'].dirty || f['address'].touched) && mode !== 'read'">
-              <small *ngIf="f['address'].errors?.['required']">Address is required.</small>
+            <ion-text color="danger" *ngIf="f['buyerAddress'].invalid && (f['buyerAddress'].dirty || f['buyerAddress'].touched) && mode !== 'read'">
+              <small *ngIf="f['buyerAddress'].errors?.['required']">Buyer Address is required.</small>
             </ion-text>
-            <ion-text color="danger" *ngIf="hasServerError('address') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('address')">{{ message }}</small>
+            <ion-text color="danger" *ngIf="hasServerError('buyerAddress') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('buyerAddress')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
 
-        <!-- Phone -->
+        <!-- Buyer Phone -->
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-input
                 type="tel"
-                formControlName="phone"
-                label="Phone *"
+                formControlName="buyerPhone"
+                label="Buyer Phone *"
                 label-placement="floating"
                 [readonly]="mode === 'read'">
               </ion-input>
             </ion-item>
-            <ion-text color="danger" *ngIf="f['phone'].invalid && (f['phone'].dirty || f['phone'].touched) && mode !== 'read'">
-              <small *ngIf="f['phone'].errors?.['required']">Phone is required.</small>
+            <ion-text color="danger" *ngIf="f['buyerPhone'].invalid && (f['buyerPhone'].dirty || f['buyerPhone'].touched) && mode !== 'read'">
+              <small *ngIf="f['buyerPhone'].errors?.['required']">Buyer Phone is required.</small>
+              <small *ngIf="f['buyerPhone'].errors?.['pattern']">Enter a valid phone number.</small>
             </ion-text>
-            <ion-text color="danger" *ngIf="hasServerError('phone') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('phone')">{{ message }}</small>
+            <ion-text color="danger" *ngIf="hasServerError('buyerPhone') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('buyerPhone')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
 
-        <!-- Email -->
+        <!-- Buyer Email -->
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-input
                 type="email"
-                formControlName="email"
-                label="Email *"
+                formControlName="buyerEmail"
+                label="Buyer Email *"
                 label-placement="floating"
                 [readonly]="mode === 'read'">
               </ion-input>
             </ion-item>
-            <ion-text color="danger" *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched) && mode !== 'read'">
-              <small *ngIf="f['email'].errors?.['required']">Email is required.</small>
-              <small *ngIf="f['email'].errors?.['email']">Enter a valid email.</small>
+            <ion-text color="danger" *ngIf="f['buyerEmail'].invalid && (f['buyerEmail'].dirty || f['buyerEmail'].touched) && mode !== 'read'">
+              <small *ngIf="f['buyerEmail'].errors?.['required']">Buyer Email is required.</small>
+              <small *ngIf="f['buyerEmail'].errors?.['email']">Enter a valid email.</small>
             </ion-text>
-            <ion-text color="danger" *ngIf="hasServerError('email') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('email')">{{ message }}</small>
+            <ion-text color="danger" *ngIf="hasServerError('buyerEmail') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('buyerEmail')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>
 
-        <!-- GSTIN -->
+        <!-- Buyer GSTIN -->
         <ion-row>
           <ion-col size="12">
             <ion-item fill="outline" class="ion-margin-bottom">
               <ion-input
                 type="text"
-                formControlName="gstin"
-                label="GSTIN"
+                formControlName="buyerGstin"
+                label="Buyer GSTIN"
                 label-placement="floating"
                 [readonly]="mode === 'read'">
               </ion-input>
             </ion-item>
-            <ion-text color="danger" *ngIf="hasServerError('gstin') && mode !== 'read'">
-              <small *ngFor="let message of getServerErrorMessages('gstin')">{{ message }}</small>
+            <ion-text color="danger" *ngIf="hasServerError('buyerGstin') && mode !== 'read'">
+              <small *ngFor="let message of getServerErrorMessages('buyerGstin')">{{ message }}</small>
             </ion-text>
           </ion-col>
         </ion-row>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
@@ -15,6 +15,14 @@ export interface BuyerResponse {
     itemsPerPage: number;
     totalItems: number;
   };
+}
+
+export interface BuyerUpsertPayload {
+  buyerName: string;
+  buyerAddress: string;
+  buyerPhone: string;
+  buyerEmail: string;
+  buyerGstin?: string;
 }
 
 @Injectable({
@@ -37,14 +45,19 @@ export class BuyerService {
   }
 
   getBuyers(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<BuyerResponse> {
-    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
-    if (search && search.trim()) {
-      url += `&search=${encodeURIComponent(search.trim())}`;
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('itemsPerPage', String(limit));
+
+    if (search?.trim()) {
+      params = params.set('search', search.trim());
     }
-    return this.http.get<BuyerResponse>(url, {
-      headers: this.getHeaders()
+
+    return this.http.get<BuyerResponse>(this.API_URL, {
+      headers: this.getHeaders(),
+      params
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -52,23 +65,23 @@ export class BuyerService {
     return this.http.get<Buyer>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
-  createBuyer(buyer: Omit<Buyer, 'buyerSequence' | 'createdAt' | 'updatedAt'>): Observable<Buyer> {
+  createBuyer(buyer: BuyerUpsertPayload): Observable<Buyer> {
     return this.http.post<Buyer>(this.API_URL, buyer, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
-  updateBuyer(id: number, buyer: Partial<Omit<Buyer, 'buyerSequence' | 'createdAt'>>): Observable<Buyer> {
+  updateBuyer(id: number, buyer: Partial<BuyerUpsertPayload>): Observable<Buyer> {
     return this.http.put<Buyer>(`${this.API_URL}/${id}`, buyer, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -76,7 +89,7 @@ export class BuyerService {
     return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error))
     );
   }
 }

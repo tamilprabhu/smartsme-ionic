@@ -1,0 +1,19 @@
+<app-header
+  title="Buyer Details"
+  backAction="custom"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onBack()"
+  (rightButtonClicked)="onEdit()">
+</app-header>
+
+<ion-content>
+  <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
+
+  <app-buyer
+    *ngIf="!loading && buyer"
+    [mode]="'read'"
+    [formData]="buyer"
+    (formClosed)="onBack()">
+  </app-buyer>
+</ion-content>

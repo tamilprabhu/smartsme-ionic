@@ -1,24 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, AlertController } from '@ionic/angular';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-
-import { BuyerManagementComponent } from './buyer-management.component';
-import { BuyerComponent } from '../../forms/buyer/buyer.component';
-import { HeaderComponent } from '../../components/header/header.component';
+import { BuyerManagementRoutingModule } from './buyer-management-routing.module';
 
 @NgModule({
-  declarations: [BuyerManagementComponent],
-  imports: [
-    CommonModule,
-    IonicModule,
-    ReactiveFormsModule,
-    BuyerComponent,
-    HeaderComponent,
-    RouterModule.forChild([{ path: '', component: BuyerManagementComponent }])
-  ],
-  exports: [BuyerManagementComponent],
-  providers: [AlertController]
+  imports: [CommonModule, BuyerManagementRoutingModule]
 })
 export class BuyerManagementModule {}

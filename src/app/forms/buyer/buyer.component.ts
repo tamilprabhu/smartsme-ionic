@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Buyer } from 'src/app/models/buyer.model';
+import { BuyerUpsertPayload } from 'src/app/services/buyer.service';
 import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
 import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
@@ -19,7 +20,7 @@ export class BuyerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode: 'create' | 'read' | 'update' | null = 'create';
   @Input() formData: Buyer | null = null;
   @Input() serverValidationErrors: ServerValidationErrors = {};
-  @Output() formSubmit = new EventEmitter<Buyer>();
+  @Output() formSubmit = new EventEmitter<BuyerUpsertPayload>();
   @Output() formClosed = new EventEmitter<void>();
 
   buyerForm: FormGroup;
@@ -28,12 +29,12 @@ export class BuyerComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(private fb: FormBuilder) {
     this.buyerForm = this.fb.group({
-      buyerId: ['', Validators.required],
+      buyerId: [''],
       buyerName: ['', Validators.required],
-      address: ['', Validators.required],
-      phone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      gstin: ['']
+      buyerAddress: ['', Validators.required],
+      buyerPhone: ['', [Validators.required, Validators.pattern(/^[0-9\-\+ ]{7,}$/)]],
+      buyerEmail: ['', [Validators.required, Validators.email]],
+      buyerGstin: ['']
     });
   }
 
@@ -45,21 +46,19 @@ export class BuyerComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     if (this.formData) {
-      this.buyerForm.patchValue(this.formData);
+      this.patchForm(this.formData);
     }
+
+    this.applyModeState();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['formData'] && this.formData) {
-      this.buyerForm.patchValue(this.formData);
-      if (this.mode === 'read') {
-        this.buyerForm.disable();
-      } else {
-        this.buyerForm.enable();
-      }
+      this.patchForm(this.formData);
+      this.applyModeState();
     } else if (this.mode === 'create') {
-      this.buyerForm.reset();
-      this.buyerForm.enable();
+      this.resetForm();
+      this.applyModeState();
     }
 
     if (changes['formData'] || changes['mode']) {
@@ -73,10 +72,11 @@ export class BuyerComponent implements OnInit, OnChanges, OnDestroy {
 
       if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
         const applyResult = applyServerValidationErrors(this.buyerForm, this.serverValidationErrors, {
-          buyerAddress: 'address',
-          buyerPhone: 'phone',
-          buyerEmail: 'email',
-          buyerGstin: 'gstin'
+          buyerName: 'buyerName',
+          buyerAddress: 'buyerAddress',
+          buyerPhone: 'buyerPhone',
+          buyerEmail: 'buyerEmail',
+          buyerGstin: 'buyerGstin'
         });
         this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
           (allMessages, messages) => [...allMessages, ...messages],
@@ -112,7 +112,17 @@ export class BuyerComponent implements OnInit, OnChanges, OnDestroy {
       focusAndScrollToFirstError();
       return;
     }
-    this.formSubmit.emit(this.buyerForm.value);
+
+    const value = this.buyerForm.getRawValue();
+    const payload: BuyerUpsertPayload = {
+      buyerName: value.buyerName,
+      buyerAddress: value.buyerAddress,
+      buyerPhone: value.buyerPhone,
+      buyerEmail: value.buyerEmail,
+      buyerGstin: value.buyerGstin || ''
+    };
+
+    this.formSubmit.emit(payload);
   }
 
   hasServerError(controlName: string): boolean {
@@ -135,5 +145,37 @@ export class BuyerComponent implements OnInit, OnChanges, OnDestroy {
 
     const { server, ...remainingErrors } = existingErrors;
     control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
+  }
+
+  private patchForm(data: Buyer): void {
+    this.buyerForm.patchValue({
+      buyerId: data.buyerId || '',
+      buyerName: data.buyerName || '',
+      buyerAddress: data.buyerAddress || '',
+      buyerPhone: data.buyerPhone || '',
+      buyerEmail: data.buyerEmail || '',
+      buyerGstin: data.buyerGstin || ''
+    }, { emitEvent: false });
+  }
+
+  private resetForm(): void {
+    this.buyerForm.reset({
+      buyerId: '',
+      buyerName: '',
+      buyerAddress: '',
+      buyerPhone: '',
+      buyerEmail: '',
+      buyerGstin: ''
+    }, { emitEvent: false });
+  }
+
+  private applyModeState(): void {
+    if (this.mode === 'read') {
+      this.buyerForm.disable({ emitEvent: false });
+      return;
+    }
+
+    this.buyerForm.enable({ emitEvent: false });
+    this.buyerForm.get('buyerId')?.disable({ emitEvent: false });
   }
 }

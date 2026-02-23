@@ -1,0 +1,77 @@
+<app-header
+  title="Buyers"
+  backAction="custom"
+  [showBackButton]="true"
+  rightIconColor="primary"
+  (backClicked)="onHeaderBackClick()"
+  (rightButtonClicked)="createBuyer()">
+</app-header>
+
+<ion-content>
+  <div class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Buyers</h1>
+      <p class="page-subtitle">Create, search, update and delete buyers</p>
+    </div>
+    <ion-button class="add-button" fill="solid" color="primary" (click)="createBuyer()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add
+    </ion-button>
+  </div>
+
+  <ion-card class="search-card">
+    <ion-searchbar
+      #searchInput
+      placeholder="Search by buyer name, ID, phone or email..."
+      [value]="searchControl.value"
+      (ionInput)="onSearchInput($event)"
+      (ionClear)="clearSearch()"
+      debounce="0">
+    </ion-searchbar>
+  </ion-card>
+
+  <ion-item *ngIf="listError" lines="none" color="danger" class="results-info">
+    <ion-label>{{ listError }}</ion-label>
+  </ion-item>
+
+  <ion-item *ngIf="searchControl.value" class="results-info">
+    <ion-label>
+      Found <strong>{{ buyers.length }}</strong> buyer(s)
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="buyers.length > 0">
+    <ion-item *ngFor="let buyer of buyers; trackBy: trackByBuyerSequence" class="sme-list-item" (click)="viewBuyer(buyer)">
+      <ion-label>
+        <h2>
+          {{ buyer.buyerName }}
+          <ion-badge color="primary">#{{ buyer.buyerId }}</ion-badge>
+        </h2>
+        <p class="address">Address: <strong>{{ buyer.buyerAddress }}</strong></p>
+        <p class="contact">Phone: {{ buyer.buyerPhone }} | Email: {{ buyer.buyerEmail }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="secondary" (click)="editBuyer(buyer, $event)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="confirmDelete(buyer, $event)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="buyers.length === 0 && !loading" class="empty-state">
+    <ion-card-header>
+      <ion-card-title>No Buyers Found</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="searchControl.value">No buyers match your search "{{ searchControl.value }}"</p>
+      <p *ngIf="!searchControl.value">No buyers available. Click Add to create one.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadBuyers($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more buyers..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
