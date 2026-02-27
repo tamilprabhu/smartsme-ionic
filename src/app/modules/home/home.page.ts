@@ -26,6 +26,7 @@ import { getRolesFromStoredUser } from 'src/app/utils/role-access.util';
 export class HomePage implements OnInit {
   companyName = '';
   canViewStock = false;
+  dashboardLoading = true;
   private userRoles: string[] = [];
 
   stockSummary = {
@@ -94,6 +95,7 @@ export class HomePage implements OnInit {
   }
 
   private loadDashboard() {
+    this.dashboardLoading = true;
     // Temporarily hide Stock Inward module from dashboard.
     this.canViewStock = false;
 
@@ -127,21 +129,27 @@ export class HomePage implements OnInit {
       buyers: buyers$,
       companies: companies$,
       stock: stock$
-    }).subscribe((res) => {
-      this.summaryCards = [
-        { key: 'products', label: 'Products', count: res.products ?? 0 },
-        { key: 'machines', label: 'Machines', count: res.machines ?? 0 },
-        { key: 'users', label: 'Users', count: res.users ?? 0 },
-        { key: 'sellers', label: 'Sellers', count: res.sellers ?? 0 },
-        { key: 'buyers', label: 'Buyers', count: res.buyers ?? 0 },
-        { key: 'company', label: 'Company', count: res.companies ?? 0 }
-      ].filter(item => this.canView(item.key as keyof HomePage['moduleMap']));
+    }).subscribe({
+      next: (res) => {
+        this.summaryCards = [
+          { key: 'products', label: 'Products', count: res.products ?? 0 },
+          { key: 'machines', label: 'Machines', count: res.machines ?? 0 },
+          { key: 'users', label: 'Users', count: res.users ?? 0 },
+          { key: 'sellers', label: 'Sellers', count: res.sellers ?? 0 },
+          { key: 'buyers', label: 'Buyers', count: res.buyers ?? 0 },
+          { key: 'company', label: 'Company', count: res.companies ?? 0 }
+        ].filter(item => this.canView(item.key as keyof HomePage['moduleMap']));
 
-      if (res.stock) {
-        this.stockSummary.total = res.stock.paging.totalItems || 0;
-        const latest = res.stock.items?.[0];
-        this.stockSummary.latestDate = latest?.stockDate || '';
-        this.stockSummary.latestMaterial = latest?.rawMaterial || '';
+        if (res.stock) {
+          this.stockSummary.total = res.stock.paging.totalItems || 0;
+          const latest = res.stock.items?.[0];
+          this.stockSummary.latestDate = latest?.stockDate || '';
+          this.stockSummary.latestMaterial = latest?.rawMaterial || '';
+        }
+        this.dashboardLoading = false;
+      },
+      error: () => {
+        this.dashboardLoading = false;
       }
     });
   }
