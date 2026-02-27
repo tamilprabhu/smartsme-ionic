@@ -122,17 +122,17 @@ export class ProductionShiftFormComponent implements OnInit, OnChanges, OnDestro
 
   private initForm() {
     this.form = this.fb.group({
-      orderId: [''],
+      orderId: [null],
       productId: ['', Validators.required],
       machineId: ['', Validators.required],
       shiftStartDate: ['', Validators.required],
       shiftEndDate: ['', Validators.required],
       entryType: ['', Validators.required],
-      shiftType: [''],
-      shiftHours: [''],
+      shiftType: [null],
+      shiftHours: [null],
       operator1: ['', Validators.required],
-      operator2: [''],
-      operator3: [''],
+      operator2: [null],
+      operator3: [null],
       supervisor: ['', Validators.required],
       openingCount: [0, [Validators.required, Validators.min(0)]],
       closingCount: [0, [Validators.required, Validators.min(0)]],
@@ -162,14 +162,16 @@ export class ProductionShiftFormComponent implements OnInit, OnChanges, OnDestro
     if (entryType === EntryType.SHIFT.toString()) {
       shiftTypeControl?.setValidators([Validators.required]);
       shiftHoursControl?.clearValidators();
-      shiftHoursControl?.setValue('');
+      shiftHoursControl?.setValue(null);
     } else if (entryType === EntryType.HOURS.toString()) {
       shiftHoursControl?.setValidators([Validators.required]);
       shiftTypeControl?.clearValidators();
-      shiftTypeControl?.setValue('');
+      shiftTypeControl?.setValue(null);
     } else {
       shiftTypeControl?.clearValidators();
       shiftHoursControl?.clearValidators();
+      shiftTypeControl?.setValue(null);
+      shiftHoursControl?.setValue(null);
     }
     
     shiftTypeControl?.updateValueAndValidity();
