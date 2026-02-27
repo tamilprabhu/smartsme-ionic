@@ -604,6 +604,143 @@ ion-row.action-row ion-button[expand="block"] {
   font-weight: 500;
 }
 
+app-home {
+  ion-toolbar {
+    --background: var(--app-primary-fade);
+    --min-height: 56px;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    --border-width: 0;
+    --border-style: none;
+    --border-color: transparent;
+  }
+
+  :is(.dash-hero__text h1, .dash-card ion-card-title, .dash-metric strong) {
+    color: #f0f3f8;
+  }
+
+  :is(.dash-hero__text p, .dash-card ion-card-subtitle, .dash-metric span, .dash-summary__label) {
+    color: #c6cfde;
+  }
+}
+
+html.dark-theme app-home ion-content,
+body.dark-theme app-home ion-content {
+  --background: radial-gradient(1200px 420px at 50% -220px, rgba(255, 106, 0, 0.14), transparent 65%), var(--app-gunmetal-deep);
+}
+
+html.dark-theme app-home .dash-hero__brand,
+body.dark-theme app-home .dash-hero__brand {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+}
+
+html.dark-theme app-home .dash-hero__logo,
+body.dark-theme app-home .dash-hero__logo {
+  background: #2f333c;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 106, 0, 0.24);
+}
+
+html.dark-theme app-home .dash-card,
+body.dark-theme app-home .dash-card {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-theme app-home .dash-card ion-card-header,
+body.dark-theme app-home .dash-card ion-card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.dark-theme app-home .dash-card--overview ion-card-header,
+body.dark-theme app-home .dash-card--overview ion-card-header {
+  border-bottom: none;
+}
+
+html.dark-theme app-home .dash-metric,
+body.dark-theme app-home .dash-metric {
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+html.dark-theme app-home .dash-summary__item,
+body.dark-theme app-home .dash-summary__item {
+  background: linear-gradient(180deg, rgba(255, 106, 0, 0.14), rgba(52, 56, 65, 0.98) 72%);
+  border: 1px solid rgba(255, 106, 0, 0.24);
+}
+
+html.dark-theme app-home .dash-summary__value,
+body.dark-theme app-home .dash-summary__value {
+  color: #f0f3f8;
+}
+
+html.dark-theme app-reports ion-content,
+body.dark-theme app-reports ion-content {
+  --background: radial-gradient(1200px 420px at 50% -220px, rgba(255, 106, 0, 0.14), transparent 65%), var(--app-gunmetal-deep);
+}
+
+html.dark-theme app-reports ion-item,
+body.dark-theme app-reports ion-item {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html.dark-theme app-reports ion-accordion,
+body.dark-theme app-reports ion-accordion {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+html.dark-theme app-reports ion-accordion ion-item[slot='header'],
+body.dark-theme app-reports ion-accordion ion-item[slot='header'] {
+  --background: rgba(255, 255, 255, 0.03);
+  --detail-icon-color: #c6cfde;
+}
+
+html.dark-theme app-reports :is(ion-accordion ion-item[slot='header'] ion-label, .chart-card ion-card-title, .chart-card ion-card-subtitle, .chart-preview-text),
+body.dark-theme app-reports :is(ion-accordion ion-item[slot='header'] ion-label, .chart-card ion-card-title, .chart-card ion-card-subtitle, .chart-preview-text) {
+  color: #f0f3f8;
+}
+
+html.dark-theme app-reports ion-accordion.accordion-expanded ion-item[slot='header'],
+body.dark-theme app-reports ion-accordion.accordion-expanded ion-item[slot='header'] {
+  --background: linear-gradient(180deg, rgba(255, 106, 0, 0.2), rgba(255, 106, 0, 0.06));
+}
+
+html.dark-theme app-reports ion-accordion.accordion-expanded,
+body.dark-theme app-reports ion-accordion.accordion-expanded {
+  background: linear-gradient(180deg, rgba(255, 106, 0, 0.14), rgba(255, 106, 0, 0.03) 42%), var(--app-gunmetal-soft);
+}
+
+html.dark-theme app-reports .chart-card,
+body.dark-theme app-reports .chart-card {
+  background: var(--app-gunmetal-soft);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-theme app-reports .report-content-card,
+body.dark-theme app-reports .report-content-card {
+  color: #dbe2ee;
+}
+
+ion-modal.report-datetime-modal {
+  --width: 350px;
+  --height: 396px;
+  --max-width: 90%;
+  --max-height: 80%;
+  --border-radius: 12px;
+  --backdrop-opacity: 0.4;
+}
+
+ion-modal.report-datetime-modal::part(content) {
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
 // Responsive Design - Small Tablets & Mobile
 @media (max-width: 768px) {
   .page-header {
