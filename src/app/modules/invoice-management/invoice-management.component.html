@@ -14,12 +14,12 @@
       <p class="page-subtitle">Manage invoice records</p>
     </div>
     <ion-button 
-      class="add-button"
+      class="add-button list-add-button"
       fill="solid" 
       color="primary"
+      aria-label="Add invoice"
       (click)="openCreateForm()">
-      <ion-icon slot="start" name="add-outline"></ion-icon>
-      Add
+      <ion-icon slot="icon-only" name="add"></ion-icon>
     </ion-button>
   </div>
 
@@ -41,11 +41,11 @@
   </ion-item>
 
   <ion-list *ngIf="invoices.length > 0">
-    <ion-item *ngFor="let invoice of invoices" class="invoice-item">
+    <ion-item *ngFor="let invoice of invoices" class="sme-list-item">
       <ion-label (click)="openReadForm(invoice)">
         <h2>{{ invoice.invoiceId }} <ion-badge color="primary">#{{ invoice.companyId }}</ion-badge></h2>
         <p class="details">Buyer: <strong>{{ invoice.buyerId }}</strong> | Date: <strong>{{ invoice.invoiceDate | date:'short' }}</strong></p>
-        <p class="amount">Product: {{ invoice.productId }} | Quantity: {{ invoice.quantity }} | Amount: ₹{{ invoice.totalAmount }}</p>
+        <p class="meta">Product: {{ invoice.productId }} | Quantity: {{ invoice.quantity }} | Amount: ₹{{ invoice.totalAmount }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="secondary" (click)="openUpdateForm(invoice)">

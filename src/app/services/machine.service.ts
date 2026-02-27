@@ -5,6 +5,8 @@ import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../enums/items-per-page.enum';
+import { SortBy } from '../enums/sort-by.enum';
+import { SortOrder } from '../enums/sort-order.enum';
 import { Machine } from '../models/machine.model';
 
 export interface MachineResponse {
@@ -44,10 +46,18 @@ export class MachineService {
     });
   }
 
-  getMachines(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<MachineResponse> {
+  getMachines(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.CREATE_DATE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<MachineResponse> {
     let params = new HttpParams()
       .set('page', String(page))
-      .set('itemsPerPage', String(limit));
+      .set('itemsPerPage', String(limit))
+      .set('sortBy', sortBy)
+      .set('sortOrder', sortOrder);
 
     if (search?.trim()) {
       params = params.set('search', search.trim());

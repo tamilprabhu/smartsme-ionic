@@ -5,6 +5,8 @@ import { catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { environment } from '../../environments/environment';
 import { ItemsPerPage } from '../enums/items-per-page.enum';
+import { SortBy } from '../enums/sort-by.enum';
+import { SortOrder } from '../enums/sort-order.enum';
 import { Buyer } from '../models/buyer.model';
 
 export interface BuyerResponse {
@@ -44,10 +46,18 @@ export class BuyerService {
     });
   }
 
-  getBuyers(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<BuyerResponse> {
+  getBuyers(
+    page: number = 1,
+    limit: number = ItemsPerPage.TEN,
+    search?: string,
+    sortBy: SortBy = SortBy.CREATE_DATE,
+    sortOrder: SortOrder = SortOrder.DESC
+  ): Observable<BuyerResponse> {
     let params = new HttpParams()
       .set('page', String(page))
-      .set('itemsPerPage', String(limit));
+      .set('itemsPerPage', String(limit))
+      .set('sortBy', sortBy)
+      .set('sortOrder', sortOrder);
 
     if (search?.trim()) {
       params = params.set('search', search.trim());

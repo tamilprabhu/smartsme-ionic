@@ -6,6 +6,8 @@ import { IonInfiniteScroll, IonSearchbar, IonicModule } from '@ionic/angular';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { ConfirmDialogService } from 'src/app/components/confirm-dialog-modal/confirm-dialog.service';
+import { SortBy } from 'src/app/enums/sort-by.enum';
+import { SortOrder } from 'src/app/enums/sort-order.enum';
 import { Seller } from 'src/app/models/seller.model';
 import { SellerService } from 'src/app/services/seller.service';
 
@@ -24,6 +26,22 @@ export class SellerListComponent implements OnInit, OnDestroy {
   hasMore = true;
   loading = false;
   listError = '';
+  sortBy: SortBy = SortBy.CREATE_DATE;
+  sortOrder: SortOrder = SortOrder.DESC;
+  showSortOptions = false;
+
+  readonly sortByOptions = [
+    { label: 'Create Date', value: SortBy.CREATE_DATE },
+    { label: 'Update Date', value: SortBy.UPDATE_DATE },
+    { label: 'Sequence', value: SortBy.SEQUENCE },
+    { label: 'Created By', value: SortBy.CREATED_BY },
+    { label: 'Updated By', value: SortBy.UPDATED_BY }
+  ];
+
+  readonly sortOrderOptions = [
+    { label: 'Descending', value: SortOrder.DESC },
+    { label: 'Ascending', value: SortOrder.ASC }
+  ];
 
   readonly searchControl = new FormControl('', { nonNullable: true });
 
@@ -66,7 +84,7 @@ export class SellerListComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.listError = '';
 
-    this.sellerService.getSellers(this.currentPage, 10, this.searchControl.value).subscribe({
+    this.sellerService.getSellers(this.currentPage, 10, this.searchControl.value, this.sortBy, this.sortOrder).subscribe({
       next: (response) => {
         this.sellers = this.currentPage === 1 ? response.items : [...this.sellers, ...response.items];
         this.hasMore = response.paging.currentPage < response.paging.totalPages;
@@ -92,6 +110,15 @@ export class SellerListComponent implements OnInit, OnDestroy {
     if (this.searchInput) {
       this.searchInput.value = '';
     }
+  }
+
+  toggleSortOptions(): void {
+    this.showSortOptions = !this.showSortOptions;
+  }
+
+  onSortChange(): void {
+    this.resetListing();
+    this.loadSellers();
   }
 
   createSeller(): void {

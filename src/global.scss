@@ -444,6 +444,133 @@ ion-button[color="medium"][fill="outline"] ion-icon[slot="start"] {
   }
 }
 
+:is(
+  app-company-list,
+  app-buyer-list,
+  app-seller-list,
+  app-machine-list,
+  app-order-list,
+  app-product-list,
+  app-stock-list,
+  app-invoice-list,
+  app-dispatch-list,
+  app-company-management,
+  app-stock-management,
+  app-invoice-management,
+  app-dispatch-management,
+  app-employee-management,
+  app-production-shift-list
+) {
+  .page-title {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .page-subtitle {
+    font-size: 0.88rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+  }
+
+  .search-card {
+    margin: 6px 12px 8px !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    border-radius: 7px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  ion-searchbar {
+    --min-height: 45px;
+    --color: var(--ion-color-medium);
+    --placeholder-color: var(--ion-color-medium);
+    --icon-color: var(--ion-color-medium);
+    --clear-button-color: var(--ion-color-medium);
+    --border-radius: 9px;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    font-size: 0.9rem;
+    margin: 0;
+    height: 45px !important;
+    min-height: 45px !important;
+    padding: 0 !important;
+  }
+
+  ion-searchbar .searchbar-input-container {
+    min-height: 45px !important;
+    height: 45px !important;
+    border-radius: 7px !important;
+  }
+
+  ion-searchbar .searchbar-input {
+    min-height: 45px !important;
+    height: 45px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 45px !important;
+    font-size: 0.9rem !important;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  ion-searchbar .searchbar-search-icon,
+  ion-searchbar .searchbar-clear-button {
+    transform: scale(0.85);
+  }
+
+  .sort-toggle-button,
+  .list-add-button {
+    --background: var(--ion-color-primary);
+    --background-hover: var(--ion-color-primary-shade);
+    --background-activated: var(--ion-color-primary-shade);
+    --background-focused: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+    --box-shadow: none;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    margin: 0;
+
+    ion-icon {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--ion-color-primary-contrast);
+    }
+  }
+
+  .sort-toggle-button {
+    min-width: 36px;
+  }
+
+  .results-info {
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+  }
+
+  .empty-state ion-card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--ion-color-medium);
+  }
+}
+
 // Standardize form action buttons (Save/Update/Cancel) to medium size
 ion-row.action-row ion-button[expand="block"] {
   --padding-top: 10px;
@@ -596,6 +723,82 @@ body.dark-theme .sme-list-item ion-label p strong {
 html.dark-theme .sme-list-item ion-label :is(.material, .address, .business, .details, .contact, .type, .quantity, .specs, .meta),
 body.dark-theme .sme-list-item ion-label :is(.material, .address, .business, .details, .contact, .type, .quantity, .specs, .meta) {
   color: #c6cfde !important;
+}
+
+html.dark-theme :is(
+  app-company-list,
+  app-buyer-list,
+  app-seller-list,
+  app-machine-list,
+  app-order-list,
+  app-product-list,
+  app-stock-list,
+  app-invoice-list,
+  app-dispatch-list,
+  app-company-management,
+  app-stock-management,
+  app-invoice-management,
+  app-dispatch-management,
+  app-employee-management,
+  app-production-shift-list
+) .search-card,
+body.dark-theme :is(
+  app-company-list,
+  app-buyer-list,
+  app-seller-list,
+  app-machine-list,
+  app-order-list,
+  app-product-list,
+  app-stock-list,
+  app-invoice-list,
+  app-dispatch-list,
+  app-company-management,
+  app-stock-management,
+  app-invoice-management,
+  app-dispatch-management,
+  app-employee-management,
+  app-production-shift-list
+) .search-card {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.24);
+}
+
+html.dark-theme :is(
+  app-company-list,
+  app-buyer-list,
+  app-seller-list,
+  app-machine-list,
+  app-order-list,
+  app-product-list,
+  app-stock-list,
+  app-invoice-list,
+  app-dispatch-list,
+  app-company-management,
+  app-stock-management,
+  app-invoice-management,
+  app-dispatch-management,
+  app-employee-management,
+  app-production-shift-list
+) :is(.sort-toggle-button, .list-add-button),
+body.dark-theme :is(
+  app-company-list,
+  app-buyer-list,
+  app-seller-list,
+  app-machine-list,
+  app-order-list,
+  app-product-list,
+  app-stock-list,
+  app-invoice-list,
+  app-dispatch-list,
+  app-company-management,
+  app-stock-management,
+  app-invoice-management,
+  app-dispatch-management,
+  app-employee-management,
+  app-production-shift-list
+) :is(.sort-toggle-button, .list-add-button) {
+  --background: var(--ion-color-primary);
+  --background-hover: #ff9a40;
+  --background-activated: #ff9a40;
 }
 
 html.dark-theme .sme-list-item ion-buttons ion-button,
