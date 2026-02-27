@@ -23,6 +23,25 @@
       <ion-button fill="clear" color="primary" routerLink="/about">About</ion-button>
       <ion-button fill="clear" color="primary" routerLink="/contact">Contact</ion-button>
     </div>
+
+    <div class="theme-switcher" role="group" aria-label="Theme switcher">
+      <button
+        type="button"
+        class="theme-switcher__option"
+        [class.is-active]="!isDarkMode"
+        (click)="setTheme(false)">
+        <ion-icon name="sunny-outline"></ion-icon>
+        <span>Light</span>
+      </button>
+      <button
+        type="button"
+        class="theme-switcher__option"
+        [class.is-active]="isDarkMode"
+        (click)="setTheme(true)">
+        <ion-icon name="moon-outline"></ion-icon>
+        <span>Dark</span>
+      </button>
+    </div>
   </div>
 </ion-content>
 

@@ -69,6 +69,78 @@ ion-content {
   margin-top: 2px;
 }
 
+.theme-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  margin: 4px auto 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 106, 0, 0.12);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(14px);
+  animation: fadeRise 420ms ease-out both;
+}
+
+.theme-switcher__option {
+  border: 0;
+  background: transparent;
+  color: var(--ion-color-medium);
+  border-radius: 999px;
+  min-width: 82px;
+  min-height: 34px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+
+  ion-icon {
+    font-size: 0.9rem;
+  }
+
+  &.is-active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--ion-color-primary) 0%, #ff8c33 100%);
+    box-shadow: 0 8px 18px rgba(255, 106, 0, 0.24);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+:host-context(.dark-theme) ion-content {
+  --background: linear-gradient(180deg, rgba(255, 106, 0, 0.12) 0%, rgba(255, 106, 0, 0) 32%), var(--app-gunmetal-deep);
+}
+
+:host-context(.dark-theme) .theme-switcher {
+  background: rgba(43, 46, 52, 0.84);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(.dark-theme) .theme-switcher__option {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .hero h1 {
+  color: #f0f3f8;
+}
+
+:host-context(.dark-theme) .hero p {
+  color: #c6cfde;
+}
+
+:host-context(.dark-theme) .guest-links ion-button {
+  --color: #ffb066;
+}
+
 @keyframes fadeRise {
   from {
     opacity: 0;
