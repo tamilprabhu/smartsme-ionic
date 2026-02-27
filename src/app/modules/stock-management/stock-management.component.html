@@ -34,6 +34,13 @@
     </ion-searchbar>
   </ion-card>
 
+  <ion-card *ngIf="loading && currentPage === 1" class="list-loading-state">
+    <ion-card-content>
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Loading stock...</span>
+    </ion-card-content>
+  </ion-card>
+
   <ion-item *ngIf="searchQuery" class="results-info">
     <ion-label>
       Found <strong>{{ stocks.length }}</strong> stock(s)

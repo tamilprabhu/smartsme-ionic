@@ -64,6 +64,13 @@
     </ion-grid>
   </ion-card>
 
+  <ion-card *ngIf="loading && currentPage === 1" class="list-loading-state">
+    <ion-card-content>
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Loading production shifts...</span>
+    </ion-card-content>
+  </ion-card>
+
   <ion-item *ngIf="searchQuery" class="results-info">
     <ion-label>
       Found <strong>{{ shifts.length }}</strong> shift(s)

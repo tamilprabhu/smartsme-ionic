@@ -53,6 +53,13 @@
     </ion-grid>
   </ion-card>
 
+  <ion-card *ngIf="loading && currentPage === 1" class="list-loading-state">
+    <ion-card-content>
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Loading orders...</span>
+    </ion-card-content>
+  </ion-card>
+
   <ion-item *ngIf="listError" lines="none" color="danger" class="results-info">
     <ion-label>{{ listError }}</ion-label>
   </ion-item>

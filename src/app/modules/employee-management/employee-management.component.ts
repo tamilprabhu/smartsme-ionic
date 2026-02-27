@@ -51,6 +51,20 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
   searchQuery = '';
   sortBy: SortBy = SortBy.SEQUENCE;
   sortOrder: SortOrder = SortOrder.DESC;
+  showSortOptions = false;
+
+  readonly sortByOptions = [
+    { label: 'Sequence', value: SortBy.SEQUENCE },
+    { label: 'Create Date', value: SortBy.CREATE_DATE },
+    { label: 'Update Date', value: SortBy.UPDATE_DATE },
+    { label: 'Created By', value: SortBy.CREATED_BY },
+    { label: 'Updated By', value: SortBy.UPDATED_BY }
+  ];
+
+  readonly sortOrderOptions = [
+    { label: 'Descending', value: SortOrder.DESC },
+    { label: 'Ascending', value: SortOrder.ASC }
+  ];
 
   serverValidationErrors: ServerValidationErrors = {};
   readonly countryName = 'India';
@@ -212,6 +226,14 @@ export class EmployeeManagementComponent implements OnInit, OnDestroy {
       this.searchInput.value = '';
     }
     this.performSearch('');
+  }
+
+  toggleSortOptions(): void {
+    this.showSortOptions = !this.showSortOptions;
+  }
+
+  onSortChange(): void {
+    this.loadEmployees(undefined, true);
   }
 
   performSearch(query: string): void {

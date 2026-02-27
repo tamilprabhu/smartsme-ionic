@@ -2,10 +2,8 @@
   [title]="pageTitle"
   backAction="custom"
   [showBackButton]="true"
-  rightIcon="add-outline"
   rightIconColor="primary"
-  (backClicked)="onHeaderBackClick()"
-  (rightButtonClicked)="action === 'list' && openAction('create')">
+  (backClicked)="onHeaderBackClick()">
 </app-header>
 
 <ion-content>
@@ -15,6 +13,9 @@
         <h1 class="page-title">Employees</h1>
         <p class="page-subtitle">Manage employee accounts and role mapping</p>
       </div>
+      <ion-button class="sort-toggle-button" fill="solid" color="primary" (click)="toggleSortOptions()">
+        <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
+      </ion-button>
       <ion-button class="add-button list-add-button" fill="solid" color="primary" aria-label="Add employee" (click)="openAction('create')">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
@@ -29,6 +30,34 @@
         debounce="0"
         (ionClear)="clearSearch()">
       </ion-searchbar>
+    </ion-card>
+
+    <ion-card class="search-card" *ngIf="showSortOptions">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" sizeMd="6">
+            <ion-item fill="outline">
+              <ion-select label="Sort By" label-placement="stacked" [(ngModel)]="sortBy" (ionChange)="onSortChange()">
+                <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">{{ option.label }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12" sizeMd="6">
+            <ion-item fill="outline">
+              <ion-select label="Sort Order" label-placement="stacked" [(ngModel)]="sortOrder" (ionChange)="onSortChange()">
+                <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">{{ option.label }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+
+    <ion-card *ngIf="loading && currentPage === 1" class="list-loading-state">
+      <ion-card-content>
+        <ion-spinner name="crescent"></ion-spinner>
+        <span>Loading employees...</span>
+      </ion-card-content>
     </ion-card>
 
     <ion-item *ngIf="searchQuery" class="results-info">
@@ -54,9 +83,6 @@
         </ion-label>
 
         <ion-buttons slot="end">
-          <ion-button color="tertiary" (click)="openAction('view', employee.employeeSequence)">
-            <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
-          </ion-button>
           <ion-button color="secondary" (click)="openAction('update', employee.employeeSequence)">
             <ion-icon slot="icon-only" name="create-outline"></ion-icon>
           </ion-button>
