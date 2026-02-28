@@ -19,233 +19,239 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
 import { ConfirmDialogService } from '../../../components/confirm-dialog-modal/confirm-dialog.service';
 
 @Component({
-  selector: 'app-production-shift-list',
-  templateUrl: './production-shift-list.component.html',
-  styleUrls: ['./production-shift-list.component.scss'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, HeaderComponent]
+    selector: 'app-production-shift-list',
+    templateUrl: './production-shift-list.component.html',
+    styleUrls: ['./production-shift-list.component.scss'],
+    standalone: true,
+    imports: [CommonModule, FormsModule, IonicModule, HeaderComponent],
 })
 export class ProductionShiftListComponent implements OnInit, OnDestroy {
-  @ViewChild('searchInput') searchInput!: IonSearchbar;
+    @ViewChild('searchInput') searchInput!: IonSearchbar;
 
-  shifts: ProductionShift[] = [];
-  machines: Machine[] = [];
-  orders: Order[] = [];
-  products: Product[] = [];
-  machineMap: Map<string, string> = new Map();
-  orderMap: Map<string, string> = new Map();
-  productMap: Map<string, string> = new Map();
-  currentPage = 1;
-  hasMore = true;
-  loading = false;
-  searchQuery = '';
-  sortBy: SortBy = SortBy.SEQUENCE;
-  sortOrder: SortOrder = SortOrder.DESC;
+    shifts: ProductionShift[] = [];
+    machines: Machine[] = [];
+    orders: Order[] = [];
+    products: Product[] = [];
+    machineMap: Map<string, string> = new Map();
+    orderMap: Map<string, string> = new Map();
+    productMap: Map<string, string> = new Map();
+    currentPage = 1;
+    hasMore = true;
+    loading = false;
+    searchQuery = '';
+    sortBy: SortBy = SortBy.SEQUENCE;
+    sortOrder: SortOrder = SortOrder.DESC;
 
-  sortByOptions = [
-    { label: 'Sequence', value: SortBy.SEQUENCE },
-    { label: 'Create Date', value: SortBy.CREATE_DATE },
-    { label: 'Update Date', value: SortBy.UPDATE_DATE },
-    { label: 'Created By', value: SortBy.CREATED_BY },
-    { label: 'Updated By', value: SortBy.UPDATED_BY }
-  ];
+    sortByOptions = [
+        { label: 'Sequence', value: SortBy.SEQUENCE },
+        { label: 'Create Date', value: SortBy.CREATE_DATE },
+        { label: 'Update Date', value: SortBy.UPDATE_DATE },
+        { label: 'Created By', value: SortBy.CREATED_BY },
+        { label: 'Updated By', value: SortBy.UPDATED_BY },
+    ];
 
-  sortOrderOptions = [
-    { label: 'Descending', value: SortOrder.DESC },
-    { label: 'Ascending', value: SortOrder.ASC }
-  ];
-  showSortOptions = false;
-  showSearch = false;
+    sortOrderOptions = [
+        { label: 'Descending', value: SortOrder.DESC },
+        { label: 'Ascending', value: SortOrder.ASC },
+    ];
+    showSortOptions = false;
+    showSearch = false;
 
-  private searchSubject = new Subject<string>();
-  private destroy$ = new Subject<void>();
+    private searchSubject = new Subject<string>();
+    private destroy$ = new Subject<void>();
 
-  constructor(
-    private router: Router,
-    private readonly confirmDialog: ConfirmDialogService,
-    private toastController: ToastController,
-    private shiftService: ProductionShiftService,
-    private machineService: MachineService,
-    private orderService: OrderService,
-    private productService: ProductService
-  ) {
-    this.searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(query => this.performSearch(query));
-  }
-
-  ngOnInit() {
-    this.loadMachines();
-    this.loadOrders();
-    this.loadProducts();
-    this.loadShifts();
-  }
-
-  ionViewWillEnter() {
-    this.currentPage = 1;
-    this.hasMore = true;
-    this.shifts = [];
-    this.loadShifts();
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private loadMachines() {
-    this.machineService.getMachines(1, 100).subscribe({
-      next: (response) => {
-        this.machines = response.items;
-        this.machines.forEach(m => this.machineMap.set(m.machineId, m.machineName));
-      }
-    });
-  }
-
-  private loadOrders() {
-    this.orderService.getOrders(1, 1000).subscribe({
-      next: (response) => {
-        this.orders = response.items;
-        this.orders.forEach(o => this.orderMap.set(o.orderId, o.orderName));
-      }
-    });
-  }
-
-  private loadProducts() {
-    this.productService.getProducts(1, 1000).subscribe({
-      next: (response) => {
-        this.products = response.items;
-        this.products.forEach(p => this.productMap.set(p.productId, p.productName));
-      }
-    });
-  }
-
-  getMachineName(machineId: string): string {
-    return this.machineMap.get(machineId) || machineId;
-  }
-
-  getOrderName(orderId: string): string {
-    return orderId ? (this.orderMap.get(orderId) || orderId) : 'No Order';
-  }
-
-  getProductName(productId: string): string {
-    return this.productMap.get(productId) || productId;
-  }
-
-  loadShifts(event?: any) {
-    if (this.loading || !this.hasMore) {
-      if (event) event.target.complete();
-      return;
+    constructor(
+        private router: Router,
+        private readonly confirmDialog: ConfirmDialogService,
+        private toastController: ToastController,
+        private shiftService: ProductionShiftService,
+        private machineService: MachineService,
+        private orderService: OrderService,
+        private productService: ProductService,
+    ) {
+        this.searchSubject
+            .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+            .subscribe((query) => this.performSearch(query));
     }
 
-    this.loading = true;
-    this.shiftService.getProductionShifts(this.currentPage, 10, this.searchQuery, this.sortBy, this.sortOrder).subscribe({
-      next: (response) => {
-        if (this.currentPage === 1) {
-          this.shifts = response.items;
-        } else {
-          this.shifts = [...this.shifts, ...response.items];
+    ngOnInit() {
+        this.loadMachines();
+        this.loadOrders();
+        this.loadProducts();
+        this.loadShifts();
+    }
+
+    ionViewWillEnter() {
+        this.currentPage = 1;
+        this.hasMore = true;
+        this.shifts = [];
+        this.loadShifts();
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    private loadMachines() {
+        this.machineService.getMachines(1, 100).subscribe({
+            next: (response) => {
+                this.machines = response.items;
+                this.machines.forEach((m) => this.machineMap.set(m.machineId, m.machineName));
+            },
+        });
+    }
+
+    private loadOrders() {
+        this.orderService.getOrders(1, 1000).subscribe({
+            next: (response) => {
+                this.orders = response.items;
+                this.orders.forEach((o) => this.orderMap.set(o.orderId, o.orderName));
+            },
+        });
+    }
+
+    private loadProducts() {
+        this.productService.getProducts(1, 1000).subscribe({
+            next: (response) => {
+                this.products = response.items;
+                this.products.forEach((p) => this.productMap.set(p.productId, p.productName));
+            },
+        });
+    }
+
+    getMachineName(machineId: string): string {
+        return this.machineMap.get(machineId) || machineId;
+    }
+
+    getOrderName(orderId: string): string {
+        return orderId ? this.orderMap.get(orderId) || orderId : 'No Order';
+    }
+
+    getProductName(productId: string): string {
+        return this.productMap.get(productId) || productId;
+    }
+
+    loadShifts(event?: any) {
+        if (this.loading || !this.hasMore) {
+            if (event) event.target.complete();
+            return;
         }
-        this.hasMore = response.paging.currentPage < response.paging.totalPages;
-        this.currentPage++;
-        this.loading = false;
-        if (event) event.target.complete();
-      },
-      error: () => {
-        this.showToast('Failed to load shifts', 'danger');
-        this.loading = false;
-        if (event) event.target.complete();
-      }
-    });
-  }
 
-  onSearchInput(event: any) {
-    this.searchQuery = event.target.value || '';
-    this.searchSubject.next(this.searchQuery);
-  }
-
-  performSearch(query: string) {
-    this.searchQuery = query;
-    this.currentPage = 1;
-    this.hasMore = true;
-    this.shifts = [];
-    this.loadShifts();
-  }
-
-  clearSearch() {
-    this.searchQuery = '';
-    if (this.searchInput) this.searchInput.value = '';
-    this.performSearch('');
-  }
-
-  toggleSearch() {
-    this.showSearch = !this.showSearch;
-  }
-
-  toggleSortOptions() {
-    this.showSortOptions = !this.showSortOptions;
-  }
-
-  onSortChange() {
-    this.currentPage = 1;
-    this.hasMore = true;
-    this.shifts = [];
-    this.loadShifts();
-  }
-
-  getShiftTypeLabel(shiftType: string): string {
-    const types: Record<string, string> = { '1': 'Morning', '2': 'Evening', '3': 'Night' };
-    return types[shiftType] || shiftType;
-  }
-
-  viewShift(id: number) {
-    this.router.navigate(['/tabs/production-shift', id]);
-  }
-
-  createShift() {
-    this.router.navigate(['/tabs/production-shift/create']);
-  }
-
-  editShift(id: number, event: Event) {
-    event.stopPropagation();
-    this.router.navigate(['/tabs/production-shift', id, 'edit']);
-  }
-
-  async confirmDelete(shift: ProductionShift, event: Event) {
-    event.stopPropagation();
-    const confirmed = await this.confirmDialog.confirm({
-      title: 'Confirm Delete',
-      message: `Delete shift "${shift.shiftId}"?`,
-      confirmText: 'Delete',
-      confirmColor: 'danger'
-    });
-
-    if (!confirmed) {
-      return;
+        this.loading = true;
+        this.shiftService
+            .getProductionShifts(
+                this.currentPage,
+                10,
+                this.searchQuery,
+                this.sortBy,
+                this.sortOrder,
+            )
+            .subscribe({
+                next: (response) => {
+                    if (this.currentPage === 1) {
+                        this.shifts = response.items;
+                    } else {
+                        this.shifts = [...this.shifts, ...response.items];
+                    }
+                    this.hasMore = response.paging.currentPage < response.paging.totalPages;
+                    this.currentPage++;
+                    this.loading = false;
+                    if (event) event.target.complete();
+                },
+                error: () => {
+                    this.showToast('Failed to load shifts', 'danger');
+                    this.loading = false;
+                    if (event) event.target.complete();
+                },
+            });
     }
 
-    this.deleteShift(shift);
-  }
+    onSearchInput(event: any) {
+        this.searchQuery = event.target.value || '';
+        this.searchSubject.next(this.searchQuery);
+    }
 
-  deleteShift(shift: ProductionShift) {
-    this.shiftService.deleteProductionShift(shift.shiftSequence).subscribe({
-      next: () => {
-        this.shifts = this.shifts.filter(s => s.shiftSequence !== shift.shiftSequence);
-        this.showToast('Shift deleted successfully', 'success');
-      },
-      error: () => this.showToast('Failed to delete shift', 'danger')
-    });
-  }
+    performSearch(query: string) {
+        this.searchQuery = query;
+        this.currentPage = 1;
+        this.hasMore = true;
+        this.shifts = [];
+        this.loadShifts();
+    }
 
-  private async showToast(message: string, color: 'success' | 'danger') {
-    const toast = await this.toastController.create({
-      message,
-      duration: 3000,
-      color,
-      position: 'top'
-    });
-    await toast.present();
-  }
+    clearSearch() {
+        this.searchQuery = '';
+        if (this.searchInput) this.searchInput.value = '';
+        this.performSearch('');
+    }
+
+    toggleSearch() {
+        this.showSearch = !this.showSearch;
+    }
+
+    toggleSortOptions() {
+        this.showSortOptions = !this.showSortOptions;
+    }
+
+    onSortChange() {
+        this.currentPage = 1;
+        this.hasMore = true;
+        this.shifts = [];
+        this.loadShifts();
+    }
+
+    getShiftTypeLabel(shiftType: string): string {
+        const types: Record<string, string> = { '1': 'Morning', '2': 'Evening', '3': 'Night' };
+        return types[shiftType] || shiftType;
+    }
+
+    viewShift(id: number) {
+        this.router.navigate(['/tabs/production-shift', id]);
+    }
+
+    createShift() {
+        this.router.navigate(['/tabs/production-shift/create']);
+    }
+
+    editShift(id: number, event: Event) {
+        event.stopPropagation();
+        this.router.navigate(['/tabs/production-shift', id, 'edit']);
+    }
+
+    async confirmDelete(shift: ProductionShift, event: Event) {
+        event.stopPropagation();
+        const confirmed = await this.confirmDialog.confirm({
+            title: 'Confirm Delete',
+            message: `Delete shift "${shift.shiftId}"?`,
+            confirmText: 'Delete',
+            confirmColor: 'danger',
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
+        this.deleteShift(shift);
+    }
+
+    deleteShift(shift: ProductionShift) {
+        this.shiftService.deleteProductionShift(shift.shiftSequence).subscribe({
+            next: () => {
+                this.shifts = this.shifts.filter((s) => s.shiftSequence !== shift.shiftSequence);
+                this.showToast('Shift deleted successfully', 'success');
+            },
+            error: () => this.showToast('Failed to delete shift', 'danger'),
+        });
+    }
+
+    private async showToast(message: string, color: 'success' | 'danger') {
+        const toast = await this.toastController.create({
+            message,
+            duration: 3000,
+            color,
+            position: 'top',
+        });
+        await toast.present();
+    }
 }

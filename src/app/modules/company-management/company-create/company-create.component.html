@@ -1,15 +1,17 @@
 <app-header
-  title="Create Company"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onCancel()">
+    title="Create Company"
+    backAction="custom"
+    [showBackButton]="true"
+    (backClicked)="onCancel()"
+>
 </app-header>
 
 <ion-content>
-  <app-company
-    mode="create"
-    [serverValidationErrors]="serverValidationErrors"
-    (formSubmit)="onSubmit($event)"
-    (formClosed)="onCancel()">
-  </app-company>
+    <app-company
+        mode="create"
+        [serverValidationErrors]="serverValidationErrors"
+        (formSubmit)="onSubmit($event)"
+        (formClosed)="onCancel()"
+    >
+    </app-company>
 </ion-content>

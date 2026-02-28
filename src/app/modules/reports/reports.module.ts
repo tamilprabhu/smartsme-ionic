@@ -10,16 +10,16 @@ import { FooterComponent } from 'src/app/components/footer/footer.component';
 import { DateFieldModalComponent } from 'src/app/components/date-field-modal/date-field-modal.component';
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    ExploreContainerComponentModule,
-    ReportsPageRoutingModule,
-    DateFieldModalComponent,
-    FooterComponent
-  ],
-  declarations: [ReportsPage],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    imports: [
+        IonicModule,
+        CommonModule,
+        FormsModule,
+        ExploreContainerComponentModule,
+        ReportsPageRoutingModule,
+        DateFieldModalComponent,
+        FooterComponent,
+    ],
+    declarations: [ReportsPage],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ReportsPageModule {}

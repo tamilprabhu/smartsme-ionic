@@ -1,17 +1,9 @@
-<app-header
-  title="View Stock"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onBack()">
+<app-header title="View Stock" backAction="custom" [showBackButton]="true" (backClicked)="onBack()">
 </app-header>
 
 <ion-content>
-  <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
+    <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
 
-  <app-stock
-    *ngIf="!loading && stock"
-    mode="read"
-    [formData]="stock"
-    (formClosed)="onBack()">
-  </app-stock>
+    <app-stock *ngIf="!loading && stock" mode="read" [formData]="stock" (formClosed)="onBack()">
+    </app-stock>
 </ion-content>

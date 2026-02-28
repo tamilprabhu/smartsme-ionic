@@ -9,14 +9,14 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
 import { OperationsPageRoutingModule } from './operations-routing.module';
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    ExploreContainerComponentModule,
-    OperationsPageRoutingModule,
-    HeaderComponent
-  ],
-  declarations: [OperationsPage]
+    imports: [
+        IonicModule,
+        CommonModule,
+        FormsModule,
+        ExploreContainerComponentModule,
+        OperationsPageRoutingModule,
+        HeaderComponent,
+    ],
+    declarations: [OperationsPage],
 })
 export class OperationsPageModule {}

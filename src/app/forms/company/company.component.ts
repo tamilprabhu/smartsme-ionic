@@ -1,4 +1,12 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnChanges,
+    SimpleChanges,
+} from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { FooterComponent } from '../../components/footer/footer.component';
@@ -8,141 +16,141 @@ import { ServerValidationErrors } from 'src/app/utils/server-validation.util';
 import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
-  selector: 'app-company',
-  templateUrl: './company.component.html',
-  styleUrls: ['./company.component.scss'],
-  standalone: true,
-  imports: [FooterComponent, FormsModule, IonicModule, CommonModule]
+    selector: 'app-company',
+    templateUrl: './company.component.html',
+    styleUrls: ['./company.component.scss'],
+    standalone: true,
+    imports: [FooterComponent, FormsModule, IonicModule, CommonModule],
 })
 export class CompanyComponent implements OnInit, OnChanges {
-  @Input() mode: 'create' | 'read' | 'update' = 'create';
-  @Input() formData: Partial<Company> | null = null;
-  @Input() serverValidationErrors: ServerValidationErrors = {};
-  @Output() formSubmit = new EventEmitter<Company>();
-  @Output() formClosed = new EventEmitter<void>();
+    @Input() mode: 'create' | 'read' | 'update' = 'create';
+    @Input() formData: Partial<Company> | null = null;
+    @Input() serverValidationErrors: ServerValidationErrors = {};
+    @Output() formSubmit = new EventEmitter<Company>();
+    @Output() formClosed = new EventEmitter<void>();
 
-  // Internal state for form binding
-  model: Omit<Company, 'companySequence' | 'createdAt' | 'updatedAt'> = {
-    companyId: '',
-    companyName: '',
-    businessCons: 'corporation',
-    companyType: 'medium scale',
-    address: '',
-    pincode: 0,
-    propName: '',
-    directPhone: '',
-    officePhone: '',
-    mgmtPhone: '',
-    mailId: '',
-    natureOfBusiness: 'manufacturing',
-    authPerson: '',
-    mobileNo: ''
-  };
-
-  fieldServerErrors: ServerValidationErrors = {};
-  formLevelErrors: string[] = [];
-
-  constructor() {}
-
-  ngOnInit() {
-    if (this.formData) {
-      this.patchModel(this.formData);
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.log('Changes detected in CompanyComponent:', changes);
-    if (changes['formData'] && this.formData) {
-      this.patchModel(this.formData);
-    }
-    if (changes['mode'] && this.mode === 'create') {
-      this.resetModel();
-    }
-    if (changes['formData'] || changes['mode']) {
-      this.fieldServerErrors = {};
-      this.formLevelErrors = [];
-    }
-    if (changes['serverValidationErrors']) {
-      this.applyServerValidationErrors();
-    }
-  }
-
-  // Patch model for ngModel usage
-  private patchModel(data: Partial<Company>) {
-    this.model = { ...this.model, ...data };
-  }
-
-  private resetModel() {
-    this.model = {
-      companyId: '',
-      companyName: '',
-      businessCons: 'corporation',
-      companyType: 'medium scale',
-      address: '',
-      pincode: 0,
-      propName: '',
-      directPhone: '',
-      officePhone: '',
-      mgmtPhone: '',
-      mailId: '',
-      natureOfBusiness: 'manufacturing',
-      authPerson: '',
-      mobileNo: ''
+    // Internal state for form binding
+    model: Omit<Company, 'companySequence' | 'createdAt' | 'updatedAt'> = {
+        companyId: '',
+        companyName: '',
+        businessCons: 'corporation',
+        companyType: 'medium scale',
+        address: '',
+        pincode: 0,
+        propName: '',
+        directPhone: '',
+        officePhone: '',
+        mgmtPhone: '',
+        mailId: '',
+        natureOfBusiness: 'manufacturing',
+        authPerson: '',
+        mobileNo: '',
     };
-  }
 
-  goBack() {
-    this.formClosed.emit();
-  }
+    fieldServerErrors: ServerValidationErrors = {};
+    formLevelErrors: string[] = [];
 
-  onCancel() {
-    this.formClosed.emit();
-  }
+    constructor() {}
 
-  async onSubmit(form: NgForm) {
-    if (this.mode === 'read') return;
-    this.fieldServerErrors = {};
-    this.formLevelErrors = [];
-
-    if (!form.valid) {
-      form.control.markAllAsTouched();
-      focusAndScrollToFirstError();
-      return;
+    ngOnInit() {
+        if (this.formData) {
+            this.patchModel(this.formData);
+        }
     }
 
-    this.formSubmit.emit({ ...this.model } as Company);
-  }
-
-  hasServerError(field: string): boolean {
-    return (this.fieldServerErrors[field] ?? []).length > 0;
-  }
-
-  getServerErrorMessages(field: string): string[] {
-    return this.fieldServerErrors[field] ?? [];
-  }
-
-  clearServerError(field: string): void {
-    if (!this.hasServerError(field)) {
-      return;
+    ngOnChanges(changes: SimpleChanges) {
+        console.log('Changes detected in CompanyComponent:', changes);
+        if (changes['formData'] && this.formData) {
+            this.patchModel(this.formData);
+        }
+        if (changes['mode'] && this.mode === 'create') {
+            this.resetModel();
+        }
+        if (changes['formData'] || changes['mode']) {
+            this.fieldServerErrors = {};
+            this.formLevelErrors = [];
+        }
+        if (changes['serverValidationErrors']) {
+            this.applyServerValidationErrors();
+        }
     }
 
-    const { [field]: _, ...rest } = this.fieldServerErrors;
-    this.fieldServerErrors = rest;
-  }
+    // Patch model for ngModel usage
+    private patchModel(data: Partial<Company>) {
+        this.model = { ...this.model, ...data };
+    }
 
-  private applyServerValidationErrors(): void {
-    const mappedErrors: ServerValidationErrors = {};
-    const unmappedErrors: string[] = [];
+    private resetModel() {
+        this.model = {
+            companyId: '',
+            companyName: '',
+            businessCons: 'corporation',
+            companyType: 'medium scale',
+            address: '',
+            pincode: 0,
+            propName: '',
+            directPhone: '',
+            officePhone: '',
+            mgmtPhone: '',
+            mailId: '',
+            natureOfBusiness: 'manufacturing',
+            authPerson: '',
+            mobileNo: '',
+        };
+    }
 
-    Object.entries(this.serverValidationErrors ?? {}).forEach(([field, messages]) => {
-      if (this.model.hasOwnProperty(field)) {
-        mappedErrors[field] = messages;
-      } else {
-        unmappedErrors.push(...messages);
-      }
-    });
+    goBack() {
+        this.formClosed.emit();
+    }
 
-    this.fieldServerErrors = mappedErrors;
-    this.formLevelErrors = unmappedErrors;
-  }
+    onCancel() {
+        this.formClosed.emit();
+    }
+
+    async onSubmit(form: NgForm) {
+        if (this.mode === 'read') return;
+        this.fieldServerErrors = {};
+        this.formLevelErrors = [];
+
+        if (!form.valid) {
+            form.control.markAllAsTouched();
+            focusAndScrollToFirstError();
+            return;
+        }
+
+        this.formSubmit.emit({ ...this.model } as Company);
+    }
+
+    hasServerError(field: string): boolean {
+        return (this.fieldServerErrors[field] ?? []).length > 0;
+    }
+
+    getServerErrorMessages(field: string): string[] {
+        return this.fieldServerErrors[field] ?? [];
+    }
+
+    clearServerError(field: string): void {
+        if (!this.hasServerError(field)) {
+            return;
+        }
+
+        const { [field]: _, ...rest } = this.fieldServerErrors;
+        this.fieldServerErrors = rest;
+    }
+
+    private applyServerValidationErrors(): void {
+        const mappedErrors: ServerValidationErrors = {};
+        const unmappedErrors: string[] = [];
+
+        Object.entries(this.serverValidationErrors ?? {}).forEach(([field, messages]) => {
+            if (this.model.hasOwnProperty(field)) {
+                mappedErrors[field] = messages;
+            } else {
+                unmappedErrors.push(...messages);
+            }
+        });
+
+        this.fieldServerErrors = mappedErrors;
+        this.formLevelErrors = unmappedErrors;
+    }
 }

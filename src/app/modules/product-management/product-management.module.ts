@@ -3,6 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ProductManagementRoutingModule } from './product-management-routing.module';
 
 @NgModule({
-  imports: [CommonModule, ProductManagementRoutingModule]
+    imports: [CommonModule, ProductManagementRoutingModule],
 })
 export class ProductManagementModule {}

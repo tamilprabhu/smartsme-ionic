@@ -1,19 +1,16 @@
 <app-header
-  title="Order Details"
-  backAction="custom"
-  [showBackButton]="true"
-  rightIconColor="primary"
-  (backClicked)="onBack()"
-  (rightButtonClicked)="onEdit()">
+    title="Order Details"
+    backAction="custom"
+    [showBackButton]="true"
+    rightIconColor="primary"
+    (backClicked)="onBack()"
+    (rightButtonClicked)="onEdit()"
+>
 </app-header>
 
 <ion-content>
-  <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
+    <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
 
-  <app-order
-    *ngIf="!loading && order"
-    [mode]="'read'"
-    [formData]="order"
-    (formClosed)="onBack()">
-  </app-order>
+    <app-order *ngIf="!loading && order" [mode]="'read'" [formData]="order" (formClosed)="onBack()">
+    </app-order>
 </ion-content>

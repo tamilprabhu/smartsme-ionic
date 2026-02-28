@@ -1,109 +1,153 @@
 <app-header
-  title="Orders"
-  backAction="custom"
-  [showBackButton]="true"
-  rightIconColor="primary"
-  (backClicked)="onHeaderBackClick()"
-  (rightButtonClicked)="createOrder()">
+    title="Orders"
+    backAction="custom"
+    [showBackButton]="true"
+    rightIconColor="primary"
+    (backClicked)="onHeaderBackClick()"
+    (rightButtonClicked)="createOrder()"
+>
 </app-header>
 
 <ion-content>
-  <div class="page-header">
-    <div class="page-title-container">
-      <h1 class="page-title">Orders</h1>
-      <p class="page-subtitle">Create, search, update and delete orders</p>
+    <div class="page-header">
+        <div class="page-title-container">
+            <h1 class="page-title">Orders</h1>
+            <p class="page-subtitle">Create, search, update and delete orders</p>
+        </div>
+        <ion-button
+            class="sort-toggle-button"
+            fill="solid"
+            color="primary"
+            (click)="toggleSortOptions()"
+        >
+            <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
+        </ion-button>
+        <ion-button
+            class="add-button list-add-button"
+            fill="solid"
+            color="primary"
+            aria-label="Add order"
+            (click)="createOrder()"
+        >
+            <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
     </div>
-    <ion-button class="sort-toggle-button" fill="solid" color="primary" (click)="toggleSortOptions()">
-      <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
-    </ion-button>
-    <ion-button class="add-button list-add-button" fill="solid" color="primary" aria-label="Add order" (click)="createOrder()">
-      <ion-icon slot="icon-only" name="add"></ion-icon>
-    </ion-button>
-  </div>
 
-  <ion-card class="search-card">
-    <ion-searchbar
-      #searchInput
-      placeholder="Search by order name, ID, product or buyer..."
-      [value]="searchControl.value"
-      (ionInput)="onSearchInput($event)"
-      (ionClear)="clearSearch()"
-      debounce="0">
-    </ion-searchbar>
-  </ion-card>
+    <ion-card class="search-card">
+        <ion-searchbar
+            #searchInput
+            placeholder="Search by order name, ID, product or buyer..."
+            [value]="searchControl.value"
+            (ionInput)="onSearchInput($event)"
+            (ionClear)="clearSearch()"
+            debounce="0"
+        >
+        </ion-searchbar>
+    </ion-card>
 
-  <ion-card class="search-card" *ngIf="showSortOptions">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12" sizeMd="6">
-          <ion-item fill="outline">
-            <ion-select label="Sort By" label-placement="stacked" [(ngModel)]="sortBy" (ionChange)="onSortChange()">
-              <ion-select-option *ngFor="let option of sortByOptions" [value]="option.value">{{ option.label }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
-        <ion-col size="12" sizeMd="6">
-          <ion-item fill="outline">
-            <ion-select label="Sort Order" label-placement="stacked" [(ngModel)]="sortOrder" (ionChange)="onSortChange()">
-              <ion-select-option *ngFor="let option of sortOrderOptions" [value]="option.value">{{ option.label }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-card>
+    <ion-card class="search-card" *ngIf="showSortOptions">
+        <ion-grid>
+            <ion-row>
+                <ion-col size="12" sizeMd="6">
+                    <ion-item fill="outline">
+                        <ion-select
+                            label="Sort By"
+                            label-placement="stacked"
+                            [(ngModel)]="sortBy"
+                            (ionChange)="onSortChange()"
+                        >
+                            <ion-select-option
+                                *ngFor="let option of sortByOptions"
+                                [value]="option.value"
+                                >{{ option.label }}</ion-select-option
+                            >
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="12" sizeMd="6">
+                    <ion-item fill="outline">
+                        <ion-select
+                            label="Sort Order"
+                            label-placement="stacked"
+                            [(ngModel)]="sortOrder"
+                            (ionChange)="onSortChange()"
+                        >
+                            <ion-select-option
+                                *ngFor="let option of sortOrderOptions"
+                                [value]="option.value"
+                                >{{ option.label }}</ion-select-option
+                            >
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-card>
 
-  <ion-card *ngIf="loading && currentPage === 1" class="list-loading-state">
-    <ion-card-content>
-      <ion-spinner name="crescent"></ion-spinner>
-      <span>Loading orders...</span>
-    </ion-card-content>
-  </ion-card>
+    <ion-card *ngIf="loading && currentPage === 1" class="list-loading-state">
+        <ion-card-content>
+            <ion-spinner name="crescent"></ion-spinner>
+            <span>Loading orders...</span>
+        </ion-card-content>
+    </ion-card>
 
-  <ion-item *ngIf="listError" lines="none" color="danger" class="results-info">
-    <ion-label>{{ listError }}</ion-label>
-  </ion-item>
-
-  <ion-item *ngIf="searchControl.value" class="results-info">
-    <ion-label>
-      Found <strong>{{ orders.length }}</strong> order(s)
-    </ion-label>
-  </ion-item>
-
-  <ion-list *ngIf="orders.length > 0">
-    <ion-item *ngFor="let order of orders; trackBy: trackByOrderSequence" class="sme-list-item" (click)="viewOrder(order)">
-      <ion-label>
-        <h2>
-          {{ order.orderName }}
-          <ion-badge color="primary">#{{ order.orderId }}</ion-badge>
-        </h2>
-        <p class="details">Product: <strong>{{ order.productId }}</strong> | Buyer: <strong>{{ order.buyerId }}</strong></p>
-        <p class="pricing">
-          Quantity: {{ order.orderQuantity }} | Price: {{ order.price }} | Total: {{ order.totalPrice }}
-        </p>
-      </ion-label>
-      <ion-buttons slot="end">
-        <ion-button color="secondary" (click)="editOrder(order, $event)">
-          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-        </ion-button>
-        <ion-button color="danger" (click)="confirmDelete(order, $event)">
-          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
+    <ion-item *ngIf="listError" lines="none" color="danger" class="results-info">
+        <ion-label>{{ listError }}</ion-label>
     </ion-item>
-  </ion-list>
 
-  <ion-card *ngIf="orders.length === 0 && !loading" class="empty-state">
-    <ion-card-header>
-      <ion-card-title>No Orders Found</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p *ngIf="searchControl.value">No orders match your search "{{ searchControl.value }}"</p>
-      <p *ngIf="!searchControl.value">No orders available. Click Add to create one.</p>
-    </ion-card-content>
-  </ion-card>
+    <ion-item *ngIf="searchControl.value" class="results-info">
+        <ion-label>
+            Found <strong>{{ orders.length }}</strong> order(s)
+        </ion-label>
+    </ion-item>
 
-  <ion-infinite-scroll (ionInfinite)="loadOrders($event)" [disabled]="!hasMore">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more orders..."></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+    <ion-list *ngIf="orders.length > 0">
+        <ion-item
+            *ngFor="let order of orders; trackBy: trackByOrderSequence"
+            class="sme-list-item"
+            (click)="viewOrder(order)"
+        >
+            <ion-label>
+                <h2>
+                    {{ order.orderName }}
+                    <ion-badge color="primary">#{{ order.orderId }}</ion-badge>
+                </h2>
+                <p class="details">
+                    Product: <strong>{{ order.productId }}</strong> | Buyer:
+                    <strong>{{ order.buyerId }}</strong>
+                </p>
+                <p class="pricing">
+                    Quantity: {{ order.orderQuantity }} | Price: {{ order.price }} | Total:
+                    {{ order.totalPrice }}
+                </p>
+            </ion-label>
+            <ion-buttons slot="end">
+                <ion-button color="secondary" (click)="editOrder(order, $event)">
+                    <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                </ion-button>
+                <ion-button color="danger" (click)="confirmDelete(order, $event)">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+        </ion-item>
+    </ion-list>
+
+    <ion-card *ngIf="orders.length === 0 && !loading" class="empty-state">
+        <ion-card-header>
+            <ion-card-title>No Orders Found</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            <p *ngIf="searchControl.value">
+                No orders match your search "{{ searchControl.value }}"
+            </p>
+            <p *ngIf="!searchControl.value">No orders available. Click Add to create one.</p>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-infinite-scroll (ionInfinite)="loadOrders($event)" [disabled]="!hasMore">
+        <ion-infinite-scroll-content
+            loadingSpinner="bubbles"
+            loadingText="Loading more orders..."
+        ></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 </ion-content>

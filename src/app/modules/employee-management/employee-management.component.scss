@@ -1,17 +1,17 @@
 :host {
-  display: block;
+    display: block;
 }
 
 .sme-form-card {
-  margin: 0 16px 16px;
+    margin: 0 16px 16px;
 }
 
 .action-row ion-button {
-  width: 100%;
+    width: 100%;
 }
 
 @media (max-width: 767px) {
-  .sme-form-card {
-    margin: 0 12px 12px;
-  }
+    .sme-form-card {
+        margin: 0 12px 12px;
+    }
 }

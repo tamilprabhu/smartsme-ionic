@@ -1,17 +1,19 @@
 <app-header
-  title="View Company"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onBack()">
+    title="View Company"
+    backAction="custom"
+    [showBackButton]="true"
+    (backClicked)="onBack()"
+>
 </app-header>
 
 <ion-content>
-  <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
+    <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
 
-  <app-company
-    *ngIf="!loading && company"
-    mode="read"
-    [formData]="company"
-    (formClosed)="onBack()">
-  </app-company>
+    <app-company
+        *ngIf="!loading && company"
+        mode="read"
+        [formData]="company"
+        (formClosed)="onBack()"
+    >
+    </app-company>
 </ion-content>

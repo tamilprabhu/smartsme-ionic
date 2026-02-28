@@ -1,15 +1,17 @@
 <app-header
-  title="Create Dispatch"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onCancel()">
+    title="Create Dispatch"
+    backAction="custom"
+    [showBackButton]="true"
+    (backClicked)="onCancel()"
+>
 </app-header>
 
 <ion-content>
-  <app-dispatch
-    mode="create"
-    [serverValidationErrors]="serverValidationErrors"
-    (formSubmit)="onSubmit($event)"
-    (formClosed)="onCancel()">
-  </app-dispatch>
+    <app-dispatch
+        mode="create"
+        [serverValidationErrors]="serverValidationErrors"
+        (formSubmit)="onSubmit($event)"
+        (formClosed)="onCancel()"
+    >
+    </app-dispatch>
 </ion-content>

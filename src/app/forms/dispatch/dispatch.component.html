@@ -1,109 +1,200 @@
 <ion-content>
-  <ion-card class="sme-form-card ion-no-margin">
-    <ion-card-header>
-      <ion-card-title>{{ mode === 'create' ? 'Dispatch Details' : mode === 'update' ? 'Edit Dispatch Details' : 'Dispatch Details' }}</ion-card-title>
-      <ion-card-subtitle *ngIf="mode !== 'read'">Please fill all required information</ion-card-subtitle>
-    </ion-card-header>
+    <ion-card class="sme-form-card ion-no-margin">
+        <ion-card-header>
+            <ion-card-title>{{
+                mode === 'create'
+                    ? 'Dispatch Details'
+                    : mode === 'update'
+                      ? 'Edit Dispatch Details'
+                      : 'Dispatch Details'
+            }}</ion-card-title>
+            <ion-card-subtitle *ngIf="mode !== 'read'"
+                >Please fill all required information</ion-card-subtitle
+            >
+        </ion-card-header>
 
-    <ion-card-content>
-      <form [formGroup]="dispatchForm" (ngSubmit)="onSubmit()">
-        <ion-item lines="none" color="danger" *ngIf="formLevelErrors.length > 0 && mode !== 'read'">
-          <ion-label>
-            <p *ngFor="let message of formLevelErrors">{{ message }}</p>
-          </ion-label>
-        </ion-item>
+        <ion-card-content>
+            <form [formGroup]="dispatchForm" (ngSubmit)="onSubmit()">
+                <ion-item
+                    lines="none"
+                    color="danger"
+                    *ngIf="formLevelErrors.length > 0 && mode !== 'read'"
+                >
+                    <ion-label>
+                        <p *ngFor="let message of formLevelErrors">{{ message }}</p>
+                    </ion-label>
+                </ion-item>
 
-        <ion-grid>
-          <ion-row>
-            <ion-col size="12">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-input formControlName="dispatchId" label="Dispatch ID" label-placement="floating" [readonly]="true"></ion-input>
-              </ion-item>
-            </ion-col>
-          </ion-row>
+                <ion-grid>
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-input
+                                    formControlName="dispatchId"
+                                    label="Dispatch ID"
+                                    label-placement="floating"
+                                    [readonly]="true"
+                                ></ion-input>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
 
-          <ion-row>
-            <ion-col size="12" sizeMd="6">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-select formControlName="orderId" label="Order *" label-placement="floating" [disabled]="mode === 'read'">
-                  <ion-select-option *ngFor="let order of orders" [value]="order.orderId">{{ order.orderName }} ({{ order.orderId }})</ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-col>
-            <ion-col size="12" sizeMd="6">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-select formControlName="productId" label="Product *" label-placement="floating" [disabled]="mode === 'read'">
-                  <ion-select-option *ngFor="let product of products" [value]="product.productId">{{ product.productName }} ({{ product.productId }})</ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-col>
-          </ion-row>
+                    <ion-row>
+                        <ion-col size="12" sizeMd="6">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-select
+                                    formControlName="orderId"
+                                    label="Order *"
+                                    label-placement="floating"
+                                    [disabled]="mode === 'read'"
+                                >
+                                    <ion-select-option
+                                        *ngFor="let order of orders"
+                                        [value]="order.orderId"
+                                        >{{ order.orderName }} ({{
+                                            order.orderId
+                                        }})</ion-select-option
+                                    >
+                                </ion-select>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="12" sizeMd="6">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-select
+                                    formControlName="productId"
+                                    label="Product *"
+                                    label-placement="floating"
+                                    [disabled]="mode === 'read'"
+                                >
+                                    <ion-select-option
+                                        *ngFor="let product of products"
+                                        [value]="product.productId"
+                                        >{{ product.productName }} ({{
+                                            product.productId
+                                        }})</ion-select-option
+                                    >
+                                </ion-select>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
 
-          <ion-row>
-            <ion-col size="12">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-input formControlName="dispatchDate" type="datetime-local" label="Dispatch Date *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
-              </ion-item>
-            </ion-col>
-          </ion-row>
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-input
+                                    formControlName="dispatchDate"
+                                    type="datetime-local"
+                                    label="Dispatch Date *"
+                                    label-placement="floating"
+                                    [readonly]="mode === 'read'"
+                                ></ion-input>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
 
-          <ion-row>
-            <ion-col size="12" sizeMd="6">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-input type="number" formControlName="quantity" label="Quantity *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
-              </ion-item>
-            </ion-col>
-            <ion-col size="12" sizeMd="6">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-input type="number" formControlName="noOfPacks" label="No Of Packs *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
-              </ion-item>
-            </ion-col>
-          </ion-row>
+                    <ion-row>
+                        <ion-col size="12" sizeMd="6">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-input
+                                    type="number"
+                                    formControlName="quantity"
+                                    label="Quantity *"
+                                    label-placement="floating"
+                                    [readonly]="mode === 'read'"
+                                ></ion-input>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="12" sizeMd="6">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-input
+                                    type="number"
+                                    formControlName="noOfPacks"
+                                    label="No Of Packs *"
+                                    label-placement="floating"
+                                    [readonly]="mode === 'read'"
+                                ></ion-input>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
 
-          <ion-row>
-            <ion-col size="12" sizeMd="4">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-input type="number" formControlName="totalWeight" label="Total Weight *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
-              </ion-item>
-            </ion-col>
-            <ion-col size="12" sizeMd="4">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-input type="number" formControlName="normalWeight" label="Normal Weight *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
-              </ion-item>
-            </ion-col>
-            <ion-col size="12" sizeMd="4">
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-input type="number" formControlName="normsWeight" label="Norms Weight *" label-placement="floating" [readonly]="mode === 'read'"></ion-input>
-              </ion-item>
-            </ion-col>
-          </ion-row>
+                    <ion-row>
+                        <ion-col size="12" sizeMd="4">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-input
+                                    type="number"
+                                    formControlName="totalWeight"
+                                    label="Total Weight *"
+                                    label-placement="floating"
+                                    [readonly]="mode === 'read'"
+                                ></ion-input>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="12" sizeMd="4">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-input
+                                    type="number"
+                                    formControlName="normalWeight"
+                                    label="Normal Weight *"
+                                    label-placement="floating"
+                                    [readonly]="mode === 'read'"
+                                ></ion-input>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="12" sizeMd="4">
+                            <ion-item fill="outline" class="ion-margin-bottom">
+                                <ion-input
+                                    type="number"
+                                    formControlName="normsWeight"
+                                    label="Norms Weight *"
+                                    label-placement="floating"
+                                    [readonly]="mode === 'read'"
+                                ></ion-input>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
 
-          <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="mode !== 'read'">
-            <ion-col size="6">
-              <ion-button expand="block" type="submit" color="primary">
-                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
-                {{ mode === 'create' ? 'Submit' : 'Update' }}
-              </ion-button>
-            </ion-col>
-            <ion-col size="6">
-              <ion-button color="medium" fill="outline" expand="block" (click)="goBack()">
-                <ion-icon name="close-circle-outline" slot="start"></ion-icon>
-                Cancel
-              </ion-button>
-            </ion-col>
-          </ion-row>
+                    <ion-row
+                        class="ion-margin-top ion-margin-bottom action-row"
+                        *ngIf="mode !== 'read'"
+                    >
+                        <ion-col size="6">
+                            <ion-button expand="block" type="submit" color="primary">
+                                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                                {{ mode === 'create' ? 'Submit' : 'Update' }}
+                            </ion-button>
+                        </ion-col>
+                        <ion-col size="6">
+                            <ion-button
+                                color="medium"
+                                fill="outline"
+                                expand="block"
+                                (click)="goBack()"
+                            >
+                                <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                                Cancel
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
 
-          <ion-row class="ion-margin-top ion-margin-bottom action-row" *ngIf="mode === 'read'">
-            <ion-col size="12">
-              <ion-button color="medium" fill="outline" expand="block" (click)="goBack()">
-                <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
-                Back
-              </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </form>
-    </ion-card-content>
-  </ion-card>
+                    <ion-row
+                        class="ion-margin-top ion-margin-bottom action-row"
+                        *ngIf="mode === 'read'"
+                    >
+                        <ion-col size="12">
+                            <ion-button
+                                color="medium"
+                                fill="outline"
+                                expand="block"
+                                (click)="goBack()"
+                            >
+                                <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+                                Back
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </form>
+        </ion-card-content>
+    </ion-card>
 </ion-content>
 <app-footer></app-footer>

@@ -8,75 +8,84 @@ import { ItemsPerPage } from '../enums/items-per-page.enum';
 import { OrderQuantity } from '../models/order-quantity.model';
 
 export interface OrderQuantityResponse {
-  items: OrderQuantity[];
-  paging: {
-    currentPage: number;
-    totalPages: number;
-    itemsPerPage: number;
-    totalItems: number;
-  };
+    items: OrderQuantity[];
+    paging: {
+        currentPage: number;
+        totalPages: number;
+        itemsPerPage: number;
+        totalItems: number;
+    };
 }
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class OrderQuantityService {
-  private readonly API_URL = `${environment.apiBaseUrl}/order-quantity`;
+    private readonly API_URL = `${environment.apiBaseUrl}/order-quantity`;
 
-  constructor(
-    private http: HttpClient,
-    private loginService: LoginService
-  ) {}
+    constructor(
+        private http: HttpClient,
+        private loginService: LoginService,
+    ) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = this.loginService.getToken();
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
-  getOrderQuantities(page: number = 1, limit: number = ItemsPerPage.TEN, search?: string): Observable<OrderQuantityResponse> {
-    let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
-    if (search && search.trim()) {
-      url += `&search=${encodeURIComponent(search.trim())}`;
+    private getHeaders(): HttpHeaders {
+        const token = this.loginService.getToken();
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        });
     }
-    return this.http.get<OrderQuantityResponse>(url, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
 
-  getOrderQuantity(id: string): Observable<OrderQuantity> {
-    return this.http.get<OrderQuantity>(`${this.API_URL}/${id}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+    getOrderQuantities(
+        page: number = 1,
+        limit: number = ItemsPerPage.TEN,
+        search?: string,
+    ): Observable<OrderQuantityResponse> {
+        let url = `${this.API_URL}?page=${page}&itemsPerPage=${limit}`;
+        if (search && search.trim()) {
+            url += `&search=${encodeURIComponent(search.trim())}`;
+        }
+        return this.http
+            .get<OrderQuantityResponse>(url, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
 
-  createOrderQuantity(orderQuantity: Omit<OrderQuantity, 'createdAt' | 'updatedAt'>): Observable<OrderQuantity> {
-    return this.http.post<OrderQuantity>(this.API_URL, orderQuantity, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+    getOrderQuantity(id: string): Observable<OrderQuantity> {
+        return this.http
+            .get<OrderQuantity>(`${this.API_URL}/${id}`, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
 
-  updateOrderQuantity(id: string, orderQuantity: Partial<Omit<OrderQuantity, 'orderId' | 'createdAt'>>): Observable<OrderQuantity> {
-    return this.http.put<OrderQuantity>(`${this.API_URL}/${id}`, orderQuantity, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+    createOrderQuantity(
+        orderQuantity: Omit<OrderQuantity, 'createdAt' | 'updatedAt'>,
+    ): Observable<OrderQuantity> {
+        return this.http
+            .post<OrderQuantity>(this.API_URL, orderQuantity, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
 
-  deleteOrderQuantity(id: string): Observable<{message: string}> {
-    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+    updateOrderQuantity(
+        id: string,
+        orderQuantity: Partial<Omit<OrderQuantity, 'orderId' | 'createdAt'>>,
+    ): Observable<OrderQuantity> {
+        return this.http
+            .put<OrderQuantity>(`${this.API_URL}/${id}`, orderQuantity, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
+
+    deleteOrderQuantity(id: string): Observable<{ message: string }> {
+        return this.http
+            .delete<{ message: string }>(`${this.API_URL}/${id}`, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
 }

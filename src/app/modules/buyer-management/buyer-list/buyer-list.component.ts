@@ -12,167 +12,174 @@ import { Buyer } from 'src/app/models/buyer.model';
 import { BuyerService } from 'src/app/services/buyer.service';
 
 @Component({
-  selector: 'app-buyer-list',
-  templateUrl: './buyer-list.component.html',
-  styleUrls: ['./buyer-list.component.scss'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, HeaderComponent]
+    selector: 'app-buyer-list',
+    templateUrl: './buyer-list.component.html',
+    styleUrls: ['./buyer-list.component.scss'],
+    standalone: true,
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, HeaderComponent],
 })
 export class BuyerListComponent implements OnInit, OnDestroy {
-  @ViewChild('searchInput') searchInput!: IonSearchbar;
+    @ViewChild('searchInput') searchInput!: IonSearchbar;
 
-  buyers: Buyer[] = [];
-  currentPage = 1;
-  hasMore = true;
-  loading = false;
-  listError = '';
-  sortBy: SortBy = SortBy.CREATE_DATE;
-  sortOrder: SortOrder = SortOrder.DESC;
-  showSortOptions = false;
+    buyers: Buyer[] = [];
+    currentPage = 1;
+    hasMore = true;
+    loading = false;
+    listError = '';
+    sortBy: SortBy = SortBy.CREATE_DATE;
+    sortOrder: SortOrder = SortOrder.DESC;
+    showSortOptions = false;
 
-  readonly sortByOptions = [
-    { label: 'Create Date', value: SortBy.CREATE_DATE },
-    { label: 'Update Date', value: SortBy.UPDATE_DATE },
-    { label: 'Sequence', value: SortBy.SEQUENCE },
-    { label: 'Created By', value: SortBy.CREATED_BY },
-    { label: 'Updated By', value: SortBy.UPDATED_BY }
-  ];
+    readonly sortByOptions = [
+        { label: 'Create Date', value: SortBy.CREATE_DATE },
+        { label: 'Update Date', value: SortBy.UPDATE_DATE },
+        { label: 'Sequence', value: SortBy.SEQUENCE },
+        { label: 'Created By', value: SortBy.CREATED_BY },
+        { label: 'Updated By', value: SortBy.UPDATED_BY },
+    ];
 
-  readonly sortOrderOptions = [
-    { label: 'Descending', value: SortOrder.DESC },
-    { label: 'Ascending', value: SortOrder.ASC }
-  ];
+    readonly sortOrderOptions = [
+        { label: 'Descending', value: SortOrder.DESC },
+        { label: 'Ascending', value: SortOrder.ASC },
+    ];
 
-  readonly searchControl = new FormControl('', { nonNullable: true });
+    readonly searchControl = new FormControl('', { nonNullable: true });
 
-  private readonly destroy$ = new Subject<void>();
-  private backTarget = '/tabs/profile-masters';
+    private readonly destroy$ = new Subject<void>();
+    private backTarget = '/tabs/profile-masters';
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly buyerService: BuyerService,
-    private readonly confirmDialog: ConfirmDialogService
-  ) {}
+    constructor(
+        private readonly route: ActivatedRoute,
+        private readonly router: Router,
+        private readonly buyerService: BuyerService,
+        private readonly confirmDialog: ConfirmDialogService,
+    ) {}
 
-  ngOnInit(): void {
-    this.backTarget = this.route.snapshot.queryParamMap.get('from') === 'dashboard'
-      ? '/tabs/home'
-      : '/tabs/profile-masters';
+    ngOnInit(): void {
+        this.backTarget =
+            this.route.snapshot.queryParamMap.get('from') === 'dashboard'
+                ? '/tabs/home'
+                : '/tabs/profile-masters';
 
-    this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.resetListing();
+        this.searchControl.valueChanges
+            .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.resetListing();
+                this.loadBuyers();
+            });
+
         this.loadBuyers();
-      });
-
-    this.loadBuyers();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  loadBuyers(event?: CustomEvent): void {
-    if (this.loading || !this.hasMore) {
-      this.completeInfinite(event);
-      return;
     }
 
-    this.loading = true;
-    this.listError = '';
-
-    this.buyerService.getBuyers(this.currentPage, 10, this.searchControl.value, this.sortBy, this.sortOrder).subscribe({
-      next: (response) => {
-        this.buyers = this.currentPage === 1 ? response.items : [...this.buyers, ...response.items];
-        this.hasMore = response.paging.currentPage < response.paging.totalPages;
-        this.currentPage += 1;
-        this.loading = false;
-        this.completeInfinite(event);
-      },
-      error: (error) => {
-        this.loading = false;
-        this.listError = error?.error?.error || error?.message || 'Failed to load buyers';
-        this.completeInfinite(event);
-      }
-    });
-  }
-
-  onSearchInput(event: Event): void {
-    const value = (event as CustomEvent).detail?.value ?? '';
-    this.searchControl.setValue(value, { emitEvent: true });
-  }
-
-  clearSearch(): void {
-    this.searchControl.setValue('', { emitEvent: true });
-    if (this.searchInput) {
-      this.searchInput.value = '';
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
-  }
 
-  toggleSortOptions(): void {
-    this.showSortOptions = !this.showSortOptions;
-  }
+    loadBuyers(event?: CustomEvent): void {
+        if (this.loading || !this.hasMore) {
+            this.completeInfinite(event);
+            return;
+        }
 
-  onSortChange(): void {
-    this.resetListing();
-    this.loadBuyers();
-  }
+        this.loading = true;
+        this.listError = '';
 
-  createBuyer(): void {
-    this.router.navigate(['/buyers/create']);
-  }
+        this.buyerService
+            .getBuyers(this.currentPage, 10, this.searchControl.value, this.sortBy, this.sortOrder)
+            .subscribe({
+                next: (response) => {
+                    this.buyers =
+                        this.currentPage === 1
+                            ? response.items
+                            : [...this.buyers, ...response.items];
+                    this.hasMore = response.paging.currentPage < response.paging.totalPages;
+                    this.currentPage += 1;
+                    this.loading = false;
+                    this.completeInfinite(event);
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this.listError =
+                        error?.error?.error || error?.message || 'Failed to load buyers';
+                    this.completeInfinite(event);
+                },
+            });
+    }
 
-  viewBuyer(buyer: Buyer): void {
-    this.router.navigate(['/buyers', buyer.buyerSequence]);
-  }
+    onSearchInput(event: Event): void {
+        const value = (event as CustomEvent).detail?.value ?? '';
+        this.searchControl.setValue(value, { emitEvent: true });
+    }
 
-  editBuyer(buyer: Buyer, event: Event): void {
-    event.stopPropagation();
-    this.router.navigate(['/buyers', buyer.buyerSequence, 'edit']);
-  }
+    clearSearch(): void {
+        this.searchControl.setValue('', { emitEvent: true });
+        if (this.searchInput) {
+            this.searchInput.value = '';
+        }
+    }
 
-  async confirmDelete(buyer: Buyer, event: Event): Promise<void> {
-    event.stopPropagation();
+    toggleSortOptions(): void {
+        this.showSortOptions = !this.showSortOptions;
+    }
 
-    const confirmed = await this.confirmDialog.confirm({
-      title: 'Confirm Delete',
-      message: `Are you sure you want to delete buyer "${buyer.buyerName}"?`,
-      confirmText: 'Delete',
-      confirmColor: 'danger'
-    });
-
-    if (!confirmed) return;
-
-    this.buyerService.deleteBuyer(buyer.buyerSequence).subscribe({
-      next: () => {
+    onSortChange(): void {
         this.resetListing();
         this.loadBuyers();
-      },
-      error: () => {
-        this.listError = 'Failed to delete buyer';
-      }
-    });
-  }
+    }
 
-  onHeaderBackClick(): void {
-    this.router.navigate([this.backTarget]);
-  }
+    createBuyer(): void {
+        this.router.navigate(['/buyers/create']);
+    }
 
-  trackByBuyerSequence(_index: number, buyer: Buyer): number {
-    return buyer.buyerSequence;
-  }
+    viewBuyer(buyer: Buyer): void {
+        this.router.navigate(['/buyers', buyer.buyerSequence]);
+    }
 
-  private resetListing(): void {
-    this.currentPage = 1;
-    this.hasMore = true;
-    this.buyers = [];
-  }
+    editBuyer(buyer: Buyer, event: Event): void {
+        event.stopPropagation();
+        this.router.navigate(['/buyers', buyer.buyerSequence, 'edit']);
+    }
 
-  private completeInfinite(event?: CustomEvent): void {
-    const target = event?.target as IonInfiniteScroll | undefined;
-    target?.complete();
-  }
+    async confirmDelete(buyer: Buyer, event: Event): Promise<void> {
+        event.stopPropagation();
+
+        const confirmed = await this.confirmDialog.confirm({
+            title: 'Confirm Delete',
+            message: `Are you sure you want to delete buyer "${buyer.buyerName}"?`,
+            confirmText: 'Delete',
+            confirmColor: 'danger',
+        });
+
+        if (!confirmed) return;
+
+        this.buyerService.deleteBuyer(buyer.buyerSequence).subscribe({
+            next: () => {
+                this.resetListing();
+                this.loadBuyers();
+            },
+            error: () => {
+                this.listError = 'Failed to delete buyer';
+            },
+        });
+    }
+
+    onHeaderBackClick(): void {
+        this.router.navigate([this.backTarget]);
+    }
+
+    trackByBuyerSequence(_index: number, buyer: Buyer): number {
+        return buyer.buyerSequence;
+    }
+
+    private resetListing(): void {
+        this.currentPage = 1;
+        this.hasMore = true;
+        this.buyers = [];
+    }
+
+    private completeInfinite(event?: CustomEvent): void {
+        const target = event?.target as IonInfiniteScroll | undefined;
+        target?.complete();
+    }
 }

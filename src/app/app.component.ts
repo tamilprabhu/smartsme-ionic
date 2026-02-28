@@ -5,79 +5,84 @@ import { MenuController } from '@ionic/angular';
 import { canAccessAnyModule } from './utils/module-access.util';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-  standalone: false,
-  providers: [LoginService]
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    styleUrls: ['app.component.scss'],
+    standalone: false,
+    providers: [LoginService],
 })
 export class AppComponent {
-  isLoggedIn: boolean = false;
-  user: any = null;
-  profileMenuLabel = 'Profile';
-  isDarkMode = false;
-  private readonly themeStorageKey = 'sme-theme';
+    isLoggedIn: boolean = false;
+    user: any = null;
+    profileMenuLabel = 'Profile';
+    isDarkMode = false;
+    private readonly themeStorageKey = 'sme-theme';
 
-  constructor(
-    private loginService: LoginService,
-    private router: Router,
-    private menuController: MenuController
-  ) {}
+    constructor(
+        private loginService: LoginService,
+        private router: Router,
+        private menuController: MenuController,
+    ) {}
 
-  ngOnInit() {
-    this.initializeTheme();
+    ngOnInit() {
+        this.initializeTheme();
 
-    this.loginService.isLoggedIn$.subscribe(status => {
-      this.isLoggedIn = status;
-      this.menuController.enable(status, 'rightMenu');
-    });
+        this.loginService.isLoggedIn$.subscribe((status) => {
+            this.isLoggedIn = status;
+            this.menuController.enable(status, 'rightMenu');
+        });
 
-    this.loginService.currentUser$.subscribe(user => {
-      this.user = user;
-      const userRoles = this.loginService.getUserRoles();
-      const hasMasterAccess = canAccessAnyModule(userRoles, [
-        'COMPANY',
-        'MACHINE_PROCESS',
-        'EMPLOYEES',
-        'SELLERS',
-        'BUYERS',
-        'PRODUCTS'
-      ]);
-      this.profileMenuLabel = hasMasterAccess ? 'Profile & Masters' : 'Profile';
-    });
-  }
+        this.loginService.currentUser$.subscribe((user) => {
+            this.user = user;
+            const userRoles = this.loginService.getUserRoles();
+            const hasMasterAccess = canAccessAnyModule(userRoles, [
+                'COMPANY',
+                'MACHINE_PROCESS',
+                'EMPLOYEES',
+                'SELLERS',
+                'BUYERS',
+                'PRODUCTS',
+            ]);
+            this.profileMenuLabel = hasMasterAccess ? 'Profile & Masters' : 'Profile';
+        });
+    }
 
-  private initializeTheme(): void {
-    const savedTheme = localStorage.getItem(this.themeStorageKey);
-    this.applyTheme(savedTheme === 'dark');
-  }
+    private initializeTheme(): void {
+        const savedTheme = localStorage.getItem(this.themeStorageKey);
+        this.applyTheme(savedTheme === 'dark');
+    }
 
-  onThemeToggle(event: CustomEvent): void {
-    const enabled = !!event.detail?.checked;
-    this.applyTheme(enabled);
-    localStorage.setItem(this.themeStorageKey, enabled ? 'dark' : 'light');
-  }
+    onThemeToggle(event: CustomEvent): void {
+        const enabled = !!event.detail?.checked;
+        this.applyTheme(enabled);
+        localStorage.setItem(this.themeStorageKey, enabled ? 'dark' : 'light');
+    }
 
-  private applyTheme(enabled: boolean): void {
-    this.isDarkMode = enabled;
-    document.documentElement.classList.toggle('dark-theme', enabled);
-    document.body.classList.toggle('dark-theme', enabled);
-  }
+    private applyTheme(enabled: boolean): void {
+        this.isDarkMode = enabled;
+        document.documentElement.classList.toggle('dark-theme', enabled);
+        document.body.classList.toggle('dark-theme', enabled);
+    }
 
-  logout() {
-    this.loginService.logout();
-    this.menuController.close('rightMenu').finally(() => {
-      this.router.navigate(['/home']).catch(() => this.router.navigate(['/']));
-    });
-  }
+    logout() {
+        this.loginService.logout();
+        this.menuController.close('rightMenu').finally(() => {
+            this.router.navigate(['/home']).catch(() => this.router.navigate(['/']));
+        });
+    }
 
-  navigateTo(page: string) {
-    console.log('Navigating to:', page);
-    this.menuController.close('rightMenu').then(() => {
-      const targetRoute = page.startsWith('/') ? page : `/${page}`;
-      this.router.navigateByUrl(targetRoute).catch(err => console.error('Navigation error:', err));
-    }).catch(err => {
-      console.error('Menu close error:', err);
-    });
-  }
+    navigateTo(page: string) {
+        console.log('Navigating to:', page);
+        this.menuController
+            .close('rightMenu')
+            .then(() => {
+                const targetRoute = page.startsWith('/') ? page : `/${page}`;
+                this.router
+                    .navigateByUrl(targetRoute)
+                    .catch((err) => console.error('Navigation error:', err));
+            })
+            .catch((err) => {
+                console.error('Menu close error:', err);
+            });
+    }
 }

@@ -1,19 +1,21 @@
 <app-header
-  title="Update Order"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onCancel()">
+    title="Update Order"
+    backAction="custom"
+    [showBackButton]="true"
+    (backClicked)="onCancel()"
+>
 </app-header>
 
 <ion-content>
-  <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
+    <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
 
-  <app-order
-    *ngIf="!loading && order"
-    [mode]="'update'"
-    [formData]="order"
-    [serverValidationErrors]="serverValidationErrors"
-    (formSubmit)="onSubmit($event)"
-    (formClosed)="onCancel()">
-  </app-order>
+    <app-order
+        *ngIf="!loading && order"
+        [mode]="'update'"
+        [formData]="order"
+        [serverValidationErrors]="serverValidationErrors"
+        (formSubmit)="onSubmit($event)"
+        (formClosed)="onCancel()"
+    >
+    </app-order>
 </ion-content>

@@ -1,19 +1,21 @@
 <app-header
-  title="Update Buyer"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onCancel()">
+    title="Update Buyer"
+    backAction="custom"
+    [showBackButton]="true"
+    (backClicked)="onCancel()"
+>
 </app-header>
 
 <ion-content>
-  <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
+    <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
 
-  <app-buyer
-    *ngIf="!loading && buyer"
-    [mode]="'update'"
-    [formData]="buyer"
-    [serverValidationErrors]="serverValidationErrors"
-    (formSubmit)="onSubmit($event)"
-    (formClosed)="onCancel()">
-  </app-buyer>
+    <app-buyer
+        *ngIf="!loading && buyer"
+        [mode]="'update'"
+        [formData]="buyer"
+        [serverValidationErrors]="serverValidationErrors"
+        (formSubmit)="onSubmit($event)"
+        (formClosed)="onCancel()"
+    >
+    </app-buyer>
 </ion-content>

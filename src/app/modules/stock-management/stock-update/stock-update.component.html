@@ -1,19 +1,21 @@
 <app-header
-  title="Update Stock"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onCancel()">
+    title="Update Stock"
+    backAction="custom"
+    [showBackButton]="true"
+    (backClicked)="onCancel()"
+>
 </app-header>
 
 <ion-content>
-  <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
+    <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
 
-  <app-stock
-    *ngIf="!loading && stock"
-    mode="update"
-    [formData]="stock"
-    [serverValidationErrors]="serverValidationErrors"
-    (formSubmit)="onSubmit($event)"
-    (formClosed)="onCancel()">
-  </app-stock>
+    <app-stock
+        *ngIf="!loading && stock"
+        mode="update"
+        [formData]="stock"
+        [serverValidationErrors]="serverValidationErrors"
+        (formSubmit)="onSubmit($event)"
+        (formClosed)="onCancel()"
+    >
+    </app-stock>
 </ion-content>

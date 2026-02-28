@@ -7,18 +7,9 @@ import { LoginService } from 'src/app/services/login.service';
 import { AppModule } from 'src/app/app.module';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        AppModule
-    ],
-    declarations: [
-        SidemenuComponent
-    ],
+    imports: [CommonModule, RouterModule, FormsModule, AppModule],
+    declarations: [SidemenuComponent],
     providers: [LoginService],
-    exports: [
-        SidemenuComponent
-    ]
+    exports: [SidemenuComponent],
 })
 export class SidemenuModule {}

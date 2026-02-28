@@ -3,6 +3,6 @@ import { CommonModule } from '@angular/common';
 import { InvoiceManagementRoutingModule } from './invoice-management-routing.module';
 
 @NgModule({
-  imports: [CommonModule, InvoiceManagementRoutingModule]
+    imports: [CommonModule, InvoiceManagementRoutingModule],
 })
 export class InvoiceManagementModule {}

@@ -11,19 +11,17 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 import { appNavAnimation } from './animations/app-nav.animation';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule, 
-    IonicModule.forRoot({
-      navAnimation: appNavAnimation
-    }),
-    AppRoutingModule,
-    HttpClientModule,
-    SidemenuComponent
-  ],
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
-  ],
-  bootstrap: [AppComponent],
+    declarations: [AppComponent],
+    imports: [
+        BrowserModule,
+        IonicModule.forRoot({
+            navAnimation: appNavAnimation,
+        }),
+        AppRoutingModule,
+        HttpClientModule,
+        SidemenuComponent,
+    ],
+    providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+    bootstrap: [AppComponent],
 })
 export class AppModule {}

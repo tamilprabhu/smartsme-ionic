@@ -10,88 +10,93 @@ import { SortOrder } from '../enums/sort-order.enum';
 import { Company } from '../models/company.model';
 
 export interface CompanyResponse {
-  items: Company[];
-  paging: {
-    currentPage: number;
-    totalPages: number;
-    itemsPerPage: number;
-    totalItems: number;
-  };
+    items: Company[];
+    paging: {
+        currentPage: number;
+        totalPages: number;
+        itemsPerPage: number;
+        totalItems: number;
+    };
 }
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class CompanyService {
-  private readonly API_URL = `${environment.apiBaseUrl}/company`;
+    private readonly API_URL = `${environment.apiBaseUrl}/company`;
 
-  constructor(
-    private http: HttpClient,
-    private loginService: LoginService
-  ) {}
+    constructor(
+        private http: HttpClient,
+        private loginService: LoginService,
+    ) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = this.loginService.getToken();
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
-  getCompanies(
-    page: number = 1,
-    limit: number = ItemsPerPage.TEN,
-    search?: string,
-    sortBy: SortBy = SortBy.CREATE_DATE,
-    sortOrder: SortOrder = SortOrder.DESC
-  ): Observable<CompanyResponse> {
-    let params = new HttpParams()
-      .set('page', String(page))
-      .set('itemsPerPage', String(limit))
-      .set('sortBy', sortBy)
-      .set('sortOrder', sortOrder);
-
-    if (search?.trim()) {
-      params = params.set('search', search.trim());
+    private getHeaders(): HttpHeaders {
+        const token = this.loginService.getToken();
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        });
     }
 
-    return this.http.get<CompanyResponse>(this.API_URL, {
-      headers: this.getHeaders(),
-      params
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+    getCompanies(
+        page: number = 1,
+        limit: number = ItemsPerPage.TEN,
+        search?: string,
+        sortBy: SortBy = SortBy.CREATE_DATE,
+        sortOrder: SortOrder = SortOrder.DESC,
+    ): Observable<CompanyResponse> {
+        let params = new HttpParams()
+            .set('page', String(page))
+            .set('itemsPerPage', String(limit))
+            .set('sortBy', sortBy)
+            .set('sortOrder', sortOrder);
 
-  getCompany(id: number): Observable<Company> {
-    return this.http.get<Company>(`${this.API_URL}/${id}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+        if (search?.trim()) {
+            params = params.set('search', search.trim());
+        }
 
-  createCompany(company: Omit<Company, 'companySequence' | 'createdAt' | 'updatedAt'>): Observable<Company> {
-    return this.http.post<Company>(this.API_URL, company, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+        return this.http
+            .get<CompanyResponse>(this.API_URL, {
+                headers: this.getHeaders(),
+                params,
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
 
-  updateCompany(id: number, company: Partial<Omit<Company, 'companySequence' | 'createdAt'>>): Observable<Company> {
-    return this.http.put<Company>(`${this.API_URL}/${id}`, company, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+    getCompany(id: number): Observable<Company> {
+        return this.http
+            .get<Company>(`${this.API_URL}/${id}`, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
 
-  deleteCompany(id: number): Observable<{message: string}> {
-    return this.http.delete<{message: string}>(`${this.API_URL}/${id}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(error => throwError(() => error))
-    );
-  }
+    createCompany(
+        company: Omit<Company, 'companySequence' | 'createdAt' | 'updatedAt'>,
+    ): Observable<Company> {
+        return this.http
+            .post<Company>(this.API_URL, company, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
+
+    updateCompany(
+        id: number,
+        company: Partial<Omit<Company, 'companySequence' | 'createdAt'>>,
+    ): Observable<Company> {
+        return this.http
+            .put<Company>(`${this.API_URL}/${id}`, company, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
+
+    deleteCompany(id: number): Observable<{ message: string }> {
+        return this.http
+            .delete<{ message: string }>(`${this.API_URL}/${id}`, {
+                headers: this.getHeaders(),
+            })
+            .pipe(catchError((error) => throwError(() => error)));
+    }
 }

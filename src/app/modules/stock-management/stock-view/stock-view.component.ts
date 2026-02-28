@@ -8,48 +8,48 @@ import { Stock } from 'src/app/models/stock.model';
 import { StockService } from 'src/app/services/stock.service';
 
 @Component({
-  selector: 'app-stock-view',
-  templateUrl: './stock-view.component.html',
-  styleUrls: ['./stock-view.component.scss'],
-  standalone: true,
-  imports: [CommonModule, IonicModule, HeaderComponent, StockComponent]
+    selector: 'app-stock-view',
+    templateUrl: './stock-view.component.html',
+    styleUrls: ['./stock-view.component.scss'],
+    standalone: true,
+    imports: [CommonModule, IonicModule, HeaderComponent, StockComponent],
 })
 export class StockViewComponent implements OnInit {
-  stock: Stock | null = null;
-  loading = true;
+    stock: Stock | null = null;
+    loading = true;
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly toastController: ToastController,
-    private readonly stockService: StockService
-  ) {}
+    constructor(
+        private readonly route: ActivatedRoute,
+        private readonly router: Router,
+        private readonly toastController: ToastController,
+        private readonly stockService: StockService,
+    ) {}
 
-  ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.stockService.getStock(id).subscribe({
-      next: (stock) => {
-        this.stock = stock;
-        this.loading = false;
-      },
-      error: () => {
-        this.showToast('Failed to load stock', 'danger');
+    ngOnInit(): void {
+        const id = Number(this.route.snapshot.paramMap.get('id'));
+        this.stockService.getStock(id).subscribe({
+            next: (stock) => {
+                this.stock = stock;
+                this.loading = false;
+            },
+            error: () => {
+                this.showToast('Failed to load stock', 'danger');
+                this.router.navigate(['/stock']);
+            },
+        });
+    }
+
+    onBack(): void {
         this.router.navigate(['/stock']);
-      }
-    });
-  }
+    }
 
-  onBack(): void {
-    this.router.navigate(['/stock']);
-  }
-
-  private async showToast(message: string, color: 'success' | 'danger'): Promise<void> {
-    const toast = await this.toastController.create({
-      message,
-      duration: 3000,
-      color,
-      position: 'top'
-    });
-    await toast.present();
-  }
+    private async showToast(message: string, color: 'success' | 'danger'): Promise<void> {
+        const toast = await this.toastController.create({
+            message,
+            duration: 3000,
+            color,
+            position: 'top',
+        });
+        await toast.present();
+    }
 }

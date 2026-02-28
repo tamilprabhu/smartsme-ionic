@@ -7,16 +7,16 @@ import { EmployeeManagementComponent } from './employee-management.component';
 import { EmployeeManagementRoutingModule } from './employee-management-routing.module';
 
 @NgModule({
-  declarations: [EmployeeManagementComponent],
-  imports: [
-    CommonModule,
-    IonicModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HeaderComponent,
-    EmployeeManagementRoutingModule
-  ],
-  exports: [EmployeeManagementComponent],
-  providers: [AlertController]
+    declarations: [EmployeeManagementComponent],
+    imports: [
+        CommonModule,
+        IonicModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HeaderComponent,
+        EmployeeManagementRoutingModule,
+    ],
+    exports: [EmployeeManagementComponent],
+    providers: [AlertController],
 })
 export class EmployeeManagementModule {}

@@ -1,35 +1,43 @@
-<app-header
-  title="Login"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="goBack()">
+<app-header title="Login" backAction="custom" [showBackButton]="true" (backClicked)="goBack()">
 </app-header>
 
 <ion-content class="ion-padding" [scrollY]="false">
-  <div class="guest-page-shell">
-    <ion-card class="login-card">
-      <div class="login-header">
-        <img class="guest-logo" src="assets/images/sme-logo.png" alt="Smart SME logo" />
-        <h1>Welcome Back</h1>
-        <p>Please sign in to continue</p>
-      </div>
+    <div class="guest-page-shell">
+        <ion-card class="login-card">
+            <div class="login-header">
+                <img class="guest-logo" src="assets/images/sme-logo.png" alt="Smart SME logo" />
+                <h1>Welcome Back</h1>
+                <p>Please sign in to continue</p>
+            </div>
 
-      <form class="login-form" (ngSubmit)="login()">
-        <ion-item>
-          <ion-label position="floating">Username</ion-label>
-          <ion-input [(ngModel)]="username" name="username" type="text" autocomplete="username" required></ion-input>
-        </ion-item>
+            <form class="login-form" (ngSubmit)="login()">
+                <ion-item>
+                    <ion-label position="floating">Username</ion-label>
+                    <ion-input
+                        [(ngModel)]="username"
+                        name="username"
+                        type="text"
+                        autocomplete="username"
+                        required
+                    ></ion-input>
+                </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Password</ion-label>
-          <ion-input [(ngModel)]="password" name="password" type="password" autocomplete="current-password" required></ion-input>
-        </ion-item>
+                <ion-item>
+                    <ion-label position="floating">Password</ion-label>
+                    <ion-input
+                        [(ngModel)]="password"
+                        name="password"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                    ></ion-input>
+                </ion-item>
 
-        <ion-button expand="block" type="submit" class="login-button" color="primary">
-          Login
-        </ion-button>
-      </form>
-    </ion-card>
-  </div>
+                <ion-button expand="block" type="submit" class="login-button" color="primary">
+                    Login
+                </ion-button>
+            </form>
+        </ion-card>
+    </div>
 </ion-content>
 <app-footer></app-footer>

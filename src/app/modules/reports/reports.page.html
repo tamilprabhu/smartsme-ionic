@@ -1,101 +1,107 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Reports
-    </ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title> Reports </ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-card class="chart-card">
-    <ion-card-header button (click)="toggleProductionOverview()">
-      <ion-card-title>Production Overview</ion-card-title>
-      <ion-card-subtitle>
-        {{ productionOverviewExpanded ? 'Snapshot for the last 6 periods' : 'Tap to expand chart overview' }}
-      </ion-card-subtitle>
-      <ion-icon
-        class="chart-toggle-icon"
-        [class.expanded]="productionOverviewExpanded"
-        name="chevron-down-outline">
-      </ion-icon>
-    </ion-card-header>
-    <ion-card-content *ngIf="productionOverviewExpanded; else collapsedOverview">
-      <div class="chart-container">
-        <canvas #reportChart></canvas>
-      </div>
-    </ion-card-content>
-  </ion-card>
-  <ng-template #collapsedOverview>
-    <ion-card-content class="chart-collapsed-content">
-      <div class="chart-preview-bars" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <p class="chart-preview-text">
-        Animated trend preview. Expand to view full production distribution across recent periods.
-      </p>
-    </ion-card-content>
-  </ng-template>
+    <ion-card class="chart-card">
+        <ion-card-header button (click)="toggleProductionOverview()">
+            <ion-card-title>Production Overview</ion-card-title>
+            <ion-card-subtitle>
+                {{ productionOverviewExpanded ? 'Snapshot for the last 6 periods' : 'Tap to expand
+                chart overview' }}
+            </ion-card-subtitle>
+            <ion-icon
+                class="chart-toggle-icon"
+                [class.expanded]="productionOverviewExpanded"
+                name="chevron-down-outline"
+            >
+            </ion-icon>
+        </ion-card-header>
+        <ion-card-content *ngIf="productionOverviewExpanded; else collapsedOverview">
+            <div class="chart-container">
+                <canvas #reportChart></canvas>
+            </div>
+        </ion-card-content>
+    </ion-card>
+    <ng-template #collapsedOverview>
+        <ion-card-content class="chart-collapsed-content">
+            <div class="chart-preview-bars" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <p class="chart-preview-text">
+                Animated trend preview. Expand to view full production distribution across recent
+                periods.
+            </p>
+        </ion-card-content>
+    </ng-template>
 
-  <ion-accordion-group (ionChange)="handleAccordionChange($event)">
-    <ion-accordion *ngFor="let report of reports" [value]="report.id">
-      <ion-item slot="header">
-        <ion-label>{{ report.name }}</ion-label>
-      </ion-item>
+    <ion-accordion-group (ionChange)="handleAccordionChange($event)">
+        <ion-accordion *ngFor="let report of reports" [value]="report.id">
+            <ion-item slot="header">
+                <ion-label>{{ report.name }}</ion-label>
+            </ion-item>
 
-      <div slot="content" *ngIf="report.preview" class="report-content-card">
-        <div class="report-content-spacer" aria-hidden="true"></div>
+            <div slot="content" *ngIf="report.preview" class="report-content-card">
+                <div class="report-content-spacer" aria-hidden="true"></div>
 
-        
-        <!-- START DATE -->
-        <app-date-field-modal
-          [triggerId]="'report-start-' + report.id"
-          modalCssClass="report-datetime-modal"
-          label="Start Date"
-          placeholder="Select date"
-          [value]="report.filters.startDate"
-          [displayValue]="report.filters.startDateDisplay"
-          (valueChange)="onStartDateChange(report, $event)">
-        </app-date-field-modal>
+                <!-- START DATE -->
+                <app-date-field-modal
+                    [triggerId]="'report-start-' + report.id"
+                    modalCssClass="report-datetime-modal"
+                    label="Start Date"
+                    placeholder="Select date"
+                    [value]="report.filters.startDate"
+                    [displayValue]="report.filters.startDateDisplay"
+                    (valueChange)="onStartDateChange(report, $event)"
+                >
+                </app-date-field-modal>
 
-        <!-- END DATE -->
-        <app-date-field-modal
-          [triggerId]="'report-end-' + report.id"
-          modalCssClass="report-datetime-modal"
-          label="End Date"
-          placeholder="Select date"
-          [value]="report.filters.endDate"
-          [displayValue]="report.filters.endDateDisplay"
-          (valueChange)="onEndDateChange(report, $event)">
-        </app-date-field-modal>
+                <!-- END DATE -->
+                <app-date-field-modal
+                    [triggerId]="'report-end-' + report.id"
+                    modalCssClass="report-datetime-modal"
+                    label="End Date"
+                    placeholder="Select date"
+                    [value]="report.filters.endDate"
+                    [displayValue]="report.filters.endDateDisplay"
+                    (valueChange)="onEndDateChange(report, $event)"
+                >
+                </app-date-field-modal>
 
-        <!-- TYPE (unchanged layout, only ensure same label position) -->
-        <ion-item>
-          <ion-label position="fixed">Type</ion-label>
-          <ion-select
-            [(ngModel)]="report.filters.type"
-            interface="popover"
-            placeholder="Select type">
-            <ion-select-option value="summary">Summary</ion-select-option>
-            <ion-select-option value="detailed">Detailed</ion-select-option>
-            <ion-select-option value="graph">Graph</ion-select-option>
-          </ion-select>
-        </ion-item>
+                <!-- TYPE (unchanged layout, only ensure same label position) -->
+                <ion-item>
+                    <ion-label position="fixed">Type</ion-label>
+                    <ion-select
+                        [(ngModel)]="report.filters.type"
+                        interface="popover"
+                        placeholder="Select type"
+                    >
+                        <ion-select-option value="summary">Summary</ion-select-option>
+                        <ion-select-option value="detailed">Detailed</ion-select-option>
+                        <ion-select-option value="graph">Graph</ion-select-option>
+                    </ion-select>
+                </ion-item>
 
-
-        <div class="report-download-row">
-          <ion-button size="small" color="primary" fill="outline" (click)="downloadReport(report, $event)">
-            <ion-icon name="download-outline" slot="start"></ion-icon>
-            Download
-          </ion-button>
-        </div>
-      </div>
-    </ion-accordion>
-  </ion-accordion-group>
-
+                <div class="report-download-row">
+                    <ion-button
+                        size="small"
+                        color="primary"
+                        fill="outline"
+                        (click)="downloadReport(report, $event)"
+                    >
+                        <ion-icon name="download-outline" slot="start"></ion-icon>
+                        Download
+                    </ion-button>
+                </div>
+            </div>
+        </ion-accordion>
+    </ion-accordion-group>
 </ion-content>
 
 <app-footer-bar></app-footer-bar>

@@ -1,17 +1,19 @@
 <app-header
-  title="View Invoice"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onBack()">
+    title="View Invoice"
+    backAction="custom"
+    [showBackButton]="true"
+    (backClicked)="onBack()"
+>
 </app-header>
 
 <ion-content>
-  <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
+    <ion-spinner *ngIf="loading" class="ion-margin"></ion-spinner>
 
-  <app-invoice
-    *ngIf="!loading && invoice"
-    mode="read"
-    [formData]="invoice"
-    (formClosed)="onBack()">
-  </app-invoice>
+    <app-invoice
+        *ngIf="!loading && invoice"
+        mode="read"
+        [formData]="invoice"
+        (formClosed)="onBack()"
+    >
+    </app-invoice>
 </ion-content>

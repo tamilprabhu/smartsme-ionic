@@ -11,63 +11,69 @@ import { RoleService } from 'src/app/services/role.service';
 import { ReferenceService } from 'src/app/services/reference.service';
 
 class EmployeeServiceStub {
-  getEmployeeRegistrations() {
-    return of({ items: [], paging: { currentPage: 1, totalPages: 1, itemsPerPage: 10, totalItems: 0 } });
-  }
-  getEmployeeRegistration() {
-    return of();
-  }
-  createEmployeeRegistration() {
-    return of();
-  }
-  updateEmployeeRegistration() {
-    return of();
-  }
-  deleteEmployeeRegistration() {
-    return of();
-  }
+    getEmployeeRegistrations() {
+        return of({
+            items: [],
+            paging: { currentPage: 1, totalPages: 1, itemsPerPage: 10, totalItems: 0 },
+        });
+    }
+    getEmployeeRegistration() {
+        return of();
+    }
+    createEmployeeRegistration() {
+        return of();
+    }
+    updateEmployeeRegistration() {
+        return of();
+    }
+    deleteEmployeeRegistration() {
+        return of();
+    }
 }
 
 class RoleServiceStub {
-  getRoles() {
-    return of({ items: [], paging: { currentPage: 1, totalPages: 1, itemsPerPage: 10, totalItems: 0 } });
-  }
+    getRoles() {
+        return of({
+            items: [],
+            paging: { currentPage: 1, totalPages: 1, itemsPerPage: 10, totalItems: 0 },
+        });
+    }
 }
 
 class ReferenceServiceStub {
-  getStates() {
-    return of([]);
-  }
-  getDistricts() {
-    return of([]);
-  }
-  getPincodes() {
-    return of([]);
-  }
+    getStates() {
+        return of([]);
+    }
+    getDistricts() {
+        return of([]);
+    }
+    getPincodes() {
+        return of([]);
+    }
 }
 
 describe('EmployeeManagementComponent', () => {
-  let component: EmployeeManagementComponent;
-  let fixture: ComponentFixture<EmployeeManagementComponent>;
+    let component: EmployeeManagementComponent;
+    let fixture: ComponentFixture<EmployeeManagementComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [EmployeeManagementComponent],
-      imports: [IonicModule.forRoot(), RouterTestingModule, ReactiveFormsModule, FormsModule],
-      providers: [
-        { provide: EmployeeService, useClass: EmployeeServiceStub },
-        { provide: RoleService, useClass: RoleServiceStub },
-        { provide: ReferenceService, useClass: ReferenceServiceStub }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [EmployeeManagementComponent],
+            imports: [IonicModule.forRoot(), RouterTestingModule, ReactiveFormsModule, FormsModule],
+            providers: [
+                { provide: EmployeeService, useClass: EmployeeServiceStub },
+                { provide: RoleService, useClass: RoleServiceStub },
+                { provide: ReferenceService, useClass: ReferenceServiceStub },
+            ],
+            schemas: [NO_ERRORS_SCHEMA],
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(EmployeeManagementComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(EmployeeManagementComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

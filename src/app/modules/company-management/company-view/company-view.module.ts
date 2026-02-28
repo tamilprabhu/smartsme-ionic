@@ -3,6 +3,9 @@ import { RouterModule } from '@angular/router';
 import { CompanyViewComponent } from './company-view.component';
 
 @NgModule({
-  imports: [CompanyViewComponent, RouterModule.forChild([{ path: '', component: CompanyViewComponent }])]
+    imports: [
+        CompanyViewComponent,
+        RouterModule.forChild([{ path: '', component: CompanyViewComponent }]),
+    ],
 })
 export class CompanyViewModule {}

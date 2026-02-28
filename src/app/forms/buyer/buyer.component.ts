@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -6,176 +15,198 @@ import { Subject, takeUntil } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { Buyer } from 'src/app/models/buyer.model';
 import { BuyerUpsertPayload } from 'src/app/services/buyer.service';
-import { ServerValidationErrors, applyServerValidationErrors, clearServerValidationErrors } from 'src/app/utils/server-validation.util';
+import {
+    ServerValidationErrors,
+    applyServerValidationErrors,
+    clearServerValidationErrors,
+} from 'src/app/utils/server-validation.util';
 import { focusAndScrollToFirstError } from 'src/app/utils/form-error-focus.util';
 
 @Component({
-  selector: 'app-buyer',
-  templateUrl: './buyer.component.html',
-  styleUrls: ['./buyer.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent]
+    selector: 'app-buyer',
+    templateUrl: './buyer.component.html',
+    styleUrls: ['./buyer.component.scss'],
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, IonicModule, FooterComponent],
 })
 export class BuyerComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() mode: 'create' | 'read' | 'update' | null = 'create';
-  @Input() formData: Buyer | null = null;
-  @Input() serverValidationErrors: ServerValidationErrors = {};
-  @Output() formSubmit = new EventEmitter<BuyerUpsertPayload>();
-  @Output() formClosed = new EventEmitter<void>();
+    @Input() mode: 'create' | 'read' | 'update' | null = 'create';
+    @Input() formData: Buyer | null = null;
+    @Input() serverValidationErrors: ServerValidationErrors = {};
+    @Output() formSubmit = new EventEmitter<BuyerUpsertPayload>();
+    @Output() formClosed = new EventEmitter<void>();
 
-  buyerForm: FormGroup;
-  formLevelErrors: string[] = [];
-  private readonly destroy$ = new Subject<void>();
+    buyerForm: FormGroup;
+    formLevelErrors: string[] = [];
+    private readonly destroy$ = new Subject<void>();
 
-  constructor(private fb: FormBuilder) {
-    this.buyerForm = this.fb.group({
-      buyerId: [''],
-      buyerName: ['', Validators.required],
-      buyerAddress: ['', Validators.required],
-      buyerPhone: ['', [Validators.required, Validators.pattern(/^[0-9\-\+ ]{7,}$/)]],
-      buyerEmail: ['', [Validators.required, Validators.email]],
-      buyerGstin: ['']
-    });
-  }
-
-  ngOnInit() {
-    Object.keys(this.buyerForm.controls).forEach((controlName) => {
-      this.buyerForm.get(controlName)?.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => this.clearServerErrorForControl(controlName));
-    });
-
-    if (this.formData) {
-      this.patchForm(this.formData);
-    }
-
-    this.applyModeState();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['formData'] && this.formData) {
-      this.patchForm(this.formData);
-      this.applyModeState();
-    } else if (this.mode === 'create') {
-      this.resetForm();
-      this.applyModeState();
-    }
-
-    if (changes['formData'] || changes['mode']) {
-      clearServerValidationErrors(this.buyerForm);
-      this.formLevelErrors = [];
-    }
-
-    if (changes['serverValidationErrors']) {
-      clearServerValidationErrors(this.buyerForm);
-      this.formLevelErrors = [];
-
-      if (this.serverValidationErrors && Object.keys(this.serverValidationErrors).length > 0) {
-        const applyResult = applyServerValidationErrors(this.buyerForm, this.serverValidationErrors, {
-          buyerName: 'buyerName',
-          buyerAddress: 'buyerAddress',
-          buyerPhone: 'buyerPhone',
-          buyerEmail: 'buyerEmail',
-          buyerGstin: 'buyerGstin'
+    constructor(private fb: FormBuilder) {
+        this.buyerForm = this.fb.group({
+            buyerId: [''],
+            buyerName: ['', Validators.required],
+            buyerAddress: ['', Validators.required],
+            buyerPhone: ['', [Validators.required, Validators.pattern(/^[0-9\-\+ ]{7,}$/)]],
+            buyerEmail: ['', [Validators.required, Validators.email]],
+            buyerGstin: [''],
         });
-        this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
-          (allMessages, messages) => [...allMessages, ...messages],
-          []
+    }
+
+    ngOnInit() {
+        Object.keys(this.buyerForm.controls).forEach((controlName) => {
+            this.buyerForm
+                .get(controlName)
+                ?.valueChanges.pipe(takeUntil(this.destroy$))
+                .subscribe(() => this.clearServerErrorForControl(controlName));
+        });
+
+        if (this.formData) {
+            this.patchForm(this.formData);
+        }
+
+        this.applyModeState();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['formData'] && this.formData) {
+            this.patchForm(this.formData);
+            this.applyModeState();
+        } else if (this.mode === 'create') {
+            this.resetForm();
+            this.applyModeState();
+        }
+
+        if (changes['formData'] || changes['mode']) {
+            clearServerValidationErrors(this.buyerForm);
+            this.formLevelErrors = [];
+        }
+
+        if (changes['serverValidationErrors']) {
+            clearServerValidationErrors(this.buyerForm);
+            this.formLevelErrors = [];
+
+            if (
+                this.serverValidationErrors &&
+                Object.keys(this.serverValidationErrors).length > 0
+            ) {
+                const applyResult = applyServerValidationErrors(
+                    this.buyerForm,
+                    this.serverValidationErrors,
+                    {
+                        buyerName: 'buyerName',
+                        buyerAddress: 'buyerAddress',
+                        buyerPhone: 'buyerPhone',
+                        buyerEmail: 'buyerEmail',
+                        buyerGstin: 'buyerGstin',
+                    },
+                );
+                this.formLevelErrors = Object.values(applyResult.unmapped).reduce<string[]>(
+                    (allMessages, messages) => [...allMessages, ...messages],
+                    [],
+                );
+            }
+        }
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    get f() {
+        return this.buyerForm.controls;
+    }
+
+    goBack() {
+        this.formClosed.emit();
+    }
+
+    onSubmit() {
+        if (this.mode === 'read') {
+            return;
+        }
+
+        clearServerValidationErrors(this.buyerForm);
+        this.formLevelErrors = [];
+
+        if (this.buyerForm.invalid) {
+            this.buyerForm.markAllAsTouched();
+            focusAndScrollToFirstError();
+            return;
+        }
+
+        const value = this.buyerForm.getRawValue();
+        const payload: BuyerUpsertPayload = {
+            buyerName: value.buyerName,
+            buyerAddress: value.buyerAddress,
+            buyerPhone: value.buyerPhone,
+            buyerEmail: value.buyerEmail,
+            buyerGstin: value.buyerGstin || '',
+        };
+
+        this.formSubmit.emit(payload);
+    }
+
+    hasServerError(controlName: string): boolean {
+        const serverErrors = this.buyerForm.get(controlName)?.errors?.['server'];
+        return Array.isArray(serverErrors) && serverErrors.length > 0;
+    }
+
+    getServerErrorMessages(controlName: string): string[] {
+        const serverErrors = this.buyerForm.get(controlName)?.errors?.['server'];
+        return Array.isArray(serverErrors) ? serverErrors : [];
+    }
+
+    private clearServerErrorForControl(controlName: string): void {
+        const control = this.buyerForm.get(controlName);
+        const existingErrors = control?.errors;
+
+        if (
+            !control ||
+            !existingErrors ||
+            !Object.prototype.hasOwnProperty.call(existingErrors, 'server')
+        ) {
+            return;
+        }
+
+        const { server, ...remainingErrors } = existingErrors;
+        control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
+    }
+
+    private patchForm(data: Buyer): void {
+        this.buyerForm.patchValue(
+            {
+                buyerId: data.buyerId || '',
+                buyerName: data.buyerName || '',
+                buyerAddress: data.buyerAddress || '',
+                buyerPhone: data.buyerPhone || '',
+                buyerEmail: data.buyerEmail || '',
+                buyerGstin: data.buyerGstin || '',
+            },
+            { emitEvent: false },
         );
-      }
-    }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  get f() {
-    return this.buyerForm.controls;
-  }
-
-  goBack() {
-    this.formClosed.emit();
-  }
-
-  onSubmit() {
-    if (this.mode === 'read') {
-      return;
     }
 
-    clearServerValidationErrors(this.buyerForm);
-    this.formLevelErrors = [];
-
-    if (this.buyerForm.invalid) {
-      this.buyerForm.markAllAsTouched();
-      focusAndScrollToFirstError();
-      return;
+    private resetForm(): void {
+        this.buyerForm.reset(
+            {
+                buyerId: '',
+                buyerName: '',
+                buyerAddress: '',
+                buyerPhone: '',
+                buyerEmail: '',
+                buyerGstin: '',
+            },
+            { emitEvent: false },
+        );
     }
 
-    const value = this.buyerForm.getRawValue();
-    const payload: BuyerUpsertPayload = {
-      buyerName: value.buyerName,
-      buyerAddress: value.buyerAddress,
-      buyerPhone: value.buyerPhone,
-      buyerEmail: value.buyerEmail,
-      buyerGstin: value.buyerGstin || ''
-    };
+    private applyModeState(): void {
+        if (this.mode === 'read') {
+            this.buyerForm.disable({ emitEvent: false });
+            return;
+        }
 
-    this.formSubmit.emit(payload);
-  }
-
-  hasServerError(controlName: string): boolean {
-    const serverErrors = this.buyerForm.get(controlName)?.errors?.['server'];
-    return Array.isArray(serverErrors) && serverErrors.length > 0;
-  }
-
-  getServerErrorMessages(controlName: string): string[] {
-    const serverErrors = this.buyerForm.get(controlName)?.errors?.['server'];
-    return Array.isArray(serverErrors) ? serverErrors : [];
-  }
-
-  private clearServerErrorForControl(controlName: string): void {
-    const control = this.buyerForm.get(controlName);
-    const existingErrors = control?.errors;
-
-    if (!control || !existingErrors || !Object.prototype.hasOwnProperty.call(existingErrors, 'server')) {
-      return;
+        this.buyerForm.enable({ emitEvent: false });
+        this.buyerForm.get('buyerId')?.disable({ emitEvent: false });
     }
-
-    const { server, ...remainingErrors } = existingErrors;
-    control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
-  }
-
-  private patchForm(data: Buyer): void {
-    this.buyerForm.patchValue({
-      buyerId: data.buyerId || '',
-      buyerName: data.buyerName || '',
-      buyerAddress: data.buyerAddress || '',
-      buyerPhone: data.buyerPhone || '',
-      buyerEmail: data.buyerEmail || '',
-      buyerGstin: data.buyerGstin || ''
-    }, { emitEvent: false });
-  }
-
-  private resetForm(): void {
-    this.buyerForm.reset({
-      buyerId: '',
-      buyerName: '',
-      buyerAddress: '',
-      buyerPhone: '',
-      buyerEmail: '',
-      buyerGstin: ''
-    }, { emitEvent: false });
-  }
-
-  private applyModeState(): void {
-    if (this.mode === 'read') {
-      this.buyerForm.disable({ emitEvent: false });
-      return;
-    }
-
-    this.buyerForm.enable({ emitEvent: false });
-    this.buyerForm.get('buyerId')?.disable({ emitEvent: false });
-  }
 }

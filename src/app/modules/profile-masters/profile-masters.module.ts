@@ -8,13 +8,13 @@ import { ProfileMastersPageRoutingModule } from './profile-masters-routing.modul
 import { ProfileMastersPage } from './profile-masters.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ProfileMastersPageRoutingModule,
-    HeaderComponent
-  ],
-  declarations: [ProfileMastersPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ProfileMastersPageRoutingModule,
+        HeaderComponent,
+    ],
+    declarations: [ProfileMastersPage],
 })
 export class ProfileMastersPageModule {}

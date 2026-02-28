@@ -1,33 +1,214 @@
-:host{display:block}
-ion-content{--background:radial-gradient(1200px 420px at 50% -220px,rgba(255,106,0,.08),transparent 65%),#f8f9fb;--padding-bottom:72px}
-.dash-hero{padding:18px 16px 10px}
-.dash-hero__brand{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:#fff;border:1px solid rgba(15,23,42,.06);box-shadow:0 10px 24px rgba(15,23,42,.06)}
-.dash-hero__logo{width:44px;height:44px;border-radius:12px;background:#fff;box-shadow:0 6px 14px rgba(15,23,42,.1);border:1px solid rgba(255,106,0,.18)}
-.dash-hero__text h1{margin:0 0 4px;font-size:17px;font-weight:650;color:#1f2937}
-.dash-hero__text p{margin:0;font-size:12px;color:#6b7280}
-.dash-grid{display:grid;gap:14px;padding:0 16px 18px}
-.dash-card{margin:0;border-radius:16px;overflow:hidden;background:#fff;border:1px solid rgba(15,23,42,.08);box-shadow:0 10px 26px rgba(15,23,42,.06);transition:transform 120ms ease,box-shadow 160ms ease}
-.dash-card ion-card-header{padding-bottom:10px;border-bottom:1px solid rgba(15,23,42,.06)}
-.dash-card--overview ion-card-header,.dash-metric:last-child{border-bottom:none}
-.dash-card ion-card-title{color:#111827;font-weight:650;letter-spacing:.01em}
-.dash-card ion-card-subtitle,.dash-metric span,.dash-summary__label{color:#6b7280}
-.dash-card--clickable{cursor:pointer;&:hover{transform:translateY(-1px);box-shadow:0 14px 30px rgba(15,23,42,.1)}&:active{transform:translateY(0) scale(.997);box-shadow:0 8px 18px rgba(15,23,42,.08)}&:focus-visible{outline:2px solid rgba(255,106,0,.35);outline-offset:2px}}
-.dash-metric{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed rgba(15,23,42,.09)}
-.dash-metric span{font-size:12px}
-.dash-metric strong{font-size:15px;color:#111827;font-weight:650}
-.dash-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.dash-summary__item{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;position:relative;overflow:hidden;isolation:isolate;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,106,0,.06),#fff 70%);border:1px solid rgba(255,106,0,.12);display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:transform 120ms ease,box-shadow 160ms ease,border-color 160ms ease;&:hover{border-color:rgba(255,106,0,.28);box-shadow:0 6px 14px rgba(15,23,42,.08)}&:active{transform:translateY(1px) scale(.995);box-shadow:0 3px 8px rgba(15,23,42,.06);border-color:rgba(255,106,0,.3)}&:focus-visible{outline:2px solid rgba(255,106,0,.45);outline-offset:2px}}
-.dash-summary__item ion-ripple-effect{color:rgba(255,106,0,.18)}
-.dash-loader-card{overflow:hidden;position:relative}
-.dash-loader-card::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:dashShimmer 1.3s ease-in-out infinite}
-.dash-loader-copy{flex:1}
-.dash-loader-block,.dash-loader-line{display:block;background:linear-gradient(90deg,rgba(255,106,0,.12),rgba(255,106,0,.2),rgba(15,23,42,.08));background-size:200% 100%}
-.dash-loader-line{border-radius:999px}
-.dash-loader-line--title{width:56%;height:16px;margin-bottom:10px}
-.dash-loader-line--text{width:40%;height:11px}
-.dash-loader-line--metric{width:42%;height:10px}
-.dash-loader-line--value{width:28%;height:14px}
-@keyframes dashShimmer{100%{transform:translateX(100%)}}
-.dash-summary__label{font-size:11px;text-transform:uppercase;letter-spacing:.04em}
-.dash-summary__value{font-size:20px;font-weight:680;color:#111827}
-@media (min-width:900px){.dash-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+:host {
+    display: block;
+}
+ion-content {
+    --background:
+        radial-gradient(1200px 420px at 50% -220px, rgba(255, 106, 0, 0.08), transparent 65%),
+        #f8f9fb;
+    --padding-bottom: 72px;
+}
+.dash-hero {
+    padding: 18px 16px 10px;
+}
+.dash-hero__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+.dash-hero__logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1);
+    border: 1px solid rgba(255, 106, 0, 0.18);
+}
+.dash-hero__text h1 {
+    margin: 0 0 4px;
+    font-size: 17px;
+    font-weight: 650;
+    color: #1f2937;
+}
+.dash-hero__text p {
+    margin: 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+.dash-grid {
+    display: grid;
+    gap: 14px;
+    padding: 0 16px 18px;
+}
+.dash-card {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+    transition:
+        transform 120ms ease,
+        box-shadow 160ms ease;
+}
+.dash-card ion-card-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+.dash-card--overview ion-card-header,
+.dash-metric:last-child {
+    border-bottom: none;
+}
+.dash-card ion-card-title {
+    color: #111827;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+}
+.dash-card ion-card-subtitle,
+.dash-metric span,
+.dash-summary__label {
+    color: #6b7280;
+}
+.dash-card--clickable {
+    cursor: pointer;
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+    }
+    &:active {
+        transform: translateY(0) scale(0.997);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    }
+    &:focus-visible {
+        outline: 2px solid rgba(255, 106, 0, 0.35);
+        outline-offset: 2px;
+    }
+}
+.dash-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px dashed rgba(15, 23, 42, 0.09);
+}
+.dash-metric span {
+    font-size: 12px;
+}
+.dash-metric strong {
+    font-size: 15px;
+    color: #111827;
+    font-weight: 650;
+}
+.dash-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+.dash-summary__item {
+    appearance: none;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 12px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255, 106, 0, 0.06), #fff 70%);
+    border: 1px solid rgba(255, 106, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    transition:
+        transform 120ms ease,
+        box-shadow 160ms ease,
+        border-color 160ms ease;
+    &:hover {
+        border-color: rgba(255, 106, 0, 0.28);
+        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+    }
+    &:active {
+        transform: translateY(1px) scale(0.995);
+        box-shadow: 0 3px 8px rgba(15, 23, 42, 0.06);
+        border-color: rgba(255, 106, 0, 0.3);
+    }
+    &:focus-visible {
+        outline: 2px solid rgba(255, 106, 0, 0.45);
+        outline-offset: 2px;
+    }
+}
+.dash-summary__item ion-ripple-effect {
+    color: rgba(255, 106, 0, 0.18);
+}
+.dash-loader-card {
+    overflow: hidden;
+    position: relative;
+}
+.dash-loader-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    animation: dashShimmer 1.3s ease-in-out infinite;
+}
+.dash-loader-copy {
+    flex: 1;
+}
+.dash-loader-block,
+.dash-loader-line {
+    display: block;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 106, 0, 0.12),
+        rgba(255, 106, 0, 0.2),
+        rgba(15, 23, 42, 0.08)
+    );
+    background-size: 200% 100%;
+}
+.dash-loader-line {
+    border-radius: 999px;
+}
+.dash-loader-line--title {
+    width: 56%;
+    height: 16px;
+    margin-bottom: 10px;
+}
+.dash-loader-line--text {
+    width: 40%;
+    height: 11px;
+}
+.dash-loader-line--metric {
+    width: 42%;
+    height: 10px;
+}
+.dash-loader-line--value {
+    width: 28%;
+    height: 14px;
+}
+@keyframes dashShimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+.dash-summary__label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.dash-summary__value {
+    font-size: 20px;
+    font-weight: 680;
+    color: #111827;
+}
+@media (min-width: 900px) {
+    .dash-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

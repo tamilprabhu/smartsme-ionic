@@ -12,175 +12,186 @@ import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
 
 @Component({
-  selector: 'app-company-list',
-  templateUrl: './company-list.component.html',
-  styleUrls: ['./company-list.component.scss'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, HeaderComponent]
+    selector: 'app-company-list',
+    templateUrl: './company-list.component.html',
+    styleUrls: ['./company-list.component.scss'],
+    standalone: true,
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, HeaderComponent],
 })
 export class CompanyListComponent implements OnInit, OnDestroy {
-  @ViewChild('searchInput') searchInput!: IonSearchbar;
+    @ViewChild('searchInput') searchInput!: IonSearchbar;
 
-  companies: Company[] = [];
-  currentPage = 1;
-  hasMore = true;
-  loading = false;
-  listError = '';
+    companies: Company[] = [];
+    currentPage = 1;
+    hasMore = true;
+    loading = false;
+    listError = '';
 
-  sortBy: SortBy = SortBy.CREATE_DATE;
-  sortOrder: SortOrder = SortOrder.DESC;
-  showSortOptions = false;
+    sortBy: SortBy = SortBy.CREATE_DATE;
+    sortOrder: SortOrder = SortOrder.DESC;
+    showSortOptions = false;
 
-  readonly sortByOptions = [
-    { label: 'Create Date', value: SortBy.CREATE_DATE },
-    { label: 'Update Date', value: SortBy.UPDATE_DATE },
-    { label: 'Sequence', value: SortBy.SEQUENCE },
-    { label: 'Created By', value: SortBy.CREATED_BY },
-    { label: 'Updated By', value: SortBy.UPDATED_BY }
-  ];
+    readonly sortByOptions = [
+        { label: 'Create Date', value: SortBy.CREATE_DATE },
+        { label: 'Update Date', value: SortBy.UPDATE_DATE },
+        { label: 'Sequence', value: SortBy.SEQUENCE },
+        { label: 'Created By', value: SortBy.CREATED_BY },
+        { label: 'Updated By', value: SortBy.UPDATED_BY },
+    ];
 
-  readonly sortOrderOptions = [
-    { label: 'Descending', value: SortOrder.DESC },
-    { label: 'Ascending', value: SortOrder.ASC }
-  ];
+    readonly sortOrderOptions = [
+        { label: 'Descending', value: SortOrder.DESC },
+        { label: 'Ascending', value: SortOrder.ASC },
+    ];
 
-  readonly searchControl = new FormControl('', { nonNullable: true });
+    readonly searchControl = new FormControl('', { nonNullable: true });
 
-  private readonly destroy$ = new Subject<void>();
-  private backTarget = '/tabs/profile-masters';
+    private readonly destroy$ = new Subject<void>();
+    private backTarget = '/tabs/profile-masters';
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly companyService: CompanyService,
-    private readonly confirmDialog: ConfirmDialogService
-  ) {}
+    constructor(
+        private readonly route: ActivatedRoute,
+        private readonly router: Router,
+        private readonly companyService: CompanyService,
+        private readonly confirmDialog: ConfirmDialogService,
+    ) {}
 
-  ngOnInit(): void {
-    this.backTarget = this.route.snapshot.queryParamMap.get('from') === 'dashboard'
-      ? '/tabs/home'
-      : '/tabs/profile-masters';
+    ngOnInit(): void {
+        this.backTarget =
+            this.route.snapshot.queryParamMap.get('from') === 'dashboard'
+                ? '/tabs/home'
+                : '/tabs/profile-masters';
 
-    this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.resetListing();
+        this.searchControl.valueChanges
+            .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.resetListing();
+                this.loadCompanies();
+            });
+
         this.loadCompanies();
-      });
-
-    this.loadCompanies();
-  }
-
-  ionViewWillEnter(): void {
-    this.resetListing();
-    this.loadCompanies();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  loadCompanies(event?: CustomEvent): void {
-    if (this.loading || !this.hasMore) {
-      this.completeInfinite(event);
-      return;
     }
 
-    this.loading = true;
-    this.listError = '';
+    ionViewWillEnter(): void {
+        this.resetListing();
+        this.loadCompanies();
+    }
 
-    this.companyService
-      .getCompanies(this.currentPage, 10, this.searchControl.value, this.sortBy, this.sortOrder)
-      .subscribe({
-        next: (response) => {
-          this.companies = this.currentPage === 1 ? response.items : [...this.companies, ...response.items];
-          this.hasMore = response.paging.currentPage < response.paging.totalPages;
-          this.currentPage += 1;
-          this.loading = false;
-          this.completeInfinite(event);
-        },
-        error: (error) => {
-          this.loading = false;
-          this.listError = error?.error?.message || error?.message || 'Failed to load companies';
-          this.completeInfinite(event);
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    loadCompanies(event?: CustomEvent): void {
+        if (this.loading || !this.hasMore) {
+            this.completeInfinite(event);
+            return;
         }
-      });
-  }
 
-  onSearchInput(event: Event): void {
-    const value = (event as CustomEvent).detail?.value ?? '';
-    this.searchControl.setValue(value, { emitEvent: true });
-  }
+        this.loading = true;
+        this.listError = '';
 
-  clearSearch(): void {
-    this.searchControl.setValue('', { emitEvent: true });
-    if (this.searchInput) {
-      this.searchInput.value = '';
+        this.companyService
+            .getCompanies(
+                this.currentPage,
+                10,
+                this.searchControl.value,
+                this.sortBy,
+                this.sortOrder,
+            )
+            .subscribe({
+                next: (response) => {
+                    this.companies =
+                        this.currentPage === 1
+                            ? response.items
+                            : [...this.companies, ...response.items];
+                    this.hasMore = response.paging.currentPage < response.paging.totalPages;
+                    this.currentPage += 1;
+                    this.loading = false;
+                    this.completeInfinite(event);
+                },
+                error: (error) => {
+                    this.loading = false;
+                    this.listError =
+                        error?.error?.message || error?.message || 'Failed to load companies';
+                    this.completeInfinite(event);
+                },
+            });
     }
-  }
 
-  toggleSortOptions(): void {
-    this.showSortOptions = !this.showSortOptions;
-  }
+    onSearchInput(event: Event): void {
+        const value = (event as CustomEvent).detail?.value ?? '';
+        this.searchControl.setValue(value, { emitEvent: true });
+    }
 
-  onSortChange(): void {
-    this.resetListing();
-    this.loadCompanies();
-  }
+    clearSearch(): void {
+        this.searchControl.setValue('', { emitEvent: true });
+        if (this.searchInput) {
+            this.searchInput.value = '';
+        }
+    }
 
-  createCompany(): void {
-    this.router.navigate(['/company/create']);
-  }
+    toggleSortOptions(): void {
+        this.showSortOptions = !this.showSortOptions;
+    }
 
-  viewCompany(company: Company): void {
-    this.router.navigate(['/company', company.companySequence]);
-  }
-
-  editCompany(company: Company, event: Event): void {
-    event.stopPropagation();
-    this.router.navigate(['/company', company.companySequence, 'edit']);
-  }
-
-  async confirmDelete(company: Company, event: Event): Promise<void> {
-    event.stopPropagation();
-
-    const confirmed = await this.confirmDialog.confirm({
-      title: 'Confirm Delete',
-      message: `Are you sure you want to delete company "${company.companyName}"?`,
-      confirmText: 'Delete',
-      confirmColor: 'danger'
-    });
-
-    if (!confirmed) return;
-
-    this.companyService.deleteCompany(company.companySequence as number).subscribe({
-      next: () => {
+    onSortChange(): void {
         this.resetListing();
         this.loadCompanies();
-      },
-      error: () => {
-        this.listError = 'Failed to delete company';
-      }
-    });
-  }
+    }
 
-  onHeaderBackClick(): void {
-    this.router.navigate([this.backTarget]);
-  }
+    createCompany(): void {
+        this.router.navigate(['/company/create']);
+    }
 
-  trackByCompanySequence(_index: number, company: Company): number {
-    return company.companySequence as number;
-  }
+    viewCompany(company: Company): void {
+        this.router.navigate(['/company', company.companySequence]);
+    }
 
-  private resetListing(): void {
-    this.currentPage = 1;
-    this.hasMore = true;
-    this.companies = [];
-  }
+    editCompany(company: Company, event: Event): void {
+        event.stopPropagation();
+        this.router.navigate(['/company', company.companySequence, 'edit']);
+    }
 
-  private completeInfinite(event?: CustomEvent): void {
-    const target = event?.target as IonInfiniteScroll | undefined;
-    target?.complete();
-  }
+    async confirmDelete(company: Company, event: Event): Promise<void> {
+        event.stopPropagation();
+
+        const confirmed = await this.confirmDialog.confirm({
+            title: 'Confirm Delete',
+            message: `Are you sure you want to delete company "${company.companyName}"?`,
+            confirmText: 'Delete',
+            confirmColor: 'danger',
+        });
+
+        if (!confirmed) return;
+
+        this.companyService.deleteCompany(company.companySequence as number).subscribe({
+            next: () => {
+                this.resetListing();
+                this.loadCompanies();
+            },
+            error: () => {
+                this.listError = 'Failed to delete company';
+            },
+        });
+    }
+
+    onHeaderBackClick(): void {
+        this.router.navigate([this.backTarget]);
+    }
+
+    trackByCompanySequence(_index: number, company: Company): number {
+        return company.companySequence as number;
+    }
+
+    private resetListing(): void {
+        this.currentPage = 1;
+        this.hasMore = true;
+        this.companies = [];
+    }
+
+    private completeInfinite(event?: CustomEvent): void {
+        const target = event?.target as IonInfiniteScroll | undefined;
+        target?.complete();
+    }
 }

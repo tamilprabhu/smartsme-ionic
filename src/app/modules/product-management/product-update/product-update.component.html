@@ -1,19 +1,21 @@
 <app-header
-  title="Update Product"
-  backAction="custom"
-  [showBackButton]="true"
-  (backClicked)="onCancel()">
+    title="Update Product"
+    backAction="custom"
+    [showBackButton]="true"
+    (backClicked)="onCancel()"
+>
 </app-header>
 
 <ion-content>
-  <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
+    <div *ngIf="loading" class="ion-padding ion-text-center">Loading...</div>
 
-  <app-product
-    *ngIf="!loading && product"
-    [mode]="'update'"
-    [formData]="product"
-    [serverValidationErrors]="serverValidationErrors"
-    (formSubmit)="onSubmit($event)"
-    (formClosed)="onCancel()">
-  </app-product>
+    <app-product
+        *ngIf="!loading && product"
+        [mode]="'update'"
+        [formData]="product"
+        [serverValidationErrors]="serverValidationErrors"
+        (formSubmit)="onSubmit($event)"
+        (formClosed)="onCancel()"
+    >
+    </app-product>
 </ion-content>

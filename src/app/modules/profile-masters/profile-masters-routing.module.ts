@@ -3,14 +3,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProfileMastersPage } from './profile-masters.page';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: ProfileMastersPage
-  }
+    {
+        path: '',
+        component: ProfileMastersPage,
+    },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
 })
 export class ProfileMastersPageRoutingModule {}
