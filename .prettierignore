@@ -1,0 +1,12 @@
+# Ignore all node modules everywhere
+**/node_modules/**
+
+# Ignore all Android native folders (Capacitor)
+**/android/**
+
+# Optional but recommended for Ionic/Capacitor
+**/ios/**
+dist/
+build/
+www/
+coverage/
